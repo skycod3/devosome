@@ -12,6 +12,162 @@
   --font-mono: var(--font-fira-code);
 }
 
+/* Base Styles */
+
+@layer base {
+  :is(h1, h2, h3, h4, h5, h6) {
+    color: var(--foreground);
+    font-weight: var(--font-weight-bold);
+  }
+
+  h1 {
+    font-size: var(--text-3xl);
+    line-height: var(--text-3xl--line-height);
+  }
+
+  h2 {
+    font-size: var(--text-2xl);
+    line-height: var(--text-2xl--line-height);
+  }
+
+  h3 {
+    font-size: var(--text-xl);
+    line-height: var(--text-xl--line-height);
+  }
+
+  h4 {
+    font-size: var(--text-lg);
+    line-height: var(--text-lg--line-height);
+  }
+
+  h5 {
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+  }
+
+  h6 {
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+  }
+
+  p:not([class]) {
+    max-width: 70ch;
+  }
+
+  button {
+    cursor: pointer;
+  }
+}
+
+/* Utility Styles */
+
+@layer utilities.flow {
+  .flow > * + * {
+    margin-top: var(--flow-space, 1rem);
+  }
+}
+
+@layer utilities.container.fluid {
+  :where(.container) {
+    --block-start-min: --spacing(8); /* 2rem */
+    --block-start-base: 3vw + var(--growth-factor, --spacing(4));
+    --block-start-max: --spacing(16); /* 4rem */
+
+    --block-end-min: --spacing(8);
+    --block-end-base: 3vw + var(--growth-factor, --spacing(4));
+    --block-end-max: --spacing(16);
+
+    margin-inline: auto;
+    padding-inline: --spacing(4);
+
+    padding-block-start: clamp(
+      var(--block-start-min),
+      var(--block-start-base),
+      var(--block-start-max)
+    );
+
+    padding-block-end: clamp(
+      var(--block-end-min),
+      var(--block-end-base),
+      var(--block-end-max)
+    );
+
+    &:where([data-fluid="xs"]) {
+      --block-start-min: --spacing(2);
+      --block-start-max: --spacing(5);
+      --block-end-min: --spacing(2);
+      --block-end-max: --spacing(5);
+    }
+
+    &:where([data-fluid="sm"]) {
+      --block-start-min: --spacing(3);
+      --block-start-max: --spacing(7);
+      --block-end-min: --spacing(3);
+      --block-end-max: --spacing(7);
+    }
+
+    &:where([data-fluid="md"]) {
+      --block-start-min: --spacing(4);
+      --block-start-max: --spacing(9);
+      --block-end-min: --spacing(4);
+      --block-end-max: --spacing(9);
+    }
+
+    &:where([data-fluid="none"]) {
+      --block-start-min: 0;
+      --block-end-min: 0;
+    }
+  }
+}
+
+@utility flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@utility icon-fix {
+  margin-top: calc(1ex - 1cap);
+}
+
+@utility grid-cols-fit-* {
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(calc(--value(integer) * --spacing(4)), 100%), 1fr)
+  );
+
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(min(--value([length]), 100%), 1fr)
+  );
+}
+
+@utility grid-cols-fill-* {
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(calc(--value(integer) * --spacing(4)), 100%), 1fr)
+  );
+
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(--value([length]), 100%), 1fr)
+  );
+}
+
+@utility grid-rows-fill-* {
+  grid-template-rows: repeat(
+    auto-fill,
+    minmax(min(calc(--value(integer) * --spacing(4)), 100%), 1fr)
+  );
+
+  grid-template-rows: repeat(
+    auto-fill,
+    minmax(min(--value([length]), 100%), 1fr)
+  );
+}
+
+/* Media Queries */
+
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,8 +175,11 @@
   }
 }
 
+/* Body Styles */
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-fira-code);
+  line-height: var(--leading-relaxed);
 }
