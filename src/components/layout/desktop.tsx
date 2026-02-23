@@ -1,5 +1,7 @@
 import WallpaperImage from "@/assets/wallpaper.jpg";
 
+import { Taskbar } from "./taskbar";
+
 export function Desktop() {
   return (
     <div
@@ -9,7 +11,9 @@ export function Desktop() {
       }}
       className="relative grid h-screen bg-cover bg-top select-none"
     >
-      <div style={{ gridRow: "taskbar" }}>Taskbar</div>
+      <div style={{ gridRow: "taskbar" }}>
+        <Taskbar />
+      </div>
 
       <div style={{ gridRow: "desktop" }}>Desktop</div>
 
