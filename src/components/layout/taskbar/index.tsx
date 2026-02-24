@@ -1,5 +1,6 @@
 import { StartDropdown } from "./start-dropdown";
 import { Weather } from "./weather";
+import { SystemTray } from "../system-tray";
 
 export function Taskbar() {
   return (
@@ -10,6 +11,10 @@ export function Taskbar() {
 
       <div className="flex items-center gap-4">
         <Weather />
+      </div>
+
+      <div>
+        <SystemTray />
       </div>
     </div>
   );
