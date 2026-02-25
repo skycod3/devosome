@@ -7,12 +7,15 @@ import { useEffect } from "react";
 import { DESKTOP_ICONS } from "@/constants/icons";
 
 import { useIcons } from "@/hooks/useIcons";
+import { useWindows } from "@/hooks/useWindows";
 
 import { Taskbar } from "./taskbar";
 import { Icon } from "../icon";
+import { Window } from "../window";
 
 export function Desktop() {
   const { icons, setIcons, unhighlightAllIcons } = useIcons();
+  const { windows } = useWindows();
 
   function handleDesktopClick(event: React.MouseEvent<HTMLDivElement>) {
     // Only handle clicks directly on the desktop div, not on child elements
@@ -52,6 +55,10 @@ export function Desktop() {
       </div>
 
       <div style={{ gridRow: "dock" }}>Dock</div>
+
+      {windows.map((window) => (
+        <Window key={window.id} id={window.id} />
+      ))}
     </div>
   );
 }
