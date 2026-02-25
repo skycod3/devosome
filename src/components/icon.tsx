@@ -5,11 +5,13 @@ import Image from "next/image";
 import { CSSProperties } from "react";
 
 import { useIcons } from "@/hooks/useIcons";
+import { useWindows } from "@/hooks/useWindows";
 
 interface IconProps extends IconFromStore {}
 
 export function Icon({ id, title, icon, size, isHighlighted }: IconProps) {
   const { highlightIcon, unhighlightAllIcons } = useIcons();
+  const { openWindow } = useWindows();
 
   function handleClick() {
     // Only unhighlight all if this icon isn't already highlighted
@@ -19,9 +21,16 @@ export function Icon({ id, title, icon, size, isHighlighted }: IconProps) {
     }
   }
 
+  function handleDoubleClick() {
+    // Open or focus window for this icon
+    // openWindow handles: existing window check, focus, and creation
+    openWindow(id, title, icon);
+  }
+
   return (
     <button
       onClick={handleClick}
+      onDoubleClick={handleDoubleClick}
       title={title}
       style={
         {
