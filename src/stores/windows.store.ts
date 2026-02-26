@@ -216,6 +216,7 @@ export const useWindowsStore = create<WindowsState>()(
               : window,
           ),
           highestZIndex: highestZIndex + 1,
+          activeWindowId: id,
         }));
       },
     }),
