@@ -1,6 +1,9 @@
 import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
+import { Window as WindowType } from "@/stores/windows.store";
 import { CSSProperties } from "react";
+
+import { motion, useDragControls } from "motion/react";
 
 import { LuHouse } from "react-icons/lu";
 import {
@@ -11,16 +14,18 @@ import {
 } from "react-icons/vsc";
 
 interface WindowProps {
-  id: string;
+  window: WindowType;
 }
 
-export function Window({ id }: WindowProps) {
-  const { windows, closeWindow } = useWindows();
+export function Window({ window }: WindowProps) {
+  const { closeWindow, bringToFront, activeWindowId } = useWindows();
   const { width, height } = useViewport();
+  const dragControls = useDragControls();
 
-  const window = windows.find((w) => w.id === id);
-
-  if (!window) return null;
+  function handleWindowClick() {
+    if (activeWindowId === window.id) return;
+    bringToFront(window.id);
+  }
 
   const windowStyles: CSSProperties = {
     left: window?.position.x,
@@ -31,8 +36,28 @@ export function Window({ id }: WindowProps) {
     zIndex: window?.zIndex,
   };
 
+  const dragConstraints = {
+    top: -window.position.y,
+    left: -window.position.x,
+    right: width - window.position.x - window.size.width,
+    bottom: height - window.position.y - window.size.height,
+  };
+
   return (
-    <div
+    <motion.div
+      onPointerDown={handleWindowClick}
+      drag={!window.isMaximized}
+      dragControls={dragControls}
+      dragConstraints={dragConstraints}
+      dragMomentum={false}
+      dragElastic={0.1}
+      whileDrag={{
+        scale: 1.02,
+        boxShadow: "0px 10px 20px rgba(0,0,0,0.2)",
+      }}
+      initial={{ opacity: 0, scale: 0.95 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
       style={windowStyles}
       className={`absolute bg-popover text-popover-foreground grid grid-rows-[auto_1fr] overflow-hidden border shadow-lg ${
         window.isMaximized ? "rounded-none shadow-2xl" : "rounded-lg"
@@ -73,12 +98,12 @@ export function Window({ id }: WindowProps) {
 
           <button
             className="flex-center size-4 cursor-default rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
-            onClick={() => closeWindow(id)}
+            onClick={() => closeWindow(window.id)}
           >
             <VscClose className="size-3" />
           </button>
         </div>
       </header>
-    </div>
+    </motion.div>
   );
 }

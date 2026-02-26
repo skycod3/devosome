@@ -2,6 +2,8 @@ import WallpaperImage from "@/assets/wallpaper.jpg";
 
 import { useEffect } from "react";
 
+import { AnimatePresence } from "motion/react";
+
 import { DESKTOP_ICONS } from "@/constants/icons";
 
 import { useIcons } from "@/hooks/useIcons";
@@ -54,9 +56,11 @@ export function Desktop() {
 
       <div style={{ gridRow: "dock" }}>Dock</div>
 
-      {windows.map((window) => (
-        <Window key={window.id} id={window.id} />
-      ))}
+      <AnimatePresence>
+        {windows.map((window) => (
+          <Window key={window.id} window={window} />
+        ))}
+      </AnimatePresence>
     </div>
   );
 }
