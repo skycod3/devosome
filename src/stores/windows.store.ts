@@ -31,7 +31,7 @@ interface WindowsState {
     iconId: string,
     title: string,
     icon: StaticImageData | string,
-  ) => void;
+  ) => string;
   closeWindow: (id: string) => void;
   closeAllWindows: () => void;
 
@@ -67,7 +67,7 @@ export const useWindowsStore = create<WindowsState>()(
           // Window exists: restore if minimized and bring to front
           get().restoreWindow(existingWindow.id);
           get().bringToFront(existingWindow.id);
-          return;
+          return existingWindow.id;
         }
 
         // Create new window
@@ -93,6 +93,8 @@ export const useWindowsStore = create<WindowsState>()(
           activeWindowId: newWindowId,
           highestZIndex: highestZIndex + 1,
         }));
+
+        return newWindowId;
       },
 
       closeWindow(id) {
