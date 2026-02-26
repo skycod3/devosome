@@ -1,5 +1,3 @@
-"use client";
-
 import WallpaperImage from "@/assets/wallpaper.jpg";
 
 import { useEffect } from "react";
