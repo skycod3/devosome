@@ -1,3 +1,4 @@
+import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
 import { CSSProperties } from "react";
 
@@ -15,6 +16,7 @@ interface WindowProps {
 
 export function Window({ id }: WindowProps) {
   const { windows, closeWindow } = useWindows();
+  const { width, height } = useViewport();
 
   const window = windows.find((w) => w.id === id);
 
@@ -25,6 +27,7 @@ export function Window({ id }: WindowProps) {
     top: window?.position.y,
     width: window?.size.width,
     height: window?.size.height,
+    maxHeight: `calc(${height}px - 10vh)`,
     zIndex: window?.zIndex,
   };
 
