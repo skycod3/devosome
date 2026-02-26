@@ -11,7 +11,7 @@ interface IconProps extends IconFromStore {}
 
 export function Icon({ id, title, icon, size, isHighlighted }: IconProps) {
   const { highlightIcon, unhighlightAllIcons } = useIcons();
-  const { openWindow } = useWindows();
+  const { openWindowCentered } = useWindows();
 
   function handleClick() {
     // Only unhighlight all if this icon isn't already highlighted
@@ -22,9 +22,7 @@ export function Icon({ id, title, icon, size, isHighlighted }: IconProps) {
   }
 
   function handleDoubleClick() {
-    // Open or focus window for this icon
-    // openWindow handles: existing window check, focus, and creation
-    openWindow(id, title, icon);
+    openWindowCentered(id, title, icon);
   }
 
   return (
