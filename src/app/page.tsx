@@ -1,5 +1,5 @@
-import { Desktop } from "../components/layout/desktop";
+import { DesktopWrapper } from "@/components/layout/desktop-wrapper";
 
 export default function Home() {
-  return <Desktop />;
+  return <DesktopWrapper />;
 }
