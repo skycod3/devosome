@@ -1,6 +1,9 @@
 "use client";
 
+import { StaticImageData } from "next/image";
 import { useWindowsStore } from "@/stores/windows.store";
+import { useViewport } from "./useViewport";
+import { DEFAULT_WINDOW_SIZE } from "@/constants/windows";
 
 /**
  * Hook for managing windows.
@@ -31,6 +34,37 @@ export const useWindows = () => {
   const setWindowSize = useWindowsStore((state) => state.setWindowSize);
   const bringToFront = useWindowsStore((state) => state.bringToFront);
 
+  // Get viewport dimensions for positioning
+  const { width, height } = useViewport();
+
+  /**
+   * Opens a window centered on the viewport.
+   * Calculates position considering viewport size and window constraints.
+   */
+  const openWindowCentered = (
+    iconId: string,
+    title: string,
+    icon: StaticImageData | string,
+  ) => {
+    const windowId = openWindow(iconId, title, icon);
+
+    // Calculate effective window height (considering maxHeight constraint)
+    const maxAllowedHeight = height * 0.9; // 90% of viewport (10vh reserved)
+    const effectiveHeight = Math.min(
+      DEFAULT_WINDOW_SIZE.height,
+      maxAllowedHeight,
+    );
+
+    // Center the window with the effective dimensions
+    setWindowPosition(
+      windowId,
+      width / 2 - DEFAULT_WINDOW_SIZE.width / 2,
+      height / 2 - effectiveHeight / 2,
+    );
+
+    return windowId;
+  };
+
   return {
     // State
     windows,
@@ -39,6 +73,7 @@ export const useWindows = () => {
 
     // Lifecycle
     openWindow,
+    openWindowCentered,
     closeWindow,
     closeAllWindows,
 
