@@ -260,10 +260,17 @@ export const useWindowsStore = create<WindowsState>()(
         set((state) => ({
           windows: state.windows.map((window) =>
             window.id === id
-              ? { ...window, zIndex: highestZIndex + 1 }
-              : window,
+              ? { ...window, zIndex: highestZIndex, isActive: true }
+              : {
+                  ...window,
+                  // If another window has the same or higher zIndex, move it down to maintain stacking order
+                  zIndex:
+                    window.zIndex >= highestZIndex
+                      ? highestZIndex - 1
+                      : window.zIndex,
+                  isActive: false,
+                },
           ),
-          highestZIndex: highestZIndex + 1,
           activeWindowId: id,
         }));
       },
