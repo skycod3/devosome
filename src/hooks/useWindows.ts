@@ -28,6 +28,7 @@ export const useWindows = () => {
   const maximizeWindow = useWindowsStore((state) => state.maximizeWindow);
   const restoreWindow = useWindowsStore((state) => state.restoreWindow);
   const toggleMinimize = useWindowsStore((state) => state.toggleMinimize);
+  const toggleMaximize = useWindowsStore((state) => state.toggleMaximize);
 
   // Window properties
   const setWindowPosition = useWindowsStore((state) => state.setWindowPosition);
@@ -84,6 +85,7 @@ export const useWindows = () => {
     maximizeWindow,
     restoreWindow,
     toggleMinimize,
+    toggleMaximize,
 
     // Properties
     setWindowPosition,
