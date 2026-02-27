@@ -1,9 +1,9 @@
 import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
 import { Window as WindowType } from "@/stores/windows.store";
-import { CSSProperties } from "react";
+import { CSSProperties, useEffect } from "react";
 
-import { motion, useDragControls } from "motion/react";
+import { motion, useMotionValue, useDragControls } from "motion/react";
 
 import { LuHouse } from "react-icons/lu";
 import {
@@ -18,53 +18,107 @@ interface WindowProps {
 }
 
 export function Window({ window }: WindowProps) {
-  const { closeWindow, bringToFront, activeWindowId } = useWindows();
+  const {
+    closeWindow,
+    bringToFront,
+    activeWindowId,
+    toggleMaximize,
+    setWindowPosition,
+    setWindowSize,
+  } = useWindows();
   const { width, height } = useViewport();
+
+  // Use MotionValue for smoother drag without re-renders
+  const x = useMotionValue(window.position.x);
+  const y = useMotionValue(window.position.y);
+
   const dragControls = useDragControls();
+
+  // Sync MotionValue with store position
+  useEffect(() => {
+    x.set(window.position.x);
+    y.set(window.position.y);
+  }, [window.position.x, window.position.y, x, y]);
 
   function handleWindowClick() {
     if (activeWindowId === window.id) return;
     bringToFront(window.id);
   }
 
+  function handleMaximize() {
+    const wasMaximized = window.isMaximized;
+    toggleMaximize(window.id);
+
+    // After state change, adjust size for fullscreen
+    if (!wasMaximized) {
+      // Maximizing: set size to fullscreen (position is set to 0,0 by store)
+      setWindowSize(window.id, width, height);
+    }
+  }
+
   const windowStyles: CSSProperties = {
-    left: window?.position.x,
-    top: window?.position.y,
     width: window?.size.width,
     height: window?.size.height,
-    maxHeight: `calc(${height}px - 10vh)`,
+    maxHeight: window.isMaximized ? undefined : `calc(${height}px - 10vh)`,
     zIndex: window?.zIndex,
-  };
-
-  const dragConstraints = {
-    top: -window.position.y,
-    left: -window.position.x,
-    right: width - window.position.x - window.size.width,
-    bottom: height - window.position.y - window.size.height,
   };
 
   return (
     <motion.div
+      style={{ ...windowStyles, x, y }}
       onPointerDown={handleWindowClick}
       drag={!window.isMaximized}
       dragControls={dragControls}
-      dragConstraints={dragConstraints}
-      dragMomentum={false}
       dragElastic={0.1}
+      dragListener={false}
+      dragConstraints={{
+        top: 0,
+        left: 0,
+        right: width - window.size.width,
+        bottom: height - window.size.height,
+      }}
+      dragMomentum={false}
+      onDragEnd={(_, info) => {
+        // Calculate new position and clamp within bounds
+        const newX = Math.max(
+          0,
+          Math.min(
+            window.position.x + info.offset.x,
+            width - window.size.width,
+          ),
+        );
+        const newY = Math.max(
+          0,
+          Math.min(
+            window.position.y + info.offset.y,
+            height - window.size.height,
+          ),
+        );
+
+        setWindowPosition(window.id, newX, newY);
+      }}
       whileDrag={{
-        scale: 1.02,
+        scale: window.isMaximized ? 1 : 1.02,
         boxShadow: "0px 10px 20px rgba(0,0,0,0.2)",
       }}
-      initial={{ opacity: 0, scale: 0.95 }}
+      initial={{
+        opacity: 0,
+        scale: 0.95,
+        x: window.position.x,
+        y: window.position.y,
+      }}
       exit={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      style={windowStyles}
+      animate={{
+        opacity: 1,
+        scale: 1,
+      }}
       className={`absolute bg-popover text-popover-foreground grid grid-rows-[auto_1fr] overflow-hidden border shadow-lg ${
         window.isMaximized ? "rounded-none shadow-2xl" : "rounded-lg"
       }`}
     >
       <header
-        className={`flex select-none ${window.isMaximized ? "rounded-none" : ""} touch-none`}
+        onPointerDown={(event) => dragControls.start(event)}
+        className={`flex select-none ${window.isMaximized ? "rounded-none cursor-default" : "cursor-move"} touch-none`}
       >
         <div
           style={{
@@ -88,7 +142,10 @@ export function Window({ window }: WindowProps) {
             <VscChromeMinimize className="size-3" />
           </button>
 
-          <button className="flex-center size-4 cursor-default rounded-full border border-green-300 bg-green-200 hover:bg-green-400">
+          <button
+            className="flex-center size-4 cursor-default rounded-full border border-green-300 bg-green-200 hover:bg-green-400"
+            onClick={handleMaximize}
+          >
             {window.isMaximized ? (
               <VscChromeRestore className="size-3" />
             ) : (
