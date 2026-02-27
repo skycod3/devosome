@@ -19,6 +19,9 @@ export interface Window {
   position: { x: number; y: number };
   size: { width: number; height: number };
   zIndex: number;
+  // Store previous position/size before maximizing to restore later
+  restorePosition?: { x: number; y: number };
+  restoreSize?: { width: number; height: number };
 }
 
 interface WindowsState {
@@ -42,6 +45,7 @@ interface WindowsState {
   maximizeWindow: (id: string) => void;
   restoreWindow: (id: string) => void;
   toggleMinimize: (id: string) => void;
+  toggleMaximize: (id: string) => void;
 
   // Window properties
   setWindowPosition: (id: string, x: number, y: number) => void;
@@ -163,19 +167,52 @@ export const useWindowsStore = create<WindowsState>()(
 
       maximizeWindow(id) {
         set((state) => ({
-          windows: state.windows.map((window) =>
-            window.id === id ? { ...window, isMaximized: true } : window,
-          ),
+          windows: state.windows.map((window) => {
+            if (window.id === id) {
+              return {
+                ...window,
+                isMaximized: true,
+                // Save current position/size before maximizing
+                restorePosition: window.position,
+                restoreSize: window.size,
+                // Set position to (0, 0) when maximizing
+                position: { x: 0, y: 0 },
+              };
+            }
+            return window;
+          }),
         }));
       },
 
       restoreWindow(id) {
         set((state) => ({
-          windows: state.windows.map((window) =>
-            window.id === id
-              ? { ...window, isMinimized: false, isMaximized: false }
-              : window,
-          ),
+          windows: state.windows.map((window) => {
+            if (window.id !== id) return window;
+
+            // Restore from maximized state
+            if (
+              window.isMaximized &&
+              window.restorePosition &&
+              window.restoreSize
+            ) {
+              return {
+                ...window,
+                isMinimized: false,
+                isMaximized: false,
+                position: window.restorePosition,
+                size: window.restoreSize,
+                restorePosition: undefined,
+                restoreSize: undefined,
+              };
+            }
+
+            // Just restore from minimized
+            return {
+              ...window,
+              isMinimized: false,
+              isMaximized: false,
+            };
+          }),
         }));
       },
 
@@ -188,6 +225,17 @@ export const useWindowsStore = create<WindowsState>()(
           get().setActiveWindow(id);
         } else {
           get().minimizeWindow(id);
+        }
+      },
+
+      toggleMaximize(id) {
+        const window = get().windows.find((w) => w.id === id);
+        if (!window) return;
+
+        if (window.isMaximized) {
+          get().restoreWindow(id);
+        } else {
+          get().maximizeWindow(id);
         }
       },
 
