@@ -16,6 +16,7 @@ export interface Window {
   isActive: boolean;
   isMinimized: boolean;
   isMaximized: boolean;
+  lastState: "normal" | "minimized" | "maximized"; // Track last state for restore logic
   position: { x: number; y: number };
   size: { width: number; height: number };
   zIndex: number;
@@ -70,7 +71,6 @@ export const useWindowsStore = create<WindowsState>()(
         if (existingWindow) {
           // Window exists: restore if minimized and bring to front
           get().restoreWindow(existingWindow.id);
-          get().bringToFront(existingWindow.id);
           return existingWindow.id;
         }
 
@@ -86,6 +86,7 @@ export const useWindowsStore = create<WindowsState>()(
           isActive: true,
           isMinimized: false,
           isMaximized: false,
+          lastState: "normal",
           position: DEFAULT_WINDOW_POSITION,
           size: DEFAULT_WINDOW_SIZE,
           zIndex: newZIndex,
@@ -179,10 +180,12 @@ export const useWindowsStore = create<WindowsState>()(
         set((state) => ({
           windows: state.windows.map((window) => {
             if (window.id === id) {
+              // Save the current state before minimizing
+              const previousState = window.isMaximized ? "maximized" : "normal";
               return {
                 ...window,
                 isMinimized: true,
-                isMaximized: false,
+                lastState: previousState,
                 isActive: false,
               };
             }
@@ -200,12 +203,20 @@ export const useWindowsStore = create<WindowsState>()(
         set((state) => ({
           windows: state.windows.map((window) => {
             if (window.id === id) {
+              // Only save restore position/size if not already maximized
+              const shouldSaveRestore = !window.isMaximized;
               return {
                 ...window,
                 isMaximized: true,
+                isMinimized: false,
+                lastState: "normal", // When maximizing, we're coming from normal state
                 // Save current position/size before maximizing
-                restorePosition: window.position,
-                restoreSize: window.size,
+                restorePosition: shouldSaveRestore
+                  ? window.position
+                  : window.restorePosition,
+                restoreSize: shouldSaveRestore
+                  ? window.size
+                  : window.restoreSize,
                 // Set position to (0, 0) when maximizing
                 position: { x: 0, y: 0 },
               };
@@ -218,7 +229,29 @@ export const useWindowsStore = create<WindowsState>()(
       restoreWindow(id) {
         set((state) => ({
           windows: state.windows.map((window) => {
-            if (window.id !== id) return window;
+            if (window.id !== id) return { ...window, isActive: false };
+
+            // Restore from minimized state
+            if (window.isMinimized) {
+              // Restore to the state before minimization (normal or maximized)
+              if (window.lastState === "maximized") {
+                return {
+                  ...window,
+                  isMinimized: false,
+                  isMaximized: true,
+                  isActive: true,
+                  lastState: "minimized", // Track that previous state was minimized
+                };
+              }
+              // Restore to normal state
+              return {
+                ...window,
+                isMinimized: false,
+                isMaximized: false,
+                isActive: true,
+                lastState: "minimized", // Track that previous state was minimized
+              };
+            }
 
             // Restore from maximized state
             if (
@@ -230,6 +263,8 @@ export const useWindowsStore = create<WindowsState>()(
                 ...window,
                 isMinimized: false,
                 isMaximized: false,
+                isActive: true,
+                lastState: "maximized", // Track that previous state was maximized
                 position: window.restorePosition,
                 size: window.restoreSize,
                 restorePosition: undefined,
@@ -237,14 +272,14 @@ export const useWindowsStore = create<WindowsState>()(
               };
             }
 
-            // Just restore from minimized
-            return {
-              ...window,
-              isMinimized: false,
-              isMaximized: false,
-            };
+            // Already in normal state, nothing to restore
+            return window;
           }),
+          activeWindowId: id,
         }));
+
+        // Bring restored window to front
+        get().bringToFront(id);
       },
 
       toggleMinimize(id) {
@@ -253,7 +288,6 @@ export const useWindowsStore = create<WindowsState>()(
 
         if (window.isMinimized) {
           get().restoreWindow(id);
-          get().setActiveWindow(id);
         } else {
           get().minimizeWindow(id);
         }
