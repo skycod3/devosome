@@ -1,7 +1,7 @@
 import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
 import { Window as WindowType } from "@/stores/windows.store";
-import { CSSProperties, useEffect } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 
 import { motion, useMotionValue, useDragControls } from "motion/react";
 
@@ -12,6 +12,9 @@ import {
   VscChromeRestore,
   VscClose,
 } from "react-icons/vsc";
+import { PiHouse, PiImage, PiMusicNote, PiNote, PiVideo } from "react-icons/pi";
+
+import { WindowContent } from "./window-content";
 
 interface WindowProps {
   window: WindowType;
@@ -28,6 +31,10 @@ export function Window({ window }: WindowProps) {
     minimizeWindow,
   } = useWindows();
   const { width, height } = useViewport();
+
+  const [activeTab, setActiveTab] = useState<typeof window.iconId>(
+    window.iconId,
+  );
 
   // Use MotionValue for smoother drag without re-renders
   const x = useMotionValue(window.position.x);
@@ -185,6 +192,61 @@ export function Window({ window }: WindowProps) {
           </button>
         </div>
       </header>
+
+      <div className="flex gap-2 overflow-auto">
+        <aside className="sticky top-0 flex-[0.6] bg-[rgb(from_var(--foreground)_r_g_b/0.1)] p-4">
+          <ul className="space-y-3">
+            <li>
+              <button
+                onClick={() => setActiveTab("icon-home")}
+                className={`flex items-center gap-1 font-medium ${activeTab === "icon-home" ? "text-blue-600" : ""}`}
+              >
+                <PiHouse className="size-4" />
+                Home
+              </button>
+            </li>
+
+            <li>
+              <button
+                onClick={() => setActiveTab("icon-pictures")}
+                className={`flex items-center gap-1 font-medium ${activeTab === "icon-pictures" ? "text-blue-600" : ""}`}
+              >
+                <PiImage className="size-4" />
+                Pictures
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActiveTab("icon-documents")}
+                className={`flex items-center gap-1 font-medium ${activeTab === "icon-documents" ? "text-blue-600" : ""}`}
+              >
+                <PiNote className="size-4" />
+                Documents
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActiveTab("icon-music")}
+                className={`flex items-center gap-1 font-medium ${activeTab === "icon-music" ? "text-blue-600" : ""}`}
+              >
+                <PiMusicNote className="size-4" />
+                Music
+              </button>
+            </li>
+            <li>
+              <button
+                onClick={() => setActiveTab("icon-videos")}
+                className={`flex items-center gap-1 font-medium ${activeTab === "icon-videos" ? "text-blue-600" : ""}`}
+              >
+                <PiVideo className="size-4" />
+                Videos
+              </button>
+            </li>
+          </ul>
+        </aside>
+
+        <WindowContent iconId={activeTab} />
+      </div>
     </motion.div>
   );
 }
