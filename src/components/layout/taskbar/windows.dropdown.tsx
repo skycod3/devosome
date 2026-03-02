@@ -16,7 +16,22 @@ import { ChevronDown, X } from "lucide-react";
 
 export function WindowsDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const { windows, closeWindow, closeAllWindows, bringToFront } = useWindows();
+  const { windows, closeWindow, closeAllWindows, bringToFront, restoreWindow } =
+    useWindows();
+
+  function handleItemClick(windowId: string) {
+    const window = windows.find((w) => w.id === windowId);
+
+    if (!window) return;
+
+    if (window.isMinimized) {
+      restoreWindow(window.id);
+    }
+
+    if (!window.isActive) {
+      bringToFront(window.id);
+    }
+  }
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
@@ -41,7 +56,7 @@ export function WindowsDropdown() {
             <DropdownMenuItem
               className="flex items-center gap-2"
               key={window.id}
-              onClick={() => !window.isActive && bringToFront(window.id)}
+              onClick={() => handleItemClick(window.id)}
             >
               <span
                 className={`size-1.5 shrink-0 rounded-full ${window.isActive ? "animate-pulse bg-blue-500" : "bg-neutral-300"} `}
