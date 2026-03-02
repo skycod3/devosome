@@ -9,6 +9,7 @@ export interface Icon {
   isHighlighted: boolean;
   show: boolean;
   size: { width: number; height: number };
+  parentId?: string; // undefined = desktop, string = folder id
 }
 
 interface IconsState {
