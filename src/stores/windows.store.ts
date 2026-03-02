@@ -23,6 +23,7 @@ export interface Window {
   // Store previous position/size before maximizing to restore later
   restorePosition?: { x: number; y: number };
   restoreSize?: { width: number; height: number };
+  tab?: { title: string };
 }
 
 interface WindowsState {
@@ -90,6 +91,7 @@ export const useWindowsStore = create<WindowsState>()(
           position: DEFAULT_WINDOW_POSITION,
           size: DEFAULT_WINDOW_SIZE,
           zIndex: newZIndex,
+          tab: { title },
         };
 
         set((state) => ({
