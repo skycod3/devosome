@@ -66,7 +66,10 @@ export function WindowsDropdown() {
 
               <button
                 aria-label="Close Window"
-                onClick={() => closeWindow(window.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  closeWindow(window.id);
+                }}
                 className="flex-center ml-auto size-4 rounded-full border border-red-500"
               >
                 <X className="size-3 text-red-500" />
