@@ -146,7 +146,7 @@ export function Window({ window }: WindowProps) {
           {window.title !== "Home" && (
             <>
               <div className="flex items-center gap-2">
-                <span className="font-bold">Home</span>
+                <span>Home</span>
               </div>
               <span>/</span>
             </>
