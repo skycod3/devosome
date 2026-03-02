@@ -142,12 +142,17 @@ export function Window({ window }: WindowProps) {
         >
           <LuHouse className="size-4 shrink-0" />
 
-          <div className="flex items-center gap-2">
-            <span className="font-bold">Home</span>
-          </div>
-          <span>/</span>
+          {/* Add breadcrumb navigation if window is not Home */}
+          {window.title !== "Home" && (
+            <>
+              <div className="flex items-center gap-2">
+                <span className="font-bold">Home</span>
+              </div>
+              <span>/</span>
+            </>
+          )}
 
-          <p className="line-clamp-1">TEST</p>
+          <p className="line-clamp-1">{window.title}</p>
         </div>
 
         <div
