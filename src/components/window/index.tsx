@@ -25,6 +25,7 @@ export function Window({ window }: WindowProps) {
     toggleMaximize,
     setWindowPosition,
     setWindowSize,
+    minimizeWindow,
   } = useWindows();
   const { width, height } = useViewport();
 
@@ -61,6 +62,21 @@ export function Window({ window }: WindowProps) {
     height: window?.size.height,
     maxHeight: window.isMaximized ? undefined : `calc(${height}px - 10vh)`,
     zIndex: window?.zIndex,
+  };
+
+  const getWindowAnimations = () => {
+    if (window.isMinimized) {
+      return {
+        y: -100,
+        opacity: 0,
+        scale: 0.5,
+      };
+    }
+
+    return {
+      opacity: 1,
+      scale: 1,
+    };
   };
 
   return (
@@ -108,10 +124,7 @@ export function Window({ window }: WindowProps) {
         y: window.position.y,
       }}
       exit={{ opacity: 0, scale: 0.95 }}
-      animate={{
-        opacity: 1,
-        scale: 1,
-      }}
+      animate={getWindowAnimations()}
       className={`absolute bg-popover text-popover-foreground grid grid-rows-[auto_1fr] overflow-hidden border shadow-lg ${
         window.isMaximized ? "rounded-none shadow-2xl" : "rounded-lg"
       }`}
@@ -137,13 +150,19 @@ export function Window({ window }: WindowProps) {
           <p className="line-clamp-1">TEST</p>
         </div>
 
-        <div className="bg-popover flex items-center gap-3 p-3 text-black">
-          <button className="flex-center size-4 cursor-default rounded-full border border-yellow-300 bg-yellow-200 hover:bg-yellow-400">
+        <div
+          className="bg-popover flex items-center gap-3 p-3 text-black"
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          <button
+            className="flex-center size-4 cursor-pointer rounded-full border border-yellow-300 bg-yellow-200 hover:bg-yellow-400"
+            onClick={() => minimizeWindow(window.id)}
+          >
             <VscChromeMinimize className="size-3" />
           </button>
 
           <button
-            className="flex-center size-4 cursor-default rounded-full border border-green-300 bg-green-200 hover:bg-green-400"
+            className="flex-center size-4 cursor-pointer rounded-full border border-green-300 bg-green-200 hover:bg-green-400"
             onClick={handleMaximize}
           >
             {window.isMaximized ? (
@@ -154,7 +173,7 @@ export function Window({ window }: WindowProps) {
           </button>
 
           <button
-            className="flex-center size-4 cursor-default rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
+            className="flex-center size-4 cursor-pointer rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
             onClick={() => closeWindow(window.id)}
           >
             <VscClose className="size-3" />
