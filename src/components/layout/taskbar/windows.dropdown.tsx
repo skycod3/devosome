@@ -25,10 +25,10 @@ export function WindowsDropdown() {
     if (!window) return;
 
     if (window.isMinimized) {
+      // Restore minimized window (automatically activates and brings to front)
       restoreWindow(window.id);
-    }
-
-    if (!window.isActive) {
+    } else if (!window.isActive) {
+      // Bring non-active window to front
       bringToFront(window.id);
     }
   }
