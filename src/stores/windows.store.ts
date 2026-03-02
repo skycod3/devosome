@@ -62,7 +62,7 @@ export const useWindowsStore = create<WindowsState>()(
 
       // Open or focus existing window for an icon
       openWindow(iconId, title, icon) {
-        const { windows, highestZIndex } = get();
+        const { windows } = get();
 
         // Check if window already exists for this icon
         const existingWindow = windows.find((w) => w.iconId === iconId);
@@ -74,8 +74,10 @@ export const useWindowsStore = create<WindowsState>()(
           return existingWindow.id;
         }
 
-        // Create new window
+        // Create new window with zIndex based on number of windows
         const newWindowId = `window-${iconId}-${Date.now()}`;
+        const newZIndex = BASE_Z_INDEX + windows.length + 1;
+
         const newWindow: Window = {
           id: newWindowId,
           iconId,
@@ -86,7 +88,7 @@ export const useWindowsStore = create<WindowsState>()(
           isMaximized: false,
           position: DEFAULT_WINDOW_POSITION,
           size: DEFAULT_WINDOW_SIZE,
-          zIndex: highestZIndex + 1,
+          zIndex: newZIndex,
         };
 
         set((state) => ({
@@ -95,7 +97,7 @@ export const useWindowsStore = create<WindowsState>()(
             newWindow,
           ],
           activeWindowId: newWindowId,
-          highestZIndex: highestZIndex + 1,
+          highestZIndex: newZIndex,
         }));
 
         return newWindowId;
@@ -120,7 +122,7 @@ export const useWindowsStore = create<WindowsState>()(
           activeWindowId: newActiveId,
           highestZIndex:
             newWindows.length > 0
-              ? Math.max(...newWindows.map((w) => w.zIndex))
+              ? BASE_Z_INDEX + newWindows.length
               : BASE_Z_INDEX,
         });
       },
@@ -154,14 +156,43 @@ export const useWindowsStore = create<WindowsState>()(
       },
 
       minimizeWindow(id) {
+        const { windows, activeWindowId } = get();
+        const isCurrentlyActive = activeWindowId === id;
+
+        // Find next window to activate if minimizing the active one
+        let newActiveId = isCurrentlyActive ? null : activeWindowId;
+        if (isCurrentlyActive && windows.length > 1) {
+          // Find the window with highest zIndex that's not being minimized and not already minimized
+          const nextWindow = windows
+            .filter((w) => w.id !== id && !w.isMinimized)
+            .reduce(
+              (highest, current) =>
+                current.zIndex > (highest?.zIndex ?? -1) ? current : highest,
+              null as Window | null,
+            );
+
+          if (nextWindow) {
+            newActiveId = nextWindow.id;
+          }
+        }
+
         set((state) => ({
-          windows: state.windows.map((window) =>
-            window.id === id
-              ? { ...window, isMinimized: true, isActive: false }
-              : window,
-          ),
-          activeWindowId:
-            state.activeWindowId === id ? null : state.activeWindowId,
+          windows: state.windows.map((window) => {
+            if (window.id === id) {
+              return {
+                ...window,
+                isMinimized: true,
+                isMaximized: false,
+                isActive: false,
+              };
+            }
+            // Activate the next window if found
+            if (window.id === newActiveId) {
+              return { ...window, isActive: true };
+            }
+            return window;
+          }),
+          activeWindowId: newActiveId,
         }));
       },
 
@@ -256,23 +287,40 @@ export const useWindowsStore = create<WindowsState>()(
       },
 
       bringToFront(id) {
-        const { highestZIndex } = get();
-        set((state) => ({
-          windows: state.windows.map((window) =>
-            window.id === id
-              ? { ...window, zIndex: highestZIndex, isActive: true }
-              : {
-                  ...window,
-                  // If another window has the same or higher zIndex, move it down to maintain stacking order
-                  zIndex:
-                    window.zIndex >= highestZIndex
-                      ? highestZIndex - 1
-                      : window.zIndex,
-                  isActive: false,
-                },
-          ),
+        const { windows } = get();
+
+        // Reorganize zIndex: sort windows by current zIndex, then assign sequential values
+        // The window being brought to front gets the highest zIndex
+        const otherWindows = windows
+          .filter((w) => w.id !== id)
+          .sort((a, b) => a.zIndex - b.zIndex);
+
+        const updatedWindows = windows.map((window) => {
+          if (window.id === id) {
+            // This window gets the highest zIndex
+            return {
+              ...window,
+              zIndex: BASE_Z_INDEX + windows.length,
+              isActive: true,
+            };
+          }
+
+          // Other windows get sequential zIndex based on their current order
+          const indexInOtherWindows = otherWindows.findIndex(
+            (w) => w.id === window.id,
+          );
+          return {
+            ...window,
+            zIndex: BASE_Z_INDEX + indexInOtherWindows + 1,
+            isActive: false,
+          };
+        });
+
+        set({
+          windows: updatedWindows,
           activeWindowId: id,
-        }));
+          highestZIndex: BASE_Z_INDEX + windows.length,
+        });
       },
     }),
     { name: "windows-store" },
