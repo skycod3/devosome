@@ -10,7 +10,14 @@ interface DocumentsProps {
 }
 
 export function Documents({ iconId }: DocumentsProps) {
-  const { icons, addIcon, removeIcon } = useIcons();
+  const { icons, addIcon, removeIcon, unhighlightAllIcons } = useIcons();
+
+  function handleIconsAreaClick(event: React.MouseEvent<HTMLDivElement>) {
+    // Only handle clicks directly on the parent div, not on child elements
+    if (event.target !== event.currentTarget) return;
+
+    if (icons.some((icon) => icon.isHighlighted)) unhighlightAllIcons();
+  }
 
   const resumeIcon = useMemo(
     () => ({
@@ -37,7 +44,10 @@ export function Documents({ iconId }: DocumentsProps) {
   const iconsFromStore = icons.filter((icon) => icon.parentId === iconId);
 
   return (
-    <div className="grid-cols-fill-6 grid h-full items-start gap-4">
+    <div
+      onClick={handleIconsAreaClick}
+      className="grid-cols-fill-6 grid h-full items-start gap-4"
+    >
       {iconsFromStore.map((icon) => (
         <Icon key={icon.id} {...icon} />
       ))}
