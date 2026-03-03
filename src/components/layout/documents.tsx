@@ -10,7 +10,7 @@ interface DocumentsProps {
 }
 
 export function Documents({ iconId }: DocumentsProps) {
-  const { addIcon, removeIcon } = useIcons();
+  const { icons, addIcon, removeIcon } = useIcons();
 
   const resumeIcon = useMemo(
     () => ({
@@ -34,9 +34,13 @@ export function Documents({ iconId }: DocumentsProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const iconsFromStore = icons.filter((icon) => icon.parentId === iconId);
+
   return (
     <div className="grid-cols-fill-6 grid h-full items-start gap-4">
-      <Icon {...resumeIcon} />
+      {iconsFromStore.map((icon) => (
+        <Icon key={icon.id} {...icon} />
+      ))}
     </div>
   );
 }
