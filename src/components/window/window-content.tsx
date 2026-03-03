@@ -1,13 +1,27 @@
-import { Documents } from "../layout/documents";
+import { APPLICATIONS } from "@/constants/applications";
 
 interface WindowContentProps {
   iconId: string;
 }
 
 export function WindowContent({ iconId }: WindowContentProps) {
+  const application = APPLICATIONS[iconId];
+
+  if (!application) {
+    return (
+      <section className="grid flex-2 p-4">
+        <div className="flex h-full items-center justify-center text-gray-500">
+          <p>Application not found for: {iconId}</p>
+        </div>
+      </section>
+    );
+  }
+
+  const AppComponent = application.component;
+
   return (
     <section className="grid flex-2 p-4">
-      {iconId === "icon-documents" && <Documents iconId={iconId} />}
+      <AppComponent iconId={iconId} />
     </section>
   );
 }
