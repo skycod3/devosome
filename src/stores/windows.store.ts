@@ -24,6 +24,7 @@ export interface Window {
   restorePosition?: { x: number; y: number };
   restoreSize?: { width: number; height: number };
   tab?: { title: string };
+  showTabs?: boolean; // Whether to show sidebar tabs
 }
 
 interface WindowsState {
@@ -36,6 +37,7 @@ interface WindowsState {
     iconId: string,
     title: string,
     icon: StaticImageData | string,
+    showTabs?: boolean,
   ) => string;
   closeWindow: (id: string) => void;
   closeAllWindows: () => void;
@@ -63,7 +65,7 @@ export const useWindowsStore = create<WindowsState>()(
       highestZIndex: BASE_Z_INDEX,
 
       // Open or focus existing window for an icon
-      openWindow(iconId, title, icon) {
+      openWindow(iconId, title, icon, showTabs) {
         const { windows } = get();
 
         // Check if window already exists for this icon
@@ -92,6 +94,7 @@ export const useWindowsStore = create<WindowsState>()(
           size: DEFAULT_WINDOW_SIZE,
           zIndex: newZIndex,
           tab: { title },
+          showTabs: showTabs ?? false, // Default to false if not provided
         };
 
         set((state) => ({
