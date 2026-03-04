@@ -23,6 +23,9 @@ interface WindowProps {
 
 export function Window({ window }: WindowProps) {
   const {
+    windows,
+    restoreWindow,
+    openWindowCentered,
     closeWindow,
     bringToFront,
     activeWindowId,
@@ -65,6 +68,41 @@ export function Window({ window }: WindowProps) {
       // Maximizing: set size to fullscreen (position is set to 0,0 by store)
       setWindowSize(window.id, width, height);
     }
+  }
+
+  function handleBreadcrumbClick(targetIconId: string) {
+    // Click on "Home" breadcrumb → close current window and return to desktop
+    if (targetIconId === "icon-home") {
+      closeWindow(window.id);
+      return;
+    }
+
+    // Find target icon data to get title and icon for new window
+    const targetIconData = icons.find((icon) => icon.id === targetIconId);
+    if (!targetIconData) {
+      console.warn(`Icon not found: ${targetIconId}`);
+      closeWindow(window.id);
+      return;
+    }
+
+    // Find target window by iconId
+    const targetWindow = windows.find((w) => w.iconId === targetIconId);
+
+    if (targetWindow) {
+      // Window already exists → Bring to front and restore if minimized
+      restoreWindow(targetWindow.id);
+    } else {
+      // Window does not exist → Open new window
+      openWindowCentered(
+        targetIconId,
+        targetIconData.parentId || "",
+        targetIconData.title,
+        targetIconData.icon,
+      );
+    }
+
+    // Always close the current window when navigating via breadcrumb
+    closeWindow(window.id);
   }
 
   const windowStyles: CSSProperties = {
@@ -153,13 +191,14 @@ export function Window({ window }: WindowProps) {
           <LuHouse className="size-4 shrink-0" />
 
           {/* Breadcrumb dinâmico */}
-          <span>Home</span>
+          <button onClick={() => handleBreadcrumbClick("icon-home")}>
+            <span>Home</span>
+          </button>
 
           {parentIcon && (
-            <>
-              <span>/</span>
-              <span>{parentIcon.title}</span>
-            </>
+            <button onClick={() => handleBreadcrumbClick(parentIcon.id)}>
+              <span>/</span> <span>{parentIcon.title}</span>
+            </button>
           )}
 
           {window.title !== "Home" && (
