@@ -11,6 +11,7 @@ import {
 export interface Window {
   id: string; // Unique window ID: `window-${iconId}-${timestamp}`
   iconId: string; // Reference to the icon that opened this window
+  parentId: string;
   title: string;
   icon: StaticImageData | string; // Window icon (same as icon)
   isActive: boolean;
@@ -35,6 +36,7 @@ interface WindowsState {
   // Window lifecycle
   openWindow: (
     iconId: string,
+    parentId: string,
     title: string,
     icon: StaticImageData | string,
     showTabs?: boolean,
@@ -65,7 +67,7 @@ export const useWindowsStore = create<WindowsState>()(
       highestZIndex: BASE_Z_INDEX,
 
       // Open or focus existing window for an icon
-      openWindow(iconId, title, icon, showTabs) {
+      openWindow(iconId, parentId, title, icon, showTabs) {
         const { windows } = get();
 
         // Check if window already exists for this icon
@@ -84,6 +86,7 @@ export const useWindowsStore = create<WindowsState>()(
         const newWindow: Window = {
           id: newWindowId,
           iconId,
+          parentId,
           title,
           icon,
           isActive: true,
