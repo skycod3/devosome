@@ -4,6 +4,7 @@ import { StaticImageData } from "next/image";
 import { useWindowsStore } from "@/stores/windows.store";
 import { useViewport } from "./useViewport";
 import { DEFAULT_WINDOW_SIZE } from "@/constants/windows";
+import { APPLICATIONS } from "@/constants/applications";
 
 /**
  * Hook for managing windows.
@@ -41,13 +42,18 @@ export const useWindows = () => {
   /**
    * Opens a window centered on the viewport.
    * Calculates position considering viewport size and window constraints.
+   * Automatically fetches window config (showTabs, defaultSize) from APPLICATIONS registry.
    */
   const openWindowCentered = (
     iconId: string,
     title: string,
     icon: StaticImageData | string,
   ) => {
-    const windowId = openWindow(iconId, title, icon);
+    // Get application config from registry
+    const app = APPLICATIONS[iconId];
+    const showTabs = app?.showTabs ?? false;
+
+    const windowId = openWindow(iconId, title, icon, showTabs);
 
     // Calculate effective window height (considering maxHeight constraint)
     const maxAllowedHeight = height * 0.9; // 90% of viewport (10vh reserved)
