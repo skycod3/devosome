@@ -8,15 +8,18 @@ interface Application {
   component: AppComponent;
   windowTitle?: string;
   defaultSize?: { width: number; height: number };
+  showTabs?: boolean;
 }
 
 export const APPLICATIONS: Record<string, Application> = {
   "icon-documents": {
     id: "icon-documents",
     component: Documents,
+    showTabs: true,
   },
   "icon-resume": {
     id: "icon-resume",
     component: ResumeViewer,
+    showTabs: false,
   },
 };
