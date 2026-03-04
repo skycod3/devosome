@@ -1,5 +1,6 @@
 import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
+import { useIcons } from "@/hooks/useIcons";
 import { Window as WindowType } from "@/stores/windows.store";
 import { CSSProperties, useEffect, useState } from "react";
 
@@ -31,7 +32,7 @@ export function Window({ window }: WindowProps) {
     minimizeWindow,
   } = useWindows();
   const { width, height } = useViewport();
-
+  const { icons } = useIcons();
   const [activeTab, setActiveTab] = useState<typeof window.iconId>(
     window.iconId,
   );
@@ -41,6 +42,8 @@ export function Window({ window }: WindowProps) {
   const y = useMotionValue(window.position.y);
 
   const dragControls = useDragControls();
+
+  const parentIcon = icons.find((icon) => icon.id === window.parentId);
 
   // Sync MotionValue with store position
   useEffect(() => {
@@ -149,17 +152,22 @@ export function Window({ window }: WindowProps) {
         >
           <LuHouse className="size-4 shrink-0" />
 
-          {/* Add breadcrumb navigation if window is not Home */}
-          {window.title !== "Home" && (
+          {/* Breadcrumb dinâmico */}
+          <span>Home</span>
+
+          {parentIcon && (
             <>
-              <div className="flex items-center gap-2">
-                <span>Home</span>
-              </div>
               <span>/</span>
+              <span>{parentIcon.title}</span>
             </>
           )}
 
-          <p className="line-clamp-1">{window.title}</p>
+          {window.title !== "Home" && (
+            <>
+              <span>/</span>
+              <p className="line-clamp-1">{window.title}</p>
+            </>
+          )}
         </div>
 
         <div
