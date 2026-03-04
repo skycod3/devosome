@@ -194,56 +194,58 @@ export function Window({ window }: WindowProps) {
       </header>
 
       <div className="flex gap-2 overflow-auto">
-        <aside className="sticky top-0 flex-[0.6] bg-[rgb(from_var(--foreground)_r_g_b/0.1)] p-4">
-          <ul className="space-y-3">
-            <li>
-              <button
-                onClick={() => setActiveTab("icon-home")}
-                className={`flex items-center gap-1 font-medium ${activeTab === "icon-home" ? "text-blue-600" : ""}`}
-              >
-                <PiHouse className="size-4" />
-                Home
-              </button>
-            </li>
+        {window.showTabs && (
+          <aside className="sticky top-0 flex-[0.6] bg-[rgb(from_var(--foreground)_r_g_b/0.1)] p-4">
+            <ul className="space-y-3">
+              <li>
+                <button
+                  onClick={() => setActiveTab("icon-home")}
+                  className={`flex items-center gap-1 font-medium ${activeTab === "icon-home" ? "text-blue-600" : ""}`}
+                >
+                  <PiHouse className="size-4" />
+                  Home
+                </button>
+              </li>
 
-            <li>
-              <button
-                onClick={() => setActiveTab("icon-pictures")}
-                className={`flex items-center gap-1 font-medium ${activeTab === "icon-pictures" ? "text-blue-600" : ""}`}
-              >
-                <PiImage className="size-4" />
-                Pictures
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setActiveTab("icon-documents")}
-                className={`flex items-center gap-1 font-medium ${activeTab === "icon-documents" ? "text-blue-600" : ""}`}
-              >
-                <PiNote className="size-4" />
-                Documents
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setActiveTab("icon-music")}
-                className={`flex items-center gap-1 font-medium ${activeTab === "icon-music" ? "text-blue-600" : ""}`}
-              >
-                <PiMusicNote className="size-4" />
-                Music
-              </button>
-            </li>
-            <li>
-              <button
-                onClick={() => setActiveTab("icon-videos")}
-                className={`flex items-center gap-1 font-medium ${activeTab === "icon-videos" ? "text-blue-600" : ""}`}
-              >
-                <PiVideo className="size-4" />
-                Videos
-              </button>
-            </li>
-          </ul>
-        </aside>
+              <li>
+                <button
+                  onClick={() => setActiveTab("icon-pictures")}
+                  className={`flex items-center gap-1 font-medium ${activeTab === "icon-pictures" ? "text-blue-600" : ""}`}
+                >
+                  <PiImage className="size-4" />
+                  Pictures
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setActiveTab("icon-documents")}
+                  className={`flex items-center gap-1 font-medium ${activeTab === "icon-documents" ? "text-blue-600" : ""}`}
+                >
+                  <PiNote className="size-4" />
+                  Documents
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setActiveTab("icon-music")}
+                  className={`flex items-center gap-1 font-medium ${activeTab === "icon-music" ? "text-blue-600" : ""}`}
+                >
+                  <PiMusicNote className="size-4" />
+                  Music
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => setActiveTab("icon-videos")}
+                  className={`flex items-center gap-1 font-medium ${activeTab === "icon-videos" ? "text-blue-600" : ""}`}
+                >
+                  <PiVideo className="size-4" />
+                  Videos
+                </button>
+              </li>
+            </ul>
+          </aside>
+        )}
 
         <WindowContent iconId={activeTab} />
       </div>
