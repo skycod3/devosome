@@ -46,6 +46,7 @@ export const useWindows = () => {
    */
   const openWindowCentered = (
     iconId: string,
+    parentId: string,
     title: string,
     icon: StaticImageData | string,
   ) => {
@@ -53,7 +54,7 @@ export const useWindows = () => {
     const app = APPLICATIONS[iconId];
     const showTabs = app?.showTabs ?? false;
 
-    const windowId = openWindow(iconId, title, icon, showTabs);
+    const windowId = openWindow(iconId, parentId, title, icon, showTabs);
 
     // Calculate effective window height (considering maxHeight constraint)
     const maxAllowedHeight = height * 0.9; // 90% of viewport (10vh reserved)

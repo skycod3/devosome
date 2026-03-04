@@ -31,7 +31,7 @@ export function Icon({
   }
 
   function handleDoubleClick() {
-    openWindowCentered(id, title, icon);
+    openWindowCentered(id, parentId ?? "", title, icon);
   }
 
   return (
