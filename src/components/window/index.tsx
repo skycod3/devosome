@@ -13,7 +13,7 @@ import {
   VscChromeRestore,
   VscClose,
 } from "react-icons/vsc";
-import { PiHouse, PiImage, PiMusicNote, PiNote, PiVideo } from "react-icons/pi";
+import { PiImage, PiMusicNote, PiNote, PiVideo } from "react-icons/pi";
 
 import { WindowContent } from "./window-content";
 
@@ -201,12 +201,8 @@ export function Window({ window }: WindowProps) {
             </button>
           )}
 
-          {window.title !== "Home" && (
-            <>
-              <span>/</span>
-              <p className="line-clamp-1">{window.title}</p>
-            </>
-          )}
+          <span>/</span>
+          <p className="line-clamp-1">{window.title}</p>
         </div>
 
         <div
@@ -244,16 +240,6 @@ export function Window({ window }: WindowProps) {
         {window.showTabs && (
           <aside className="sticky top-0 flex-[0.6] bg-[rgb(from_var(--foreground)_r_g_b/0.1)] p-4">
             <ul className="space-y-3">
-              <li>
-                <button
-                  onClick={() => setActiveTab("icon-home")}
-                  className={`flex items-center gap-1 font-medium ${activeTab === "icon-home" ? "text-blue-600" : ""}`}
-                >
-                  <PiHouse className="size-4" />
-                  Home
-                </button>
-              </li>
-
               <li>
                 <button
                   onClick={() => setActiveTab("icon-pictures")}
