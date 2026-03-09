@@ -63,12 +63,13 @@ export const useWindows = () => {
       maxAllowedHeight,
     );
 
+    // Calculate centered position with an offset for cascading effect
+    const offset = windows.length > 0 ? windows.length * 50 : 0;
+    const calculatedX = width / 2 - DEFAULT_WINDOW_SIZE.width / 2 + offset;
+    const calculatedY = height / 2 - effectiveHeight / 2 + offset;
+
     // Center the window with the effective dimensions
-    setWindowPosition(
-      windowId,
-      width / 2 - DEFAULT_WINDOW_SIZE.width / 2,
-      height / 2 - effectiveHeight / 2,
-    );
+    setWindowPosition(windowId, calculatedX, calculatedY);
 
     return windowId;
   };
