@@ -150,10 +150,11 @@ export function Window({ window }: WindowProps) {
   }
 
   const windowStyles: CSSProperties = {
-    width: window?.size.width,
-    height: window?.size.height,
-    maxHeight: window.isMaximized ? undefined : `calc(${height}px - 10vh)`,
     zIndex: window?.zIndex,
+    maxHeight:
+      isAnimatingRef.current || window.isMaximized
+        ? undefined
+        : `calc(${height}px - 10vh)`,
   };
 
   const getWindowAnimations = () => {
@@ -173,7 +174,7 @@ export function Window({ window }: WindowProps) {
 
   return (
     <motion.div
-      style={{ ...windowStyles, x, y }}
+      style={{ ...windowStyles, x, y, width: mvWidth, height: mvHeight, borderRadius: mvRadius }}
       onPointerDown={handleWindowClick}
       drag={!window.isMaximized}
       dragControls={dragControls}
@@ -218,7 +219,7 @@ export function Window({ window }: WindowProps) {
       exit={{ opacity: 0, scale: 0.95 }}
       animate={getWindowAnimations()}
       className={`absolute bg-popover text-popover-foreground grid grid-rows-[auto_1fr] overflow-hidden border shadow-lg ${
-        window.isMaximized ? "rounded-none shadow-2xl" : "rounded-lg"
+        window.isMaximized ? "shadow-2xl" : ""
       }`}
     >
       <header
