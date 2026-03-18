@@ -14,11 +14,12 @@ The Zustand store (`src/stores/windows.store.ts`) manages all window state inclu
 
 - Smooth animation when maximizing (button click only, no drag-to-top)
 - Smooth animation when restoring from maximized state
-- Expansion from center outward (Windows OS style)
 - Animated properties: x, y, width, height, borderRadius
 - Duration: ~150-200ms with ease-out easing
 - Border-radius animates from rounded (8px) to 0 on maximize, and back on restore
 - Must not break existing open/close, minimize/restore, or drag behaviors
+
+**Note on "center outward" expansion:** The animation interpolates x, y, width, and height simultaneously from the window's current bounds to the maximized bounds (and vice versa). This means the window grows while its top-left corner moves toward (0,0). This is a smooth geometric interpolation, not a transform-origin-based center expansion. The visual effect is similar to Windows OS — the window appears to expand toward the screen edges.
 
 ## Approach: Imperative `animate()` with `useMotionValue`
 
@@ -44,70 +45,89 @@ New state:
 ```
 x        → useMotionValue (drag + position sync + maximize animation)
 y        → useMotionValue (drag + position sync + maximize animation)
-mvWidth  → useMotionValue (window width, animated on maximize/restore)
-mvHeight → useMotionValue (window height, animated on maximize/restore)
-mvRadius → useMotionValue (border-radius, animated on maximize/restore)
+mvWidth  → useMotionValue(window.size.width)    — initialized from store
+mvHeight → useMotionValue(window.size.height)   — initialized from store
+mvRadius → useMotionValue(window.isMaximized ? 0 : 8) — initialized from state
 ```
 
 The `style` prop of the `motion.div` will use these motion values instead of the current `windowStyles` object for width/height, and instead of the conditional className for border-radius.
 
+### `maxHeight` Handling
+
+The current component applies `maxHeight: calc(${height}px - 10vh)` when not maximized (line 111). This CSS constraint could clamp the visual height during animation:
+
+- **During maximize:** Not a problem — `toggleMaximize` sets `isMaximized: true` before the animation starts, so React re-renders without `maxHeight` before or at the start of the animation.
+- **During restore:** Problem — `toggleMaximize` sets `isMaximized: false` immediately, so `maxHeight` kicks in while the height is still animating down from viewport size, potentially clamping the visual.
+
+**Solution:** Move `maxHeight` to a motion value (`mvMaxHeight`) or apply it conditionally based on `isAnimatingRef`. The simplest approach: while `isAnimatingRef.current` is true, don't apply `maxHeight`. This keeps the constraint during normal use but removes it during the animation. After the animation completes and the flag clears, the next render will apply `maxHeight` normally, and the window will already be at its restore size (which fits within the constraint).
+
 ### Animation Flag
 
-A `useRef<boolean>` called `isAnimatingRef` prevents the position sync `useEffect` from overwriting animations in progress. The flow:
+A `useRef<boolean>` called `isAnimatingRef` prevents the sync `useEffect`s from overwriting animations in progress. The flow:
 
 1. `handleMaximize` sets `isAnimatingRef.current = true`
-2. Fires `animate()` calls for all 5 motion values
-3. Uses `onComplete` callback on the last animation to set `isAnimatingRef.current = false`
-4. The existing `useEffect` that syncs `x.set()`/`y.set()` from store changes checks this flag and skips updates while animating
+2. Fires `animate()` calls for all 5 motion values — each returns a Promise
+3. Uses `Promise.all()` on all animation promises, then clears `isAnimatingRef.current = false` in the `.then()` callback
+4. All sync `useEffect`s (position AND size) check this flag and skip updates while animating
+
+Using `Promise.all` instead of a single `onComplete` is more robust: if any animation is interrupted (e.g., rapid clicks), the promises still resolve, preventing the flag from getting stuck.
 
 ### Maximize Flow
 
 When the user clicks the green maximize button:
 
-1. `handleMaximize()` reads current state (`wasMaximized`)
+1. `handleMaximize()` reads `wasMaximized` from the current `window` prop
 2. Calls `toggleMaximize(id)` on the store (saves restore data, sets position to 0,0)
 3. If maximizing: calls `setWindowSize(id, viewportWidth, viewportHeight)`
 4. Sets `isAnimatingRef.current = true`
-5. Fires imperative animations:
-   ```
-   animate(x, 0, { duration: 0.18, ease: "easeOut" })
-   animate(y, 0, { duration: 0.18, ease: "easeOut" })
-   animate(mvWidth, viewportWidth, { duration: 0.18, ease: "easeOut" })
-   animate(mvHeight, viewportHeight, { duration: 0.18, ease: "easeOut" })
-   animate(mvRadius, 0, { duration: 0.18, ease: "easeOut", onComplete: () => isAnimatingRef.current = false })
+5. Fires imperative animations and awaits all:
+   ```typescript
+   const transition = { duration: 0.18, ease: "easeOut" as const };
+   Promise.all([
+     animate(x, 0, transition),
+     animate(y, 0, transition),
+     animate(mvWidth, viewportWidth, transition),
+     animate(mvHeight, viewportHeight, transition),
+     animate(mvRadius, 0, transition),
+   ]).then(() => {
+     isAnimatingRef.current = false;
+   });
    ```
 
 ### Restore Flow
 
 When the user clicks the green button while maximized:
 
-1. `handleMaximize()` reads `window.restorePosition` and `window.restoreSize` BEFORE calling `toggleMaximize` (because the store clears them during restore)
-2. Calls `toggleMaximize(id)` on the store
+1. `handleMaximize()` captures `window.restorePosition` and `window.restoreSize` from the current `window` prop. This works because React props are snapshots — calling `toggleMaximize` triggers a store update, but the component's `window` prop won't reflect the new state until the next render. So the restore values are still available at this point.
+2. Calls `toggleMaximize(id)` on the store (which internally calls `restoreWindow`, clearing `restorePosition`/`restoreSize` and calling `bringToFront` — the zIndex change during animation is harmless since it's a separate CSS property)
 3. Sets `isAnimatingRef.current = true`
-4. Fires imperative animations toward the saved restore values:
+4. Fires imperative animations toward the captured restore values:
+   ```typescript
+   const transition = { duration: 0.18, ease: "easeOut" as const };
+   Promise.all([
+     animate(x, restorePos.x, transition),
+     animate(y, restorePos.y, transition),
+     animate(mvWidth, restoreSize.width, transition),
+     animate(mvHeight, restoreSize.height, transition),
+     animate(mvRadius, 8, transition),
+   ]).then(() => {
+     isAnimatingRef.current = false;
+   });
    ```
-   animate(x, restorePos.x, { duration: 0.18, ease: "easeOut" })
-   animate(y, restorePos.y, { duration: 0.18, ease: "easeOut" })
-   animate(mvWidth, restoreSize.width, { duration: 0.18, ease: "easeOut" })
-   animate(mvHeight, restoreSize.height, { duration: 0.18, ease: "easeOut" })
-   animate(mvRadius, 8, { duration: 0.18, ease: "easeOut", onComplete: () => isAnimatingRef.current = false })
-   ```
-
-**Important:** The restore position/size must be captured from the window state BEFORE calling `toggleMaximize`, because the store's `restoreWindow` action clears `restorePosition`/`restoreSize`.
 
 ### Interaction with Existing Animations
 
 **Open/close:** Uses `initial`/`animate`/`exit` props for opacity and scale. These properties are separate from the motion values controlling width/height/position/borderRadius. No conflict.
 
-**Minimize/restore:** Uses `getWindowAnimations()` which returns `{ opacity, scale, y }` for the `animate` prop. The `y` in the animate prop during minimize (-100) overrides the motion value temporarily. On restore from minimize, the animate prop returns `{ opacity: 1, scale: 1 }` and the y motion value resumes control. If the window was maximized before minimize, the width/height/radius motion values remain at maximized values (they don't change during minimize).
+**Minimize/restore:** Uses `getWindowAnimations()` which returns `{ opacity, scale, y }` for the `animate` prop. When minimized, the `animate` prop sets `y: -100`, which takes precedence over the `y` motion value in the `style` prop. When restored, the `animate` returns `{ opacity: 1, scale: 1 }` — note that `y` is absent, not explicitly reset. This is a pre-existing behavior: motion/react retains the last animated value when a property is removed from the `animate` target. In practice this works because the `y` motion value is synced from the store via `useEffect`, and the `style` prop's `y` provides the baseline. However, this interaction between the `animate` prop and the `style` motion value for `y` is fragile and could produce visual jumps in edge cases. This is not introduced by this spec but should be noted as a known limitation.
 
 **Drag:** Drag writes to x/y motion values directly. Drag is disabled when `isMaximized` is true (`drag={!window.isMaximized}`). No conflict with maximize animation because drag cannot occur while maximized.
 
-**Rapid clicks:** If the user clicks maximize twice quickly, the second `animate()` call overrides the first (motion/react default behavior). This produces a natural reversal animation.
+**Rapid clicks:** If the user clicks maximize twice quickly, the second `animate()` call overrides the first (motion/react default behavior). The first set of promises resolve immediately (interrupted), `Promise.all` resolves, flag clears, then the new animation sets the flag again. This produces a natural reversal animation.
 
-### Interaction with the Sync `useEffect`
+### Sync `useEffect`s
 
-The existing `useEffect` that runs `x.set(window.position.x)` and `y.set(window.position.y)` on store changes must check the `isAnimatingRef`:
+The existing position sync `useEffect` must check the animation flag:
 
 ```typescript
 useEffect(() => {
@@ -117,24 +137,37 @@ useEffect(() => {
 }, [window.position.x, window.position.y, x, y]);
 ```
 
-A similar useEffect will be added for width/height/borderRadius sync (for non-animated state changes like initial render or window open).
+A new sync `useEffect` for width/height/borderRadius handles non-animated state changes (initial render, window open, external size changes):
+
+```typescript
+useEffect(() => {
+  if (isAnimatingRef.current) return;
+  mvWidth.set(window.size.width);
+  mvHeight.set(window.size.height);
+  mvRadius.set(window.isMaximized ? 0 : 8);
+}, [window.size.width, window.size.height, window.isMaximized, mvWidth, mvHeight, mvRadius]);
+```
+
+Both `useEffect`s are guarded by `isAnimatingRef` to prevent store updates triggered by `toggleMaximize`/`setWindowSize` from overwriting the in-progress animation.
 
 ## Files Modified
 
 | File | Change |
 |------|--------|
-| `src/components/window/index.tsx` | Add motion values (width, height, borderRadius), `isAnimatingRef`, refactor `handleMaximize` with imperative `animate()`, adjust sync useEffect, move width/height/borderRadius from style+className to motion values, import `animate` from `motion/react` |
+| `src/components/window/index.tsx` | Add motion values (width, height, borderRadius) with proper initialization, `isAnimatingRef`, refactor `handleMaximize` with imperative `animate()` + `Promise.all`, adjust both sync useEffects with animation guard, handle `maxHeight` during animation, move width/height/borderRadius from style+className to motion values, import `animate` from `motion/react` |
 
 **No new files. No store changes.**
 
 ## Testing
 
 Manual testing scenarios:
-1. Click maximize button → window expands smoothly from center to fullscreen
-2. Click restore button → window shrinks smoothly from fullscreen to previous position/size
+1. Click maximize button → window expands smoothly to fullscreen
+2. Click restore button → window shrinks smoothly to previous position/size
 3. Border-radius animates along with size changes
 4. Minimize a maximized window, then restore → returns to maximized state correctly
 5. Open/close animations still work as before
 6. Drag behavior works normally on non-maximized windows
-7. Rapid maximize/restore clicks produce smooth reversal
+7. Rapid maximize/restore clicks produce smooth reversal without stuck animations
 8. Multiple windows: maximizing one doesn't affect others
+9. During restore animation, `maxHeight` does not clamp the visual height
+10. Window opens at correct size (motion values initialized from store)
