@@ -2,7 +2,7 @@ import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
 import { useIcons } from "@/hooks/useIcons";
 import { Window as WindowType } from "@/stores/windows.store";
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 
 import { animate, motion, useMotionValue, useDragControls } from "motion/react";
 
@@ -47,7 +47,7 @@ export function Window({ window }: WindowProps) {
   const mvHeight = useMotionValue(window.size.height);
   const mvRadius = useMotionValue(window.isMaximized ? 0 : 8);
 
-  const isAnimatingRef = useRef(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const dragControls = useDragControls();
 
@@ -55,18 +55,18 @@ export function Window({ window }: WindowProps) {
 
   // Sync MotionValue with store position (skipped during maximize/restore animation)
   useEffect(() => {
-    if (isAnimatingRef.current) return;
+    if (isAnimating) return;
     x.set(window.position.x);
     y.set(window.position.y);
-  }, [window.position.x, window.position.y, x, y]);
+  }, [window.position.x, window.position.y, x, y, isAnimating]);
 
   // Sync width/height/borderRadius with store (skipped during maximize/restore animation)
   useEffect(() => {
-    if (isAnimatingRef.current) return;
+    if (isAnimating) return;
     mvWidth.set(window.size.width);
     mvHeight.set(window.size.height);
     mvRadius.set(window.isMaximized ? 0 : 8);
-  }, [window.size.width, window.size.height, window.isMaximized, mvWidth, mvHeight, mvRadius]);
+  }, [window.size.width, window.size.height, window.isMaximized, mvWidth, mvHeight, mvRadius, isAnimating]);
 
   function handleWindowClick() {
     if (activeWindowId === window.id) return;
@@ -83,7 +83,7 @@ export function Window({ window }: WindowProps) {
       toggleMaximize(window.id);
       setWindowSize(window.id, width, height);
 
-      isAnimatingRef.current = true;
+      setIsAnimating(true);
       Promise.all([
         animate(x, 0, transition),
         animate(y, 0, transition),
@@ -91,7 +91,7 @@ export function Window({ window }: WindowProps) {
         animate(mvHeight, height, transition),
         animate(mvRadius, 0, transition),
       ]).then(() => {
-        isAnimatingRef.current = false;
+        setIsAnimating(false);
       });
     } else {
       // Restoring: capture restore values BEFORE toggleMaximize clears them
@@ -101,7 +101,7 @@ export function Window({ window }: WindowProps) {
 
       toggleMaximize(window.id);
 
-      isAnimatingRef.current = true;
+      setIsAnimating(true);
       Promise.all([
         animate(x, restorePos.x, transition),
         animate(y, restorePos.y, transition),
@@ -109,7 +109,7 @@ export function Window({ window }: WindowProps) {
         animate(mvHeight, restoreSize.height, transition),
         animate(mvRadius, 8, transition),
       ]).then(() => {
-        isAnimatingRef.current = false;
+        setIsAnimating(false);
       });
     }
   }
@@ -152,7 +152,7 @@ export function Window({ window }: WindowProps) {
   const windowStyles: CSSProperties = {
     zIndex: window?.zIndex,
     maxHeight:
-      isAnimatingRef.current || window.isMaximized
+      isAnimating || window.isMaximized
         ? undefined
         : `calc(${height}px - 10vh)`,
   };
