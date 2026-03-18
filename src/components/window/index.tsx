@@ -53,11 +53,20 @@ export function Window({ window }: WindowProps) {
 
   const parentIcon = icons.find((icon) => icon.id === window.parentId);
 
-  // Sync MotionValue with store position
+  // Sync MotionValue with store position (skipped during maximize/restore animation)
   useEffect(() => {
+    if (isAnimatingRef.current) return;
     x.set(window.position.x);
     y.set(window.position.y);
   }, [window.position.x, window.position.y, x, y]);
+
+  // Sync width/height/borderRadius with store (skipped during maximize/restore animation)
+  useEffect(() => {
+    if (isAnimatingRef.current) return;
+    mvWidth.set(window.size.width);
+    mvHeight.set(window.size.height);
+    mvRadius.set(window.isMaximized ? 0 : 8);
+  }, [window.size.width, window.size.height, window.isMaximized, mvWidth, mvHeight, mvRadius]);
 
   function handleWindowClick() {
     if (activeWindowId === window.id) return;
