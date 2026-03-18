@@ -2,9 +2,9 @@ import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
 import { useIcons } from "@/hooks/useIcons";
 import { Window as WindowType } from "@/stores/windows.store";
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, useEffect, useRef, useState } from "react";
 
-import { motion, useMotionValue, useDragControls } from "motion/react";
+import { animate, motion, useMotionValue, useDragControls } from "motion/react";
 
 import { LuHouse } from "react-icons/lu";
 import {
@@ -43,6 +43,11 @@ export function Window({ window }: WindowProps) {
   // Use MotionValue for smoother drag without re-renders
   const x = useMotionValue(window.position.x);
   const y = useMotionValue(window.position.y);
+  const mvWidth = useMotionValue(window.size.width);
+  const mvHeight = useMotionValue(window.size.height);
+  const mvRadius = useMotionValue(window.isMaximized ? 0 : 8);
+
+  const isAnimatingRef = useRef(false);
 
   const dragControls = useDragControls();
 
