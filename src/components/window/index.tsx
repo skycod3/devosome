@@ -75,12 +75,42 @@ export function Window({ window }: WindowProps) {
 
   function handleMaximize() {
     const wasMaximized = window.isMaximized;
-    toggleMaximize(window.id);
+    const transition = { duration: 0.18, ease: "easeOut" as const };
 
-    // After state change, adjust size for fullscreen
     if (!wasMaximized) {
-      // Maximizing: set size to fullscreen (position is set to 0,0 by store)
+      // Maximizing: animate to fullscreen
+      // Safe: React 19 batches these store updates; useEffects won't fire until after this handler
+      toggleMaximize(window.id);
       setWindowSize(window.id, width, height);
+
+      isAnimatingRef.current = true;
+      Promise.all([
+        animate(x, 0, transition),
+        animate(y, 0, transition),
+        animate(mvWidth, width, transition),
+        animate(mvHeight, height, transition),
+        animate(mvRadius, 0, transition),
+      ]).then(() => {
+        isAnimatingRef.current = false;
+      });
+    } else {
+      // Restoring: capture restore values BEFORE toggleMaximize clears them
+      // (React props are snapshots — window still has the old state here)
+      const restorePos = window.restorePosition ?? window.position;
+      const restoreSize = window.restoreSize ?? window.size;
+
+      toggleMaximize(window.id);
+
+      isAnimatingRef.current = true;
+      Promise.all([
+        animate(x, restorePos.x, transition),
+        animate(y, restorePos.y, transition),
+        animate(mvWidth, restoreSize.width, transition),
+        animate(mvHeight, restoreSize.height, transition),
+        animate(mvRadius, 8, transition),
+      ]).then(() => {
+        isAnimatingRef.current = false;
+      });
     }
   }
 
