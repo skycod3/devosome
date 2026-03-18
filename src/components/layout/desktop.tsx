@@ -12,6 +12,7 @@ import { useWindows } from "@/hooks/useWindows";
 import { Taskbar } from "./taskbar";
 import { Icon } from "../icon";
 import { Window } from "../window";
+import { Dock } from "./dock";
 
 export function Desktop() {
   const { icons, hasHydrated, setIcons, unhighlightAllIcons } = useIcons();
@@ -74,7 +75,9 @@ export function Desktop() {
         </div>
       </div>
 
-      <div style={{ gridRow: "dock" }}>Dock</div>
+      <div style={{ gridRow: "dock" }}>
+        <Dock />
+      </div>
 
       <AnimatePresence>
         {windows.map((window) => (
