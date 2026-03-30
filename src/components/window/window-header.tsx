@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction } from "react";
 import { Window } from "@/stores/windows.store";
 
 import { useIcons } from "@/hooks/useIcons";
+import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
 
 import { animate, DragControls, MotionValue } from "motion/react";
@@ -20,8 +21,6 @@ interface WindowHeaderProps {
   setIsAnimating: Dispatch<SetStateAction<boolean>>;
   x: MotionValue<number>;
   y: MotionValue<number>;
-  width: number;
-  height: number;
   mvWidth: MotionValue<number>;
   mvHeight: MotionValue<number>;
   mvRadius: MotionValue<number>;
@@ -33,8 +32,6 @@ export function WindowHeader({
   setIsAnimating,
   x,
   y,
-  width,
-  height,
   mvWidth,
   mvHeight,
   mvRadius,
@@ -51,6 +48,7 @@ export function WindowHeader({
   } = useWindows();
 
   const { icons } = useIcons();
+  const { width, height } = useViewport();
 
   const parentIcon = icons.find((icon) => icon.id === window.parentId);
 

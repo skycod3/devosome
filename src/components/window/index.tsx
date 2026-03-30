@@ -146,8 +146,6 @@ export function Window({ window }: WindowProps) {
         setIsAnimating={setIsAnimating}
         x={x}
         y={y}
-        width={width}
-        height={height}
         mvWidth={mvWidth}
         mvHeight={mvHeight}
         mvRadius={mvRadius}
