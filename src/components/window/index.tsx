@@ -1,20 +1,13 @@
 import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
-import { useIcons } from "@/hooks/useIcons";
 import { Window as WindowType } from "@/stores/windows.store";
 import { CSSProperties, useEffect, useState } from "react";
 
-import { animate, motion, useMotionValue, useDragControls } from "motion/react";
+import { motion, useMotionValue, useDragControls } from "motion/react";
 
-import { LuHouse } from "react-icons/lu";
-import {
-  VscChromeMaximize,
-  VscChromeMinimize,
-  VscChromeRestore,
-  VscClose,
-} from "react-icons/vsc";
 import { PiImage, PiMusicNote, PiNote, PiVideo } from "react-icons/pi";
 
+import { WindowHeader } from "./window-header";
 import { WindowContent } from "./window-content";
 
 interface WindowProps {
@@ -22,20 +15,9 @@ interface WindowProps {
 }
 
 export function Window({ window }: WindowProps) {
-  const {
-    windows,
-    restoreWindow,
-    openWindowCentered,
-    closeWindow,
-    bringToFront,
-    activeWindowId,
-    toggleMaximize,
-    setWindowPosition,
-    setWindowSize,
-    minimizeWindow,
-  } = useWindows();
+  const { bringToFront, activeWindowId, setWindowPosition } = useWindows();
   const { width, height } = useViewport();
-  const { icons } = useIcons();
+
   const [activeTab, setActiveTab] = useState<typeof window.iconId>(
     window.iconId,
   );
@@ -51,8 +33,6 @@ export function Window({ window }: WindowProps) {
 
   const dragControls = useDragControls();
 
-  const parentIcon = icons.find((icon) => icon.id === window.parentId);
-
   // Sync MotionValue with store position (skipped during maximize/restore animation)
   useEffect(() => {
     if (isAnimating) return;
@@ -66,87 +46,19 @@ export function Window({ window }: WindowProps) {
     mvWidth.set(window.size.width);
     mvHeight.set(window.size.height);
     mvRadius.set(window.isMaximized ? 0 : 8);
-  }, [window.size.width, window.size.height, window.isMaximized, mvWidth, mvHeight, mvRadius, isAnimating]);
+  }, [
+    window.size.width,
+    window.size.height,
+    window.isMaximized,
+    mvWidth,
+    mvHeight,
+    mvRadius,
+    isAnimating,
+  ]);
 
   function handleWindowClick() {
     if (activeWindowId === window.id) return;
     bringToFront(window.id);
-  }
-
-  function handleMaximize() {
-    const wasMaximized = window.isMaximized;
-    const transition = { duration: 0.18, ease: "easeOut" as const };
-
-    if (!wasMaximized) {
-      // Maximizing: animate to fullscreen
-      // Safe: React 19 batches these store updates; useEffects won't fire until after this handler
-      toggleMaximize(window.id);
-      setWindowSize(window.id, width, height);
-
-      setIsAnimating(true);
-      Promise.all([
-        animate(x, 0, transition),
-        animate(y, 0, transition),
-        animate(mvWidth, width, transition),
-        animate(mvHeight, height, transition),
-        animate(mvRadius, 0, transition),
-      ]).then(() => {
-        setIsAnimating(false);
-      });
-    } else {
-      // Restoring: capture restore values BEFORE toggleMaximize clears them
-      // (React props are snapshots — window still has the old state here)
-      const restorePos = window.restorePosition ?? window.position;
-      const restoreSize = window.restoreSize ?? window.size;
-
-      toggleMaximize(window.id);
-
-      setIsAnimating(true);
-      Promise.all([
-        animate(x, restorePos.x, transition),
-        animate(y, restorePos.y, transition),
-        animate(mvWidth, restoreSize.width, transition),
-        animate(mvHeight, restoreSize.height, transition),
-        animate(mvRadius, 8, transition),
-      ]).then(() => {
-        setIsAnimating(false);
-      });
-    }
-  }
-
-  function handleBreadcrumbClick(targetIconId: string) {
-    // Click on "Home" breadcrumb → close current window and return to desktop
-    if (targetIconId === "icon-home") {
-      closeWindow(window.id);
-      return;
-    }
-
-    // Find target icon data to get title and icon for new window
-    const targetIconData = icons.find((icon) => icon.id === targetIconId);
-    if (!targetIconData) {
-      console.warn(`Icon not found: ${targetIconId}`);
-      closeWindow(window.id);
-      return;
-    }
-
-    // Find target window by iconId
-    const targetWindow = windows.find((w) => w.iconId === targetIconId);
-
-    if (targetWindow) {
-      // Window already exists → Bring to front and restore if minimized
-      restoreWindow(targetWindow.id);
-    } else {
-      // Window does not exist → Open new window
-      openWindowCentered(
-        targetIconId,
-        targetIconData.parentId || "",
-        targetIconData.title,
-        targetIconData.icon,
-      );
-    }
-
-    // Always close the current window when navigating via breadcrumb
-    closeWindow(window.id);
   }
 
   const windowStyles: CSSProperties = {
@@ -174,7 +86,14 @@ export function Window({ window }: WindowProps) {
 
   return (
     <motion.div
-      style={{ ...windowStyles, x, y, width: mvWidth, height: mvHeight, borderRadius: mvRadius }}
+      style={{
+        ...windowStyles,
+        x,
+        y,
+        width: mvWidth,
+        height: mvHeight,
+        borderRadius: mvRadius,
+      }}
       onPointerDown={handleWindowClick}
       drag={!window.isMaximized}
       dragControls={dragControls}
@@ -222,64 +141,18 @@ export function Window({ window }: WindowProps) {
         window.isMaximized ? "shadow-2xl" : ""
       }`}
     >
-      <header
-        onPointerDown={(event) => dragControls.start(event)}
-        className={`flex select-none ${window.isMaximized ? "rounded-none cursor-default" : "cursor-move"} touch-none`}
-      >
-        <div
-          style={{
-            background: `linear-gradient(to right, rgb(from var(--background) r g b / 0.2), transparent 50%), repeating-linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.05) 8%),
-              repeating-linear-gradient(-45deg, transparent, rgb(from var(--foreground) r g b / 0.05) 8%)`,
-          }}
-          className={`flex flex-1 items-center gap-3 p-2`}
-        >
-          <LuHouse className="size-4 shrink-0" />
-
-          {/* Breadcrumb dinâmico */}
-          <button onClick={() => handleBreadcrumbClick("icon-home")}>
-            <span>Home</span>
-          </button>
-
-          {parentIcon && (
-            <button onClick={() => handleBreadcrumbClick(parentIcon.id)}>
-              <span>/</span> <span>{parentIcon.title}</span>
-            </button>
-          )}
-
-          <span>/</span>
-          <p className="line-clamp-1">{window.title}</p>
-        </div>
-
-        <div
-          className="bg-popover flex items-center gap-3 p-3 text-black"
-          onPointerDown={(e) => e.stopPropagation()}
-        >
-          <button
-            className="flex-center size-4 cursor-pointer rounded-full border border-yellow-300 bg-yellow-200 hover:bg-yellow-400"
-            onClick={() => minimizeWindow(window.id)}
-          >
-            <VscChromeMinimize className="size-3" />
-          </button>
-
-          <button
-            className="flex-center size-4 cursor-pointer rounded-full border border-green-300 bg-green-200 hover:bg-green-400"
-            onClick={handleMaximize}
-          >
-            {window.isMaximized ? (
-              <VscChromeRestore className="size-3" />
-            ) : (
-              <VscChromeMaximize className="size-3" />
-            )}
-          </button>
-
-          <button
-            className="flex-center size-4 cursor-pointer rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
-            onClick={() => closeWindow(window.id)}
-          >
-            <VscClose className="size-3" />
-          </button>
-        </div>
-      </header>
+      <WindowHeader
+        window={window}
+        setIsAnimating={setIsAnimating}
+        x={x}
+        y={y}
+        width={width}
+        height={height}
+        mvWidth={mvWidth}
+        mvHeight={mvHeight}
+        mvRadius={mvRadius}
+        dragControls={dragControls}
+      />
 
       <div className="flex gap-2 overflow-auto">
         {window.showTabs && (
