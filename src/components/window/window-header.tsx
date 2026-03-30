@@ -18,6 +18,7 @@ import {
 
 interface WindowHeaderProps {
   window: Window;
+  windowTitle: string;
   setIsAnimating: Dispatch<SetStateAction<boolean>>;
   x: MotionValue<number>;
   y: MotionValue<number>;
@@ -29,6 +30,7 @@ interface WindowHeaderProps {
 
 export function WindowHeader({
   window,
+  windowTitle,
   setIsAnimating,
   x,
   y,
@@ -154,7 +156,7 @@ export function WindowHeader({
         )}
 
         <span>/</span>
-        <p className="line-clamp-1">{window.title}</p>
+        <p className="line-clamp-1">{windowTitle}</p>
       </div>
 
       <div

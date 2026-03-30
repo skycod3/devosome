@@ -7,6 +7,8 @@ import { motion, useMotionValue, useDragControls } from "motion/react";
 
 import { PiImage, PiMusicNote, PiNote, PiVideo } from "react-icons/pi";
 
+import { APPLICATIONS } from "@/constants/applications";
+
 import { WindowHeader } from "./window-header";
 import { WindowContent } from "./window-content";
 
@@ -32,6 +34,8 @@ export function Window({ window }: WindowProps) {
   const [isAnimating, setIsAnimating] = useState(false);
 
   const dragControls = useDragControls();
+
+  const windowTitle = APPLICATIONS[activeTab]?.windowTitle ?? window.title;
 
   // Sync MotionValue with store position (skipped during maximize/restore animation)
   useEffect(() => {
@@ -143,6 +147,7 @@ export function Window({ window }: WindowProps) {
     >
       <WindowHeader
         window={window}
+        windowTitle={windowTitle}
         setIsAnimating={setIsAnimating}
         x={x}
         y={y}

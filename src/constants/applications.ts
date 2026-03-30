@@ -14,11 +14,13 @@ interface Application {
 export const APPLICATIONS: Record<string, Application> = {
   "icon-documents": {
     id: "icon-documents",
+    windowTitle: "Documents",
     component: Documents,
     showTabs: true,
   },
   "icon-resume": {
     id: "icon-resume",
+    windowTitle: "Jean's Resume.pdf",
     component: ResumeViewer,
     showTabs: false,
   },
