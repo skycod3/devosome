@@ -8,6 +8,14 @@ import { useIcons } from "@/hooks/useIcons";
 import { useWindows } from "@/hooks/useWindows";
 import { useTheme } from "@/hooks/useTheme";
 
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
+
 interface IconProps extends IconFromStore {}
 
 export function Icon({
@@ -35,25 +43,43 @@ export function Icon({
   }
 
   return (
-    <button
-      onClick={handleClick}
-      onDoubleClick={handleDoubleClick}
-      title={title}
-      style={
-        {
-          // if the icon has a parent, it should be black in light mode and white in dark mode, otherwise it should always be white
-          "--icon-color": parentId
-            ? theme === "dark"
-              ? "white"
-              : "black"
-            : "white",
-        } as CSSProperties
-      }
-      className={`grid min-h-28 w-full content-center justify-items-center gap-2 rounded p-1 text-center text-(--icon-color) hover:bg-(--icon-color)/10 ${isHighlighted ? "bg-(--icon-color)/20" : ""}`}
-    >
-      <Image src={icon} alt={title} width={size.width} height={size.height} />
+    <ContextMenu>
+      <ContextMenuTrigger asChild>
+        <button
+          onClick={handleClick}
+          onDoubleClick={handleDoubleClick}
+          title={title}
+          style={
+            {
+              // if the icon has a parent, it should be black in light mode and white in dark mode, otherwise it should always be white
+              "--icon-color": parentId
+                ? theme === "dark"
+                  ? "white"
+                  : "black"
+                : "white",
+            } as CSSProperties
+          }
+          className={`grid min-h-28 w-full content-center justify-items-center gap-2 rounded p-1 text-center text-(--icon-color) hover:bg-(--icon-color)/10 ${isHighlighted ? "bg-(--icon-color)/20" : ""}`}
+        >
+          <Image
+            src={icon}
+            alt={title}
+            width={size.width}
+            height={size.height}
+          />
 
-      <p className="line-clamp-2 leading-normal">{title}</p>
-    </button>
+          <p className="line-clamp-2 leading-normal">{title}</p>
+        </button>
+      </ContextMenuTrigger>
+
+      <ContextMenuContent>
+        <ContextMenuItem onSelect={handleDoubleClick}>Open</ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem disabled>Rename</ContextMenuItem>
+        <ContextMenuItem disabled variant="destructive">
+          Delete
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }
