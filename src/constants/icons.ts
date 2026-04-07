@@ -5,7 +5,7 @@ import DocumentsImage from "@/assets/documents.svg";
 export const DESKTOP_ICONS: Icon[] = [
   {
     id: "icon-documents",
-    title: "Documents",
+    title: "Files",
     icon: DocumentsImage,
     isHighlighted: false,
     show: true,
