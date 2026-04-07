@@ -1,7 +1,6 @@
 import { useIcons } from "@/hooks/useIcons";
 import { useEffect, useMemo } from "react";
-
-import ResumeImage from "@/assets/resume.svg";
+import { DOCUMENTS_FILES } from "@/constants/documents-files";
 
 import { Icon } from "../icon";
 
@@ -19,24 +18,25 @@ export function Documents({ iconId }: DocumentsProps) {
     if (icons.some((icon) => icon.isHighlighted)) unhighlightAllIcons();
   }
 
-  const resumeIcon = useMemo(
-    () => ({
-      id: "icon-resume",
-      title: "Resume",
-      isHighlighted: false,
-      show: true,
-      icon: ResumeImage,
-      size: { width: 48, height: 48 },
-      parentId: iconId,
-    }),
+  const documentIcons = useMemo(
+    () =>
+      Object.values(DOCUMENTS_FILES).map((doc) => ({
+        id: doc.id,
+        title: doc.title,
+        isHighlighted: false,
+        show: true,
+        icon: doc.icon,
+        size: { width: 48, height: 48 },
+        parentId: iconId,
+      })),
     [iconId],
   );
 
   useEffect(() => {
-    addIcon(resumeIcon);
+    documentIcons.forEach(addIcon);
 
     return () => {
-      removeIcon(resumeIcon.id);
+      documentIcons.forEach((icon) => removeIcon(icon.id));
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
