@@ -5,6 +5,7 @@ import { Window } from "@/stores/windows.store";
 import { useIcons } from "@/hooks/useIcons";
 import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
+import { APPLICATIONS } from "@/constants/applications";
 
 import { animate, DragControls, MotionValue } from "motion/react";
 
@@ -47,6 +48,7 @@ export function WindowHeader({
     toggleMaximize,
     setWindowSize,
     minimizeWindow,
+    setWindowActiveTab,
   } = useWindows();
 
   const { icons } = useIcons();
@@ -102,27 +104,58 @@ export function WindowHeader({
       return;
     }
 
-    // Find target icon data to get title and icon for new window
+    // Try to find icon data first (for desktop icons)
     const targetIconData = icons.find((icon) => icon.id === targetIconId);
-    if (!targetIconData) {
-      console.warn(`Icon not found: ${targetIconId}`);
+    // Fall back to APPLICATIONS registry (for apps without desktop icons, like Pictures)
+    const targetAppData = APPLICATIONS[targetIconId];
+    
+    const breadcrumbTitle = targetIconData?.title ?? targetAppData?.windowTitle;
+    const breadcrumbIcon = targetIconData?.icon;
+    
+    if (!breadcrumbTitle) {
+      console.warn(`Icon or application not found: ${targetIconId}`);
       closeWindow(window.id);
       return;
     }
 
-    // Find target window by iconId
+    // Check if target is a tab or has tabs
+    // First, look for a window that has this tab active
+    const windowWithActiveTab = windows.find((w) => w.activeTab === targetIconId);
+    
+    if (windowWithActiveTab) {
+      // Found a window with this tab active → Restore and bring to front
+      restoreWindow(windowWithActiveTab.id);
+      closeWindow(window.id);
+      return;
+    }
+
+    // Check if target has tabs enabled (could be the parent window itself)
+    const targetApp = APPLICATIONS[targetIconId];
+    if (targetApp?.showTabs && targetApp?.availableTabs) {
+      // Target is a tabbed window, look for it by iconId
+      const targetWindow = windows.find((w) => w.iconId === targetIconId);
+      if (targetWindow) {
+        // Window exists, make sure the correct tab is active
+        setWindowActiveTab(targetWindow.id, targetIconId);
+        restoreWindow(targetWindow.id);
+        closeWindow(window.id);
+        return;
+      }
+    }
+
+    // Find target window by iconId (non-tabbed windows or parent window)
     const targetWindow = windows.find((w) => w.iconId === targetIconId);
 
     if (targetWindow) {
       // Window already exists → Bring to front and restore if minimized
       restoreWindow(targetWindow.id);
     } else {
-      // Window does not exist → Open new window
+      // Window does not exist → Open new window (openWindow handles tab logic)
       openWindowCentered(
         targetIconId,
-        targetIconData.parentId || "",
-        targetIconData.title,
-        targetIconData.icon,
+        targetIconData?.parentId || "",
+        breadcrumbTitle,
+        breadcrumbIcon ?? "",
       );
     }
 
@@ -152,6 +185,12 @@ export function WindowHeader({
         {parentIcon && (
           <button onClick={() => handleBreadcrumbClick(parentIcon.id)}>
             <span>/</span> <span>{parentIcon.title}</span>
+          </button>
+        )}
+        
+        {!parentIcon && window.parentTitle && (
+          <button onClick={() => handleBreadcrumbClick(window.parentId)}>
+            <span>/</span> <span>{window.parentTitle}</span>
           </button>
         )}
 

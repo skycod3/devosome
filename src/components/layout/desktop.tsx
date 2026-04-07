@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { AnimatePresence } from "motion/react";
 
 import { DESKTOP_ICONS } from "@/constants/icons";
+import { APPLICATIONS } from "@/constants/applications";
 
 import { useIcons } from "@/hooks/useIcons";
 import { useWindows } from "@/hooks/useWindows";
@@ -40,8 +41,18 @@ export function Desktop() {
     const cleanedIcons = icons.filter((icon) => {
       // Keep desktop icons (no parentId)
       if (!icon.parentId) return true;
-      // Remove icons whose parent window doesn't exist
-      return windows.some((w) => w.iconId === icon.parentId);
+      // Keep icons whose parent is an open window
+      if (windows.some((w) => w.iconId === icon.parentId)) return true;
+      // Keep icons whose parent app supports tabs (exists as tab content, not standalone window)
+      if (APPLICATIONS[icon.parentId]?.showTabs) return true;
+      // Keep icons whose parent is in the availableTabs of an open tabbed window
+      const parentIsActiveTab = windows.some((w) => {
+        if (!w.showTabs) return false;
+        const parentApp = APPLICATIONS[w.iconId];
+        return parentApp?.availableTabs?.includes(icon.parentId || '') ?? false;
+      });
+      if (parentIsActiveTab) return true;
+      return false;
     });
 
     // Update only if cleaning removed icons

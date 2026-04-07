@@ -17,12 +17,11 @@ interface WindowProps {
 }
 
 export function Window({ window }: WindowProps) {
-  const { bringToFront, activeWindowId, setWindowPosition } = useWindows();
+  const { bringToFront, activeWindowId, setWindowPosition, setWindowActiveTab } = useWindows();
   const { width, height } = useViewport();
 
-  const [activeTab, setActiveTab] = useState<typeof window.iconId>(
-    window.iconId,
-  );
+  // Get activeTab from store, fallback to window.iconId
+  const activeTab = window.activeTab || window.iconId;
 
   // Use MotionValue for smoother drag without re-renders
   const x = useMotionValue(window.position.x);
@@ -163,7 +162,7 @@ export function Window({ window }: WindowProps) {
             <ul className="space-y-3">
               <li>
                 <button
-                  onClick={() => setActiveTab("icon-pictures")}
+                  onClick={() => setWindowActiveTab(window.id, "icon-pictures")}
                   className={`flex items-center gap-1 font-medium ${activeTab === "icon-pictures" ? "text-blue-600" : ""}`}
                 >
                   <PiImage className="size-4" />
@@ -172,7 +171,7 @@ export function Window({ window }: WindowProps) {
               </li>
               <li>
                 <button
-                  onClick={() => setActiveTab("icon-documents")}
+                  onClick={() => setWindowActiveTab(window.id, "icon-documents")}
                   className={`flex items-center gap-1 font-medium ${activeTab === "icon-documents" ? "text-blue-600" : ""}`}
                 >
                   <PiNote className="size-4" />
@@ -181,7 +180,7 @@ export function Window({ window }: WindowProps) {
               </li>
               <li>
                 <button
-                  onClick={() => setActiveTab("icon-music")}
+                  onClick={() => setWindowActiveTab(window.id, "icon-music")}
                   className={`flex items-center gap-1 font-medium ${activeTab === "icon-music" ? "text-blue-600" : ""}`}
                 >
                   <PiMusicNote className="size-4" />
@@ -190,7 +189,7 @@ export function Window({ window }: WindowProps) {
               </li>
               <li>
                 <button
-                  onClick={() => setActiveTab("icon-videos")}
+                  onClick={() => setWindowActiveTab(window.id, "icon-videos")}
                   className={`flex items-center gap-1 font-medium ${activeTab === "icon-videos" ? "text-blue-600" : ""}`}
                 >
                   <PiVideo className="size-4" />
