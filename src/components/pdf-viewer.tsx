@@ -38,11 +38,11 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip";
 
-export interface ResumeViewerProps {
+export interface PdfViewerProps {
   iconId: string;
 }
 
-export function ResumeViewer({ iconId }: ResumeViewerProps) {
+export function PdfViewer({ iconId }: PdfViewerProps) {
   const { theme } = useTheme();
   const [numPages, setNumPages] = useState<number>();
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -136,7 +136,7 @@ export function ResumeViewer({ iconId }: ResumeViewerProps) {
               Failed to load PDF
             </p>
             <p className="text-sm text-muted-foreground">
-              Please check if the file exists at /resume.pdf
+              Please check if the file exists at /documents/resume.pdf
             </p>
           </div>
         ) : (
@@ -144,7 +144,7 @@ export function ResumeViewer({ iconId }: ResumeViewerProps) {
             <div className="flex justify-center p-4">
               <Document
                 className="[&_canvas]:mx-auto [&_canvas]:shadow-lg"
-                file="/resume.pdf"
+                file="/documents/resume.pdf"
                 onLoadSuccess={onDocumentLoadSuccess}
                 onLoadError={onDocumentLoadError}
                 options={options}
@@ -222,7 +222,7 @@ export function ResumeViewer({ iconId }: ResumeViewerProps) {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <a
-                        href="/resume.pdf"
+                        href="/documents/resume.pdf"
                         download
                         className="flex-center bg-primary size-9 rounded shadow-md transition-colors hover:bg-primary/90"
                       >

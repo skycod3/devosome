@@ -1,5 +1,5 @@
 import type { StaticImageData } from "next/image";
-import CssMemeImage from "@/assets/css-is-awesome.jpg";
+import CssMemeImage from "@/assets/images/photos/css-is-awesome.jpg";
 
 export interface ImageFile {
   id: string;

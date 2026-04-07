@@ -2,7 +2,7 @@ import { Pictures } from "@/components/layout/pictures";
 import { Documents } from "@/components/layout/documents";
 import { Music } from "@/components/layout/music";
 import { Videos } from "@/components/layout/videos";
-import { ResumeViewer } from "@/components/resume-viewer";
+import { PdfViewer } from "@/components/pdf-viewer";
 
 type AppComponent = React.ComponentType<{ iconId: string }>;
 
@@ -47,7 +47,7 @@ export const APPLICATIONS: Record<string, Application> = {
   "icon-resume": {
     id: "icon-resume",
     windowTitle: "Jean's Resume.pdf",
-    component: ResumeViewer,
+    component: PdfViewer,
     showTabs: false,
   },
 };

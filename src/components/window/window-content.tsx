@@ -1,6 +1,8 @@
 import { APPLICATIONS } from "@/constants/applications";
 import { IMAGE_FILES } from "@/constants/image-files";
+import { DOCUMENTS_FILES } from "@/constants/documents-files";
 import { ImageViewer } from "../image-viewer";
+import { PdfViewer } from "../pdf-viewer";
 
 interface WindowContentProps {
   iconId: string;
@@ -17,6 +19,17 @@ export function WindowContent({ iconId }: WindowContentProps) {
           <ImageViewer iconId={iconId} />
         </section>
       );
+    }
+
+    const documentFile = DOCUMENTS_FILES[iconId];
+    if (documentFile) {
+      if (documentFile.viewer === "pdf") {
+        return (
+          <section className="grid flex-2 p-4">
+            <PdfViewer iconId={iconId} />
+          </section>
+        );
+      }
     }
 
     return (
