@@ -43,10 +43,15 @@ export const useIconsStore = create<IconsState>()(
         // Add icon with duplicate check
         addIcon(icon: Icon) {
           const { icons } = get();
-          const exists = icons.some((i) => i.id === icon.id);
+          const existingIndex = icons.findIndex((i) => i.id === icon.id);
 
-          if (exists) {
-            console.warn(`Icon with id "${icon.id}" already exists`);
+          if (existingIndex !== -1) {
+            // Icon exists: update it instead of ignoring
+            set({
+              icons: icons.map((i, index) =>
+                index === existingIndex ? icon : i
+              ),
+            });
             return;
           }
 
@@ -109,7 +114,14 @@ export const useIconsStore = create<IconsState>()(
           get().updateAllIcons("isHighlighted", false);
         },
       }),
-      { name: "icons-store" },
+      {
+        name: "icons-store",
+        // Only persist desktop icons (without parentId)
+        // Dynamic icons from folders should not be persisted
+        partialize: (state) => ({
+          icons: state.icons.filter((icon) => !icon.parentId),
+        }),
+      },
     ),
   ),
 );
