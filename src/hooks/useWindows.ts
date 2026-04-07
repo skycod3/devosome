@@ -35,6 +35,7 @@ export const useWindows = () => {
   const setWindowPosition = useWindowsStore((state) => state.setWindowPosition);
   const setWindowSize = useWindowsStore((state) => state.setWindowSize);
   const bringToFront = useWindowsStore((state) => state.bringToFront);
+  const setWindowActiveTab = useWindowsStore((state) => state.setWindowActiveTab);
 
   // Get viewport dimensions for positioning
   const { width, height } = useViewport();
@@ -54,7 +55,19 @@ export const useWindows = () => {
     const app = APPLICATIONS[iconId];
     const showTabs = app?.showTabs ?? false;
 
-    const windowId = openWindow(iconId, parentId, title, icon, showTabs);
+    // Resolve parent title from APPLICATIONS for breadcrumb
+    const parentTitle = parentId
+      ? APPLICATIONS[parentId]?.windowTitle
+      : undefined;
+
+    const windowId = openWindow(
+      iconId,
+      parentId,
+      title,
+      icon,
+      showTabs,
+      parentTitle,
+    );
 
     // Calculate effective window height (considering maxHeight constraint)
     const maxAllowedHeight = height * 0.9; // 90% of viewport (10vh reserved)
@@ -99,5 +112,6 @@ export const useWindows = () => {
     setWindowPosition,
     setWindowSize,
     bringToFront,
+    setWindowActiveTab,
   };
 };

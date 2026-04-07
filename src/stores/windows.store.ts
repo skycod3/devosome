@@ -7,6 +7,44 @@ import {
   DEFAULT_WINDOW_POSITION,
   DEFAULT_WINDOW_SIZE,
 } from "@/constants/windows";
+import { APPLICATIONS } from "@/constants/applications";
+
+/**
+ * Helper function to find the parent application that contains tabs
+ * for a given iconId.
+ * 
+ * @param iconId - The icon ID to search for
+ * @returns The parent Application with tabs, or null if not found
+ * 
+ * @example
+ * findTabParentApplication("icon-pictures") // Returns icon-documents app
+ * findTabParentApplication("icon-documents") // Returns icon-documents app (itself)
+ * findTabParentApplication("icon-resume") // Returns null (no tabs)
+ * findTabParentApplication("image-xxx") // Returns null (images are not tabs)
+ */
+function findTabParentApplication(iconId: string) {
+  // Images and other dynamic content should not be treated as tabs
+  // They should open in their own windows
+  if (iconId.startsWith("image-")) {
+    return null;
+  }
+  
+  // Check if the iconId itself has showTabs and availableTabs
+  const app = APPLICATIONS[iconId];
+  if (app?.showTabs && app?.availableTabs) {
+    return app;
+  }
+  
+  // Search for an application that lists this iconId in its availableTabs
+  for (const appKey in APPLICATIONS) {
+    const parentApp = APPLICATIONS[appKey];
+    if (parentApp.showTabs && parentApp.availableTabs?.includes(iconId)) {
+      return parentApp;
+    }
+  }
+  
+  return null;
+}
 
 export interface Window {
   id: string; // Unique window ID: `window-${iconId}-${timestamp}`
@@ -26,6 +64,8 @@ export interface Window {
   restoreSize?: { width: number; height: number };
   tab?: { title: string };
   showTabs?: boolean; // Whether to show sidebar tabs
+  parentTitle?: string; // Parent app title for breadcrumb (resolved from APPLICATIONS)
+  activeTab?: string; // Active tab iconId (e.g., "icon-pictures") for windows with tabs
 }
 
 interface WindowsState {
@@ -40,6 +80,7 @@ interface WindowsState {
     title: string,
     icon: StaticImageData | string,
     showTabs?: boolean,
+    parentTitle?: string,
   ) => string;
   closeWindow: (id: string) => void;
   closeAllWindows: () => void;
@@ -57,6 +98,7 @@ interface WindowsState {
   setWindowPosition: (id: string, x: number, y: number) => void;
   setWindowSize: (id: string, width: number, height: number) => void;
   bringToFront: (id: string) => void;
+  setWindowActiveTab: (id: string, activeTabIconId: string) => void;
 }
 
 export const useWindowsStore = create<WindowsState>()(
@@ -67,10 +109,80 @@ export const useWindowsStore = create<WindowsState>()(
       highestZIndex: BASE_Z_INDEX,
 
       // Open or focus existing window for an icon
-      openWindow(iconId, parentId, title, icon, showTabs) {
+      openWindow(iconId, parentId, title, icon, showTabs, parentTitle) {
         const { windows } = get();
 
-        // Check if window already exists for this icon
+        // Check if this iconId belongs to a tabbed window system
+        const tabParentApp = findTabParentApplication(iconId);
+
+        if (tabParentApp) {
+          // This is a tab or tab-enabled window
+          const parentIconId = Object.keys(APPLICATIONS).find(
+            (key) => APPLICATIONS[key] === tabParentApp,
+          );
+
+          if (!parentIconId) {
+            console.warn(
+              `openWindow: Could not find parent iconId for tabbed window`,
+            );
+            // Fall through to regular window creation
+          } else {
+            // Check if the parent window already exists
+            const existingParentWindow = windows.find(
+              (w) => w.iconId === parentIconId,
+            );
+
+            if (existingParentWindow) {
+              // Parent window exists: set the active tab and restore/focus
+              get().setWindowActiveTab(existingParentWindow.id, iconId);
+              get().restoreWindow(existingParentWindow.id);
+              return existingParentWindow.id;
+            }
+
+            // Parent window doesn't exist: create it with the requested tab active
+            // Use the parent iconId's title/icon if iconId matches parent, otherwise use provided values
+            const useParentInfo = iconId === parentIconId;
+            const windowTitle = useParentInfo
+              ? title
+              : tabParentApp.windowTitle || "Window";
+            const windowIcon = useParentInfo ? icon : icon; // We don't have icon in Application, use provided
+
+            const newWindowId = `window-${parentIconId}-${Date.now()}`;
+            const newZIndex = BASE_Z_INDEX + windows.length + 1;
+
+            const newWindow: Window = {
+              id: newWindowId,
+              iconId: parentIconId,
+              parentId,
+              title: windowTitle,
+              icon: windowIcon,
+              isActive: true,
+              isMinimized: false,
+              isMaximized: false,
+              lastState: "normal",
+              position: DEFAULT_WINDOW_POSITION,
+              size: DEFAULT_WINDOW_SIZE,
+              zIndex: newZIndex,
+              tab: { title: windowTitle },
+              showTabs: true,
+              parentTitle,
+              activeTab: iconId, // Set the requested tab as active
+            };
+
+            set((state) => ({
+              windows: [
+                ...state.windows.map((w) => ({ ...w, isActive: false })),
+                newWindow,
+              ],
+              activeWindowId: newWindowId,
+              highestZIndex: newZIndex,
+            }));
+
+            return newWindowId;
+          }
+        }
+
+        // Regular window (not part of tabs): check if window already exists for this icon
         const existingWindow = windows.find((w) => w.iconId === iconId);
 
         if (existingWindow) {
@@ -98,6 +210,7 @@ export const useWindowsStore = create<WindowsState>()(
           zIndex: newZIndex,
           tab: { title },
           showTabs: showTabs ?? false, // Default to false if not provided
+          parentTitle,
         };
 
         set((state) => ({
@@ -363,6 +476,44 @@ export const useWindowsStore = create<WindowsState>()(
           activeWindowId: id,
           highestZIndex: BASE_Z_INDEX + windows.length,
         });
+      },
+
+      setWindowActiveTab(id, activeTabIconId) {
+        const { windows } = get();
+        const window = windows.find((w) => w.id === id);
+
+        // Validate window exists
+        if (!window) {
+          console.warn(`setWindowActiveTab: Window ${id} not found`);
+          return;
+        }
+
+        // Validate window has tabs enabled
+        if (!window.showTabs) {
+          console.warn(
+            `setWindowActiveTab: Window ${id} does not have tabs enabled`,
+          );
+          return;
+        }
+
+        // Get the parent application to validate the tab exists
+        const parentApp = findTabParentApplication(window.iconId);
+        if (
+          !parentApp?.availableTabs ||
+          !parentApp.availableTabs.includes(activeTabIconId)
+        ) {
+          console.warn(
+            `setWindowActiveTab: Tab ${activeTabIconId} is not available in window ${id}`,
+          );
+          return;
+        }
+
+        // Update the activeTab
+        set((state) => ({
+          windows: state.windows.map((w) =>
+            w.id === id ? { ...w, activeTab: activeTabIconId } : w,
+          ),
+        }));
       },
     }),
     { name: "windows-store" },
