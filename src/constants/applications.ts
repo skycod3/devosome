@@ -10,6 +10,7 @@ interface Application {
   id: string;
   component: AppComponent;
   windowTitle?: string;
+  tabTitle?: string; // Tab label shown in breadcrumb (when different from windowTitle)
   defaultSize?: { width: number; height: number };
   showTabs?: boolean;
   availableTabs?: string[]; // List of tab iconIds available in this window
@@ -20,6 +21,7 @@ export const APPLICATIONS: Record<string, Application> = {
   "icon-documents": {
     id: "icon-documents",
     windowTitle: "Files",
+    tabTitle: "Documents",
     component: Documents,
     showTabs: true,
     availableTabs: ["icon-documents", "icon-pictures", "icon-music", "icon-videos"],

@@ -34,7 +34,8 @@ export function Window({ window }: WindowProps) {
 
   const dragControls = useDragControls();
 
-  const windowTitle = APPLICATIONS[activeTab]?.windowTitle ?? window.title;
+  const activeTabApp = APPLICATIONS[activeTab];
+  const windowTitle = activeTabApp?.tabTitle ?? activeTabApp?.windowTitle ?? window.title;
 
   // Sync MotionValue with store position (skipped during maximize/restore animation)
   useEffect(() => {

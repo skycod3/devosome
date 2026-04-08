@@ -56,9 +56,9 @@ export const useWindows = () => {
     const showTabs = app?.showTabs ?? false;
 
     // Resolve parent title from APPLICATIONS for breadcrumb
-    const parentTitle = parentId
-      ? APPLICATIONS[parentId]?.windowTitle
-      : undefined;
+    // Prefer tabTitle (tab label) over windowTitle (window title) for accuracy
+    const parentApp = parentId ? APPLICATIONS[parentId] : undefined;
+    const parentTitle = parentApp?.tabTitle ?? parentApp?.windowTitle;
 
     const windowId = openWindow(
       iconId,
