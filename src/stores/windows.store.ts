@@ -19,7 +19,7 @@ import { APPLICATIONS } from "@/constants/applications";
  * @example
  * findTabParentApplication("icon-pictures") // Returns icon-documents app
  * findTabParentApplication("icon-documents") // Returns icon-documents app (itself)
- * findTabParentApplication("icon-resume") // Returns null (no tabs)
+ * findTabParentApplication("document-resume") // Returns null (no tabs)
  * findTabParentApplication("image-xxx") // Returns null (images are not tabs)
  */
 function findTabParentApplication(iconId: string) {

@@ -44,8 +44,8 @@ export const APPLICATIONS: Record<string, Application> = {
     showTabs: false,
   },
   // Standalone windows
-  "icon-resume": {
-    id: "icon-resume",
+  "document-resume": {
+    id: "document-resume",
     windowTitle: "Jean's Resume.pdf",
     component: PdfViewer,
     showTabs: false,
