@@ -108,10 +108,10 @@ export function WindowHeader({
     const targetIconData = icons.find((icon) => icon.id === targetIconId);
     // Fall back to APPLICATIONS registry (for apps without desktop icons, like Pictures)
     const targetAppData = APPLICATIONS[targetIconId];
-    
+
     const breadcrumbTitle = targetIconData?.title ?? targetAppData?.windowTitle;
     const breadcrumbIcon = targetIconData?.icon;
-    
+
     if (!breadcrumbTitle) {
       console.warn(`Icon or application not found: ${targetIconId}`);
       closeWindow(window.id);
@@ -120,8 +120,10 @@ export function WindowHeader({
 
     // Check if target is a tab or has tabs
     // First, look for a window that has this tab active
-    const windowWithActiveTab = windows.find((w) => w.activeTab === targetIconId);
-    
+    const windowWithActiveTab = windows.find(
+      (w) => w.activeTab === targetIconId,
+    );
+
     if (windowWithActiveTab) {
       // Found a window with this tab active → Restore and bring to front
       restoreWindow(windowWithActiveTab.id);
@@ -182,15 +184,9 @@ export function WindowHeader({
           <span>Home</span>
         </button>
 
-        {parentIcon && (
-          <button onClick={() => handleBreadcrumbClick(parentIcon.id)}>
-            <span>/</span> <span>{parentIcon.title}</span>
-          </button>
-        )}
-        
-        {!parentIcon && window.parentTitle && (
-          <button onClick={() => handleBreadcrumbClick(window.parentId)}>
-            <span>/</span> <span>{window.parentTitle}</span>
+        {(parentIcon || window.parentTitle) && (
+          <button onClick={() => handleBreadcrumbClick(parentIcon?.id ?? window.parentId)}>
+            <span>/</span> <span>{window.parentTitle ?? parentIcon?.title}</span>
           </button>
         )}
 
