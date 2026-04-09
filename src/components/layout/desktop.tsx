@@ -31,9 +31,18 @@ export function Desktop() {
     // Wait for Zustand persist to hydrate before initializing
     if (!hasHydrated) return;
 
-    // Initialize icons only if empty (prevents duplication on remount)
+    // Seed icons on first load, or merge new icons added to DESKTOP_ICONS
+    // into the persisted store without overwriting existing state
+    const existingIds = new Set(icons.map((i) => i.id));
+    const newIcons = DESKTOP_ICONS.filter((i) => !existingIds.has(i.id));
+
     if (icons.length === 0) {
       setIcons(DESKTOP_ICONS);
+      return;
+    }
+
+    if (newIcons.length > 0) {
+      setIcons([...icons, ...newIcons]);
       return;
     }
 
