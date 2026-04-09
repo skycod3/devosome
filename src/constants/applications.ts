@@ -3,6 +3,7 @@ import { Documents } from "@/components/layout/documents";
 import { Music } from "@/components/layout/music";
 import { Videos } from "@/components/layout/videos";
 import { PdfViewer } from "@/components/pdf-viewer";
+import { SkillsViewer } from "@/components/skills-viewer";
 
 type AppComponent = React.ComponentType<{ iconId: string }>;
 
@@ -24,7 +25,12 @@ export const APPLICATIONS: Record<string, Application> = {
     tabTitle: "Documents",
     component: Documents,
     showTabs: true,
-    availableTabs: ["icon-documents", "icon-pictures", "icon-music", "icon-videos"],
+    availableTabs: [
+      "icon-documents",
+      "icon-pictures",
+      "icon-music",
+      "icon-videos",
+    ],
   },
   // Tab views (not standalone windows)
   "icon-pictures": {
@@ -50,6 +56,18 @@ export const APPLICATIONS: Record<string, Application> = {
     id: "document-resume",
     windowTitle: "Jean's Resume.pdf",
     component: PdfViewer,
+    showTabs: false,
+  },
+  "skill-viewer": {
+    id: "skill-viewer",
+    windowTitle: "Skills",
+    component: SkillsViewer,
+    showTabs: false,
+  },
+  "icon-skills": {
+    id: "icon-skills",
+    windowTitle: "Skills",
+    component: SkillsViewer,
     showTabs: false,
   },
 };
