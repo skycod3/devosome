@@ -52,6 +52,11 @@
 /* Base Styles */
 
 @layer base {
+  :where(html) {
+    scrollbar-width: thin;
+    scrollbar-color: var(--color-accent-foreground) var(--color-accent);
+  }
+
   :is(h1, h2, h3, h4, h5, h6) {
     color: var(--foreground);
     font-weight: var(--font-weight-bold);
