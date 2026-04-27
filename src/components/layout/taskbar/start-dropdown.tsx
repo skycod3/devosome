@@ -2,6 +2,10 @@ import { FaGithub, FaLinkedin } from "react-icons/fa6";
 
 import { useHotkey } from "@tanstack/react-hotkeys";
 
+import { APPLICATIONS } from "@/constants/applications";
+
+import { useWindows } from "@/hooks/useWindows";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,11 +22,19 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 export function StartDropdown() {
-  useHotkey("Shift+A", () => console.log("Shit + A pressed!"));
+  const { openWindowCentered } = useWindows();
+
+  useHotkey("Shift+A", () => openWindow("about-me"));
   useHotkey("Shift+P", () => console.log("Shit + P pressed!"));
-  useHotkey("Shift+S", () => console.log("Shit + S pressed!"));
+  useHotkey("Shift+S", () => openWindow("icon-skills"));
   useHotkey("Shift+T", () => console.log("Shit + T pressed!"));
   useHotkey("Shift+Q", () => console.log("Shit + Q pressed!"));
+
+  function openWindow(iconId: string) {
+    const { windowTitle } = APPLICATIONS[iconId];
+
+    openWindowCentered(iconId, "", windowTitle ?? "", "");
+  }
 
   return (
     <DropdownMenu>
@@ -35,7 +47,7 @@ export function StartDropdown() {
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => openWindow("about-me")}>
             About Me
             <DropdownMenuShortcut>⇧+A</DropdownMenuShortcut>
           </DropdownMenuItem>
@@ -43,7 +55,7 @@ export function StartDropdown() {
             Portfolio
             <DropdownMenuShortcut>⇧+P</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => openWindow("icon-skills")}>
             My Skills
             <DropdownMenuShortcut>⇧+S</DropdownMenuShortcut>
           </DropdownMenuItem>
