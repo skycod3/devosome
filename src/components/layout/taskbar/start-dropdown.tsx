@@ -27,7 +27,7 @@ export function StartDropdown() {
   useHotkey("Shift+A", () => openWindow("about-me"));
   useHotkey("Shift+P", () => console.log("Shit + P pressed!"));
   useHotkey("Shift+S", () => openWindow("icon-skills"));
-  useHotkey("Shift+T", () => console.log("Shit + T pressed!"));
+  useHotkey("Shift+T", () => openWindow("contact"));
   useHotkey("Shift+Q", () => console.log("Shit + Q pressed!"));
 
   function openWindow(iconId: string) {
@@ -59,7 +59,7 @@ export function StartDropdown() {
             My Skills
             <DropdownMenuShortcut>⇧+S</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => openWindow("contact")}>
             Get in Touch
             <DropdownMenuShortcut>⇧+T</DropdownMenuShortcut>
           </DropdownMenuItem>
