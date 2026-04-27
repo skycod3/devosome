@@ -5,6 +5,7 @@ import { Videos } from "@/components/layout/videos";
 import { PdfViewer } from "@/components/pdf-viewer";
 import { SkillsViewer } from "@/components/skills-viewer";
 import { AboutMe } from "@/components/about-me";
+import { Contact } from "@/components/contact";
 
 type AppComponent = React.ComponentType<{ iconId: string }>;
 
@@ -75,6 +76,12 @@ export const APPLICATIONS: Record<string, Application> = {
     id: "about-me",
     windowTitle: "About Me",
     component: AboutMe,
+    showTabs: false,
+  },
+  contact: {
+    id: "contact",
+    windowTitle: "Get in Touch",
+    component: Contact,
     showTabs: false,
   },
 };
