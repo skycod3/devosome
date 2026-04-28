@@ -29,7 +29,7 @@ export function StartDropdown() {
   const { openWindowCentered } = useWindows();
 
   useHotkey("Shift+A", () => openWindow("about-me"));
-  useHotkey("Shift+P", () => console.log("Shit + P pressed!"));
+  useHotkey("Shift+P", () => openWindow("portfolio"));
   useHotkey("Shift+S", () => openWindow("icon-skills"));
   useHotkey("Shift+T", () => openWindow("contact"));
   useHotkey("Shift+Q", () => console.log("Shit + Q pressed!"));
@@ -55,7 +55,7 @@ export function StartDropdown() {
             About Me
             <DropdownMenuShortcut>⇧+A</DropdownMenuShortcut>
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => openWindow("portfolio")}>
             Portfolio
             <DropdownMenuShortcut>⇧+P</DropdownMenuShortcut>
           </DropdownMenuItem>
