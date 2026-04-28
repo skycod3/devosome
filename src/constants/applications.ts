@@ -6,6 +6,7 @@ import { PdfViewer } from "@/components/pdf-viewer";
 import { SkillsViewer } from "@/components/skills-viewer";
 import { AboutMe } from "@/components/about-me";
 import { Contact } from "@/components/contact";
+import { Portfolio } from "@/components/portfolio";
 
 type AppComponent = React.ComponentType<{ iconId: string }>;
 
@@ -82,6 +83,12 @@ export const APPLICATIONS: Record<string, Application> = {
     id: "contact",
     windowTitle: "Get in Touch",
     component: Contact,
+    showTabs: false,
+  },
+  portfolio: {
+    id: "portfolio",
+    windowTitle: "Portfolio",
+    component: Portfolio,
     showTabs: false,
   },
 };
