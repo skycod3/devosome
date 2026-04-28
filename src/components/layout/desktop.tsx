@@ -14,6 +14,8 @@ import { Icon } from "../icon";
 import { Window } from "../window";
 import { Dock } from "./dock";
 
+import { toast } from "sonner";
+
 export function Desktop() {
   const { icons, setIcons, unhighlightAllIcons } = useIcons();
   const { windows } = useWindows();
@@ -25,6 +27,21 @@ export function Desktop() {
 
   useEffect(() => {
     setIcons(DESKTOP_ICONS);
+
+    const welcomeToastDismissed = localStorage.getItem("welcomeToastDismissed");
+    if (welcomeToastDismissed) return;
+
+    toast("Welcome to DevOSome! 🖖", {
+      description:
+        "Explore the projects and portfolio of a passionate developer.",
+      duration: 1000 * 60 * 1, // 1 minute
+      onDismiss() {
+        localStorage.setItem("welcomeToastDismissed", "true");
+      },
+      onAutoClose() {
+        localStorage.setItem("welcomeToastDismissed", "true");
+      },
+    });
   }, []);
 
   return (
