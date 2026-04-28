@@ -6,6 +6,8 @@ import { APPLICATIONS } from "@/constants/applications";
 
 import { useWindows } from "@/hooks/useWindows";
 
+import { toast } from "sonner";
+
 import { ABOUT_ME } from "@/constants/about";
 
 import {
@@ -32,12 +34,16 @@ export function StartDropdown() {
   useHotkey("Shift+P", () => openWindow("portfolio"));
   useHotkey("Shift+S", () => openWindow("skills"));
   useHotkey("Shift+T", () => openWindow("contact"));
-  useHotkey("Shift+Q", () => console.log("Shit + Q pressed!"));
+  useHotkey("Shift+Q", () => handleLogOut());
 
   function openWindow(iconId: string) {
     const { windowTitle } = APPLICATIONS[iconId];
 
     openWindowCentered(iconId, "", windowTitle ?? "", "");
+  }
+
+  function handleLogOut() {
+    toast("Wanna log out? Just close the browser tab! 😄");
   }
 
   return (
@@ -108,7 +114,7 @@ export function StartDropdown() {
 
         <DropdownMenuSeparator />
 
-        <DropdownMenuItem>
+        <DropdownMenuItem onClick={handleLogOut}>
           Log out
           <DropdownMenuShortcut>⇧+Q</DropdownMenuShortcut>
         </DropdownMenuItem>
