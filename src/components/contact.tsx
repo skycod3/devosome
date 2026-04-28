@@ -5,15 +5,12 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+import { toast } from "sonner";
+
 import { ABOUT_ME } from "@/constants/about";
 
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
-import {
-  PiEnvelope,
-  PiCheckCircle,
-  PiWarningCircle,
-  PiSpinner,
-} from "react-icons/pi";
+import { PiEnvelope, PiSpinner } from "react-icons/pi";
 
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
@@ -28,11 +25,10 @@ const contactSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
-type FormStatus = "idle" | "sending" | "success" | "error";
+type FormStatus = "idle" | "sending";
 
 export function Contact() {
   const [status, setStatus] = useState<FormStatus>("idle");
-  const [errorMessage, setErrorMessage] = useState("");
   const [copied, setCopied] = useState(false);
 
   const {
@@ -46,7 +42,6 @@ export function Contact() {
 
   async function onSubmit(data: ContactFormData) {
     setStatus("sending");
-    setErrorMessage("");
 
     try {
       const res = await fetch("/api/contact", {
@@ -61,13 +56,31 @@ export function Contact() {
         throw new Error(json.error ?? "Something went wrong.");
       }
 
-      setStatus("success");
       reset();
+      toast.success("Message sent! I'll get back to you soon.", {
+        duration: 7000,
+        style: {
+          "--normal-text": "var(--message-success-foreground)",
+          "--normal-bg": "var(--message-success)",
+          "--normal-border": "var(--message-success-border)",
+        } as React.CSSProperties,
+      });
     } catch (err) {
-      setErrorMessage(
-        err instanceof Error ? err.message : "Something went wrong.",
+      toast.error(
+        err instanceof Error
+          ? err.message
+          : "Failed to send message. Please try again.",
+        {
+          duration: 7000,
+          style: {
+            "--normal-text": "var(--message-error-foreground)",
+            "--normal-bg": "var(--message-error)",
+            "--normal-border": "var(--message-error-border)",
+          } as React.CSSProperties,
+        },
       );
-      setStatus("error");
+    } finally {
+      setStatus("idle");
     }
   }
 
@@ -86,22 +99,6 @@ export function Contact() {
           Send me a message and I&apos;ll get back to you as soon as possible.
         </p>
       </div>
-
-      {/* Success banner */}
-      {status === "success" && (
-        <div className="flex items-center gap-2 rounded-md border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-600 dark:text-green-400">
-          <PiCheckCircle className="size-4 shrink-0" />
-          Message sent! I&apos;ll reply to your email soon.
-        </div>
-      )}
-
-      {/* Error banner */}
-      {status === "error" && (
-        <div className="flex items-center gap-2 rounded-md border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-600 dark:text-red-400">
-          <PiWarningCircle className="size-4 shrink-0" />
-          {errorMessage}
-        </div>
-      )}
 
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
