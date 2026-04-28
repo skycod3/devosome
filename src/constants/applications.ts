@@ -3,7 +3,7 @@ import { Documents } from "@/components/layout/documents";
 import { Music } from "@/components/layout/music";
 import { Videos } from "@/components/layout/videos";
 import { PdfViewer } from "@/components/pdf-viewer";
-import { SkillsViewer } from "@/components/skills-viewer";
+import { Skills } from "@/components/skills";
 import { AboutMe } from "@/components/about-me";
 import { Contact } from "@/components/contact";
 import { Portfolio } from "@/components/portfolio";
@@ -61,7 +61,7 @@ export const APPLICATIONS: Record<string, Application> = {
   skills: {
     id: "skills",
     windowTitle: "Skills",
-    component: SkillsViewer,
+    component: Skills,
     showTabs: false,
   },
   "about-me": {

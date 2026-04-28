@@ -16,7 +16,7 @@ const PROFICIENCY_COLORS: Record<Proficiency, string> = {
   Expert: "bg-red-50 text-red-700 border-red-200",
 };
 
-export function SkillsViewer() {
+export function Skills() {
   return (
     <div
       className="h-full overflow-auto p-4"
