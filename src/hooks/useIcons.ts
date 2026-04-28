@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useIconsStore } from "@/stores/icons-store";
 
 /**
@@ -9,11 +8,6 @@ import { useIconsStore } from "@/stores/icons-store";
  */
 export const useIcons = () => {
   const icons = useIconsStore((state) => state.icons);
-  const [hasHydrated, setHasHydrated] = useState(false);
-
-  // Check if Zustand persist has hydrated from localStorage
-  useEffect(() => setHasHydrated(useIconsStore.persist.hasHydrated()), []);
-
   const setIcons = useIconsStore((state) => state.setIcons);
   const addIcon = useIconsStore((state) => state.addIcon);
   const removeIcon = useIconsStore((state) => state.removeIcon);
@@ -31,7 +25,6 @@ export const useIcons = () => {
   return {
     // state
     icons,
-    hasHydrated,
     // actions
     setIcons,
     addIcon,

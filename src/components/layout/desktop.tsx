@@ -5,7 +5,6 @@ import { useEffect } from "react";
 import { AnimatePresence } from "motion/react";
 
 import { DESKTOP_ICONS } from "@/constants/icons";
-import { APPLICATIONS } from "@/constants/applications";
 
 import { useIcons } from "@/hooks/useIcons";
 import { useWindows } from "@/hooks/useWindows";
@@ -16,59 +15,17 @@ import { Window } from "../window";
 import { Dock } from "./dock";
 
 export function Desktop() {
-  const { icons, hasHydrated, setIcons, unhighlightAllIcons } = useIcons();
+  const { icons, setIcons, unhighlightAllIcons } = useIcons();
   const { windows } = useWindows();
 
   function handleDesktopClick(event: React.MouseEvent<HTMLDivElement>) {
-    // Only handle clicks directly on the desktop div, not on child elements
     if (event.target !== event.currentTarget) return;
-
     if (icons.some((icon) => icon.isHighlighted)) unhighlightAllIcons();
   }
 
-  // Run on mount and whenever windows change (to clean up orphaned icons)
   useEffect(() => {
-    // Wait for Zustand persist to hydrate before initializing
-    if (!hasHydrated) return;
-
-    // Seed icons on first load, or merge new icons added to DESKTOP_ICONS
-    // into the persisted store without overwriting existing state
-    const existingIds = new Set(icons.map((i) => i.id));
-    const newIcons = DESKTOP_ICONS.filter((i) => !existingIds.has(i.id));
-
-    if (icons.length === 0) {
-      setIcons(DESKTOP_ICONS);
-      return;
-    }
-
-    if (newIcons.length > 0) {
-      setIcons([...icons, ...newIcons]);
-      return;
-    }
-
-    // Clean orphaned icons (with parentId but no matching window)
-    const cleanedIcons = icons.filter((icon) => {
-      // Keep desktop icons (no parentId)
-      if (!icon.parentId) return true;
-      // Keep icons whose parent is an open window
-      if (windows.some((w) => w.iconId === icon.parentId)) return true;
-      // Keep icons whose parent app supports tabs (exists as tab content, not standalone window)
-      if (APPLICATIONS[icon.parentId]?.showTabs) return true;
-      // Keep icons whose parent is in the availableTabs of an open tabbed window
-      const parentIsActiveTab = windows.some((w) => {
-        if (!w.showTabs) return false;
-        const parentApp = APPLICATIONS[w.iconId];
-        return parentApp?.availableTabs?.includes(icon.parentId || '') ?? false;
-      });
-      if (parentIsActiveTab) return true;
-      return false;
-    });
-
-    // Update only if cleaning removed icons
-    if (cleanedIcons.length !== icons.length) {
-      setIcons(cleanedIcons);
-    }
-  }, [hasHydrated, windows.length]);
+    setIcons(DESKTOP_ICONS);
+  }, []);
 
   return (
     <div
