@@ -6,6 +6,8 @@ import { APPLICATIONS } from "@/constants/applications";
 
 import { useWindows } from "@/hooks/useWindows";
 
+import { ABOUT_ME } from "@/constants/about";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +22,8 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
+const { contact } = ABOUT_ME;
 
 export function StartDropdown() {
   const { openWindowCentered } = useWindows();
@@ -72,7 +76,16 @@ export function StartDropdown() {
             <DropdownMenuSubTrigger>Support Me</DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                <DropdownMenuItem>Buy Me a Coffee</DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() =>
+                    window.open(
+                      "https://buymeacoffee.com/jeanmedeiros.dev",
+                      "_blank",
+                    )
+                  }
+                >
+                  Buy Me a Coffee
+                </DropdownMenuItem>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
@@ -81,10 +94,14 @@ export function StartDropdown() {
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => window.open(contact.github, "_blank")}
+          >
             <FaGithub className="icon-fix" /> GitHub
           </DropdownMenuItem>
-          <DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => window.open(contact.linkedin, "_blank")}
+          >
             <FaLinkedin className="icon-fix" /> LinkedIn
           </DropdownMenuItem>
         </DropdownMenuGroup>
