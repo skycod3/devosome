@@ -6,6 +6,7 @@ import SkillsImage from "@/assets/skills.svg";
 export const DESKTOP_ICONS: Icon[] = [
   {
     id: "icon-documents",
+    appId: "files",
     title: "Files",
     icon: DocumentsImage,
     isHighlighted: false,
@@ -14,6 +15,7 @@ export const DESKTOP_ICONS: Icon[] = [
   },
   {
     id: "icon-skills",
+    appId: "skills",
     title: "Skills",
     icon: SkillsImage,
     isHighlighted: false,

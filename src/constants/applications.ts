@@ -17,43 +17,40 @@ interface Application {
   tabTitle?: string; // Tab label shown in breadcrumb (when different from windowTitle)
   defaultSize?: { width: number; height: number };
   showTabs?: boolean;
-  availableTabs?: string[]; // List of tab iconIds available in this window
+  availableTabs?: string[]; // List of app IDs available as tabs in this window
 }
 
 export const APPLICATIONS: Record<string, Application> = {
   // Tabbed "Files" window (Documents, Pictures, Music, Videos)
-  "icon-documents": {
-    id: "icon-documents",
+  files: {
+    id: "files",
     windowTitle: "Files",
     tabTitle: "Documents",
     component: Documents,
     showTabs: true,
-    availableTabs: [
-      "icon-documents",
-      "icon-pictures",
-      "icon-music",
-      "icon-videos",
-    ],
+    availableTabs: ["files", "pictures", "music", "videos"],
   },
-  // Tab views (not standalone windows)
-  "icon-pictures": {
-    id: "icon-pictures",
+
+  // Tab views
+  pictures: {
+    id: "pictures",
     windowTitle: "Pictures",
     component: Pictures,
     showTabs: false,
   },
-  "icon-music": {
-    id: "icon-music",
+  music: {
+    id: "music",
     windowTitle: "Music",
     component: Music,
     showTabs: false,
   },
-  "icon-videos": {
-    id: "icon-videos",
+  videos: {
+    id: "videos",
     windowTitle: "Videos",
     component: Videos,
     showTabs: false,
   },
+
   // Standalone windows
   "document-resume": {
     id: "document-resume",
@@ -61,14 +58,8 @@ export const APPLICATIONS: Record<string, Application> = {
     component: PdfViewer,
     showTabs: false,
   },
-  "skill-viewer": {
-    id: "skill-viewer",
-    windowTitle: "Skills",
-    component: SkillsViewer,
-    showTabs: false,
-  },
-  "icon-skills": {
-    id: "icon-skills",
+  skills: {
+    id: "skills",
     windowTitle: "Skills",
     component: SkillsViewer,
     showTabs: false,

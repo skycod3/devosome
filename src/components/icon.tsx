@@ -20,6 +20,7 @@ interface IconProps extends IconFromStore {}
 
 export function Icon({
   id,
+  appId,
   title,
   icon,
   size,
@@ -39,7 +40,7 @@ export function Icon({
   }
 
   function handleDoubleClick() {
-    openWindowCentered(id, parentId ?? "", title, icon);
+    openWindowCentered(appId ?? id, parentId ?? "", title, icon);
   }
 
   return (

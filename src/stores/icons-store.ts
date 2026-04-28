@@ -1,9 +1,10 @@
 import { create } from "zustand";
-import { devtools, persist } from "zustand/middleware";
+import { devtools } from "zustand/middleware";
 import type { StaticImageData } from "next/image";
 
 export interface Icon {
   id: string;
+  appId?: string; // app to open on double-click (defaults to id if not set)
   title: string;
   icon: StaticImageData | string;
   isHighlighted: boolean;
@@ -31,9 +32,8 @@ interface IconsState {
 
 export const useIconsStore = create<IconsState>()(
   devtools(
-    persist(
-      (set, get) => ({
-        icons: [],
+    (set, get) => ({
+      icons: [],
 
         // Initialize icons
         setIcons(icons: Icon[]) {
@@ -46,7 +46,6 @@ export const useIconsStore = create<IconsState>()(
           const existingIndex = icons.findIndex((i) => i.id === icon.id);
 
           if (existingIndex !== -1) {
-            // Icon exists: update it instead of ignoring
             set({
               icons: icons.map((i, index) =>
                 index === existingIndex ? icon : i
@@ -113,15 +112,7 @@ export const useIconsStore = create<IconsState>()(
         unhighlightAllIcons() {
           get().updateAllIcons("isHighlighted", false);
         },
-      }),
-      {
-        name: "icons-store",
-        // Only persist desktop icons (without parentId)
-        // Dynamic icons from folders should not be persisted
-        partialize: (state) => ({
-          icons: state.icons.filter((icon) => !icon.parentId),
-        }),
-      },
-    ),
+    }),
+    { name: "icons-store" },
   ),
 );

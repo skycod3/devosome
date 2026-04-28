@@ -163,8 +163,8 @@ export function Window({ window }: WindowProps) {
             <ul className="space-y-3">
               <li>
                 <button
-                  onClick={() => setWindowActiveTab(window.id, "icon-pictures")}
-                  className={`flex items-center gap-1 font-medium ${activeTab === "icon-pictures" ? "text-blue-600" : ""}`}
+                  onClick={() => setWindowActiveTab(window.id, "pictures")}
+                  className={`flex items-center gap-1 font-medium ${activeTab === "pictures" ? "text-blue-600" : ""}`}
                 >
                   <PiImage className="size-4" />
                   Pictures
@@ -172,8 +172,8 @@ export function Window({ window }: WindowProps) {
               </li>
               <li>
                 <button
-                  onClick={() => setWindowActiveTab(window.id, "icon-documents")}
-                  className={`flex items-center gap-1 font-medium ${activeTab === "icon-documents" ? "text-blue-600" : ""}`}
+                  onClick={() => setWindowActiveTab(window.id, "files")}
+                  className={`flex items-center gap-1 font-medium ${activeTab === "files" ? "text-blue-600" : ""}`}
                 >
                   <PiNote className="size-4" />
                   Documents
@@ -181,8 +181,8 @@ export function Window({ window }: WindowProps) {
               </li>
               <li>
                 <button
-                  onClick={() => setWindowActiveTab(window.id, "icon-music")}
-                  className={`flex items-center gap-1 font-medium ${activeTab === "icon-music" ? "text-blue-600" : ""}`}
+                  onClick={() => setWindowActiveTab(window.id, "music")}
+                  className={`flex items-center gap-1 font-medium ${activeTab === "music" ? "text-blue-600" : ""}`}
                 >
                   <PiMusicNote className="size-4" />
                   Music
@@ -190,8 +190,8 @@ export function Window({ window }: WindowProps) {
               </li>
               <li>
                 <button
-                  onClick={() => setWindowActiveTab(window.id, "icon-videos")}
-                  className={`flex items-center gap-1 font-medium ${activeTab === "icon-videos" ? "text-blue-600" : ""}`}
+                  onClick={() => setWindowActiveTab(window.id, "videos")}
+                  className={`flex items-center gap-1 font-medium ${activeTab === "videos" ? "text-blue-600" : ""}`}
                 >
                   <PiVideo className="size-4" />
                   Videos
