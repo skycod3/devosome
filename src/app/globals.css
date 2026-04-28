@@ -221,6 +221,17 @@ body {
   line-height: var(--leading-relaxed);
 }
 
+/* Message Styles */
+
+:root {
+  --message-success: var(--color-green-400);
+  --message-success-foreground: var(--color-green-900);
+  --message-success-border: var(--color-green-500);
+  --message-error: var(--color-red-400);
+  --message-error-foreground: var(--color-red-900);
+  --message-error-border: var(--color-red-500);
+}
+
 /* Theme Styles */
 
 :root {
