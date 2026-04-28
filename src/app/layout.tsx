@@ -5,6 +5,8 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 
+import { Toaster } from "@/components/ui/sonner";
+
 const firaCode = Fira_Code({
   variable: "--font-fira-code",
   subsets: ["latin"],
@@ -26,6 +28,8 @@ export default function RootLayout({
       <body className={`${firaCode.variable} antialiased`}>
         <ThemeProvider>
           <TooltipProvider>{children}</TooltipProvider>
+
+          <Toaster position="top-right" />
         </ThemeProvider>
       </body>
     </html>
