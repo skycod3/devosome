@@ -157,17 +157,17 @@ export function Window({ window }: WindowProps) {
         dragControls={dragControls}
       />
 
-      <div className="flex gap-2 overflow-auto">
+      <div className="flex overflow-auto">
         {window.showTabs && (
-          <aside className="sticky top-0 flex-[0.6] bg-[rgb(from_var(--foreground)_r_g_b/0.1)] p-4">
-            <ul className="space-y-3">
+          <aside className="sticky top-0 sm:flex-[0.6] bg-[rgb(from_var(--foreground)_r_g_b/0.1)] p-4">
+            <ul className="space-y-6 sm:space-y-3">
               <li>
                 <button
                   onClick={() => setWindowActiveTab(window.id, "pictures")}
                   className={`flex items-center gap-1 font-medium ${activeTab === "pictures" ? "text-blue-600" : ""}`}
                 >
-                  <PiImage className="size-4" />
-                  Pictures
+                  <PiImage className="size-6 sm:size-4" />
+                  <span className="hidden sm:inline">Pictures</span>
                 </button>
               </li>
               <li>
@@ -175,8 +175,8 @@ export function Window({ window }: WindowProps) {
                   onClick={() => setWindowActiveTab(window.id, "files")}
                   className={`flex items-center gap-1 font-medium ${activeTab === "files" ? "text-blue-600" : ""}`}
                 >
-                  <PiNote className="size-4" />
-                  Documents
+                  <PiNote className="size-6 sm:size-4" />
+                  <span className="hidden sm:inline">Files</span>
                 </button>
               </li>
               <li>
@@ -184,8 +184,8 @@ export function Window({ window }: WindowProps) {
                   onClick={() => setWindowActiveTab(window.id, "music")}
                   className={`flex items-center gap-1 font-medium ${activeTab === "music" ? "text-blue-600" : ""}`}
                 >
-                  <PiMusicNote className="size-4" />
-                  Music
+                  <PiMusicNote className="size-6 sm:size-4" />
+                  <span className="hidden sm:inline">Music</span>
                 </button>
               </li>
               <li>
@@ -193,8 +193,8 @@ export function Window({ window }: WindowProps) {
                   onClick={() => setWindowActiveTab(window.id, "videos")}
                   className={`flex items-center gap-1 font-medium ${activeTab === "videos" ? "text-blue-600" : ""}`}
                 >
-                  <PiVideo className="size-4" />
-                  Videos
+                  <PiVideo className="size-6 sm:size-4" />
+                  <span className="hidden sm:inline">Videos</span>
                 </button>
               </li>
             </ul>
