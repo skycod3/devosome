@@ -15,7 +15,7 @@ export function WindowContent({ iconId }: WindowContentProps) {
     const imageFile = IMAGE_FILES[iconId];
     if (imageFile) {
       return (
-        <section className="grid flex-2 p-4">
+        <section className="flex-2">
           <ImageViewer iconId={iconId} />
         </section>
       );
@@ -25,7 +25,7 @@ export function WindowContent({ iconId }: WindowContentProps) {
     if (documentFile) {
       if (documentFile.viewer === "pdf") {
         return (
-          <section className="grid flex-2 p-4">
+          <section className="flex-2">
             <PdfViewer iconId={iconId} />
           </section>
         );
@@ -33,7 +33,7 @@ export function WindowContent({ iconId }: WindowContentProps) {
     }
 
     return (
-      <section className="grid flex-2 p-4">
+      <section className="flex-2">
         <div className="flex h-full items-center justify-center text-gray-500">
           <p>Application not found for: {iconId}</p>
         </div>
@@ -44,7 +44,7 @@ export function WindowContent({ iconId }: WindowContentProps) {
   const AppComponent = application.component;
 
   return (
-    <section className="grid flex-2 p-4">
+    <section className="flex-2">
       <AppComponent iconId={iconId} />
     </section>
   );
