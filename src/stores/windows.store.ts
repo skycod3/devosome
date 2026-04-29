@@ -17,8 +17,8 @@ import { APPLICATIONS } from "@/constants/applications";
  * @returns The parent Application with tabs, or null if not found
  * 
  * @example
- * findTabParentApplication("icon-pictures") // Returns icon-documents app
- * findTabParentApplication("icon-documents") // Returns icon-documents app (itself)
+ * findTabParentApplication("pictures") // Returns files app
+ * findTabParentApplication("files") // Returns files app (itself)
  * findTabParentApplication("document-resume") // Returns null (no tabs)
  * findTabParentApplication("image-xxx") // Returns null (images are not tabs)
  */
@@ -65,7 +65,7 @@ export interface Window {
   tab?: { title: string };
   showTabs?: boolean; // Whether to show sidebar tabs
   parentTitle?: string; // Parent app title for breadcrumb (resolved from APPLICATIONS)
-  activeTab?: string; // Active tab iconId (e.g., "icon-pictures") for windows with tabs
+  activeTab?: string; // Active tab app ID (e.g., "pictures") for windows with tabs
 }
 
 interface WindowsState {
