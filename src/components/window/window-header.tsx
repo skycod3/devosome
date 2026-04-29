@@ -27,6 +27,7 @@ interface WindowHeaderProps {
   mvHeight: MotionValue<number>;
   mvRadius: MotionValue<number>;
   dragControls: DragControls;
+  isMobile?: boolean;
 }
 
 export function WindowHeader({
@@ -39,6 +40,7 @@ export function WindowHeader({
   mvHeight,
   mvRadius,
   dragControls,
+  isMobile = false,
 }: WindowHeaderProps) {
   const {
     windows,
@@ -170,11 +172,12 @@ export function WindowHeader({
   return (
     <header
       onPointerDown={(event) => {
+        if (isMobile) return;
         setIsGrabbing(true);
         dragControls.start(event);
       }}
       onPointerUp={() => setIsGrabbing(false)}
-      className={`flex select-none ${window.isMaximized ? "rounded-none cursor-default" : `${isGrabbing ? "cursor-grabbing" : "cursor-grab"}`} touch-none`}
+      className={`flex select-none ${window.isMaximized ? "rounded-none" : `${!isMobile ? (isGrabbing ? "cursor-grabbing" : "cursor-grab") : ""}`} touch-none`}
     >
       <div
         style={{
@@ -219,16 +222,18 @@ export function WindowHeader({
           <VscChromeMinimize className="size-3" />
         </button>
 
-        <button
-          className="flex-center size-4 cursor-pointer rounded-full border border-green-300 bg-green-200 hover:bg-green-400"
-          onClick={handleMaximize}
-        >
-          {window.isMaximized ? (
-            <VscChromeRestore className="size-3" />
-          ) : (
-            <VscChromeMaximize className="size-3" />
-          )}
-        </button>
+        {!isMobile && (
+          <button
+            className="flex-center size-4 cursor-pointer rounded-full border border-green-300 bg-green-200 hover:bg-green-400"
+            onClick={handleMaximize}
+          >
+            {window.isMaximized ? (
+              <VscChromeRestore className="size-3" />
+            ) : (
+              <VscChromeMaximize className="size-3" />
+            )}
+          </button>
+        )}
 
         <button
           className="flex-center size-4 cursor-pointer rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
