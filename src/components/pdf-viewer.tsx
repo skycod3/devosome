@@ -170,17 +170,17 @@ export function PdfViewer({ iconId }: PdfViewerProps) {
             {isDocumentLoaded && (
               <>
                 {/* Page counter */}
-                <div className="fixed top-14 rounded bg-background/90 px-3 py-1.5 text-sm font-medium text-foreground shadow-md backdrop-blur-sm">
+                <div className="fixed left-4 top-18 sm:top-14 rounded bg-background/90 px-3 py-1.5 text-sm font-medium text-foreground shadow-md backdrop-blur-sm">
                   Page {pageNumber} of {numPages}
                 </div>
 
                 {/* Zoom level indicator */}
-                <div className="fixed top-14 right-10 rounded bg-background/90 px-3 py-1.5 text-sm font-medium text-foreground shadow-md backdrop-blur-sm">
+                <div className="fixed top-18 sm:top-14 right-4 sm:right-8 rounded bg-background/90 px-3 py-1.5 text-sm font-medium text-foreground shadow-md backdrop-blur-sm">
                   {Math.round(scale * 100)}%
                 </div>
 
                 {/* Control buttons */}
-                <div className="fixed z-10 bottom-8 right-10 flex gap-2">
+                <div className="fixed z-10 bottom-8 right-4 sm:right-8 flex gap-2">
                   {/* Page Navigation */}
                   {numPages && numPages > 1 && (
                     <>
