@@ -17,7 +17,13 @@ interface WindowProps {
 }
 
 export function Window({ window }: WindowProps) {
-  const { bringToFront, activeWindowId, setWindowPosition, setWindowActiveTab } = useWindows();
+  const {
+    bringToFront,
+    activeWindowId,
+    setWindowPosition,
+    setWindowActiveTab,
+    isMobile,
+  } = useWindows();
   const { width, height } = useViewport();
 
   // Get activeTab from store, fallback to window.iconId
@@ -35,7 +41,8 @@ export function Window({ window }: WindowProps) {
   const dragControls = useDragControls();
 
   const activeTabApp = APPLICATIONS[activeTab];
-  const windowTitle = activeTabApp?.tabTitle ?? activeTabApp?.windowTitle ?? window.title;
+  const windowTitle =
+    activeTabApp?.tabTitle ?? activeTabApp?.windowTitle ?? window.title;
 
   // Sync MotionValue with store position (skipped during maximize/restore animation)
   useEffect(() => {
@@ -68,7 +75,7 @@ export function Window({ window }: WindowProps) {
   const windowStyles: CSSProperties = {
     zIndex: window?.zIndex,
     maxHeight:
-      isAnimating || window.isMaximized
+      isMobile || isAnimating || window.isMaximized
         ? undefined
         : `calc(${height}px - 10vh)`,
   };
@@ -99,7 +106,7 @@ export function Window({ window }: WindowProps) {
         borderRadius: mvRadius,
       }}
       onPointerDown={handleWindowClick}
-      drag={!window.isMaximized}
+      drag={!window.isMaximized && !isMobile}
       dragControls={dragControls}
       dragElastic={0.1}
       dragListener={false}
@@ -155,6 +162,7 @@ export function Window({ window }: WindowProps) {
         mvHeight={mvHeight}
         mvRadius={mvRadius}
         dragControls={dragControls}
+        isMobile={isMobile}
       />
 
       <div className="flex overflow-auto">
