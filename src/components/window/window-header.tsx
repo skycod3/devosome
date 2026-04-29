@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 import { Window } from "@/stores/windows.store";
 
@@ -50,6 +50,8 @@ export function WindowHeader({
     minimizeWindow,
     setWindowActiveTab,
   } = useWindows();
+
+  const [isGrabbing, setIsGrabbing] = useState(false);
 
   const { icons } = useIcons();
   const { width, height } = useViewport();
@@ -167,8 +169,12 @@ export function WindowHeader({
 
   return (
     <header
-      onPointerDown={(event) => dragControls.start(event)}
-      className={`flex select-none ${window.isMaximized ? "rounded-none cursor-default" : "cursor-move"} touch-none`}
+      onPointerDown={(event) => {
+        setIsGrabbing(true);
+        dragControls.start(event);
+      }}
+      onPointerUp={() => setIsGrabbing(false)}
+      className={`flex select-none ${window.isMaximized ? "rounded-none cursor-default" : `${isGrabbing ? "cursor-grabbing" : "cursor-grab"}`} touch-none`}
     >
       <div
         style={{
@@ -185,8 +191,13 @@ export function WindowHeader({
         </button>
 
         {(parentIcon || window.parentTitle) && (
-          <button onClick={() => handleBreadcrumbClick(parentIcon?.id ?? window.parentId)}>
-            <span>/</span> <span>{window.parentTitle ?? parentIcon?.title}</span>
+          <button
+            onClick={() =>
+              handleBreadcrumbClick(parentIcon?.id ?? window.parentId)
+            }
+          >
+            <span>/</span>{" "}
+            <span>{window.parentTitle ?? parentIcon?.title}</span>
           </button>
         )}
 
@@ -195,7 +206,7 @@ export function WindowHeader({
       </div>
 
       <div
-        className="bg-popover flex items-center gap-3 p-3 text-black"
+        className="bg-popover flex items-center gap-3 p-3 text-black cursor-default"
         onPointerDown={(e) => e.stopPropagation()}
       >
         <button
