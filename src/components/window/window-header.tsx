@@ -181,12 +181,15 @@ export function WindowHeader({
           background: `linear-gradient(to right, rgb(from var(--background) r g b / 0.2), transparent 50%), repeating-linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.05) 8%),
               repeating-linear-gradient(-45deg, transparent, rgb(from var(--foreground) r g b / 0.05) 8%)`,
         }}
-        className={`flex flex-1 items-center gap-3 p-2`}
+        className={`flex flex-wrap flex-1 items-center gap-x-3 gap-y-1 p-2`}
       >
-        <LuHouse className="size-4 shrink-0" />
-
         {/* Breadcrumb dinâmico */}
-        <button onClick={() => handleBreadcrumbClick("icon-home")}>
+        <button
+          className="flex items-center gap-2"
+          onClick={() => handleBreadcrumbClick("icon-home")}
+        >
+          <LuHouse className="size-4 shrink-0" />
+
           <span>Home</span>
         </button>
 
