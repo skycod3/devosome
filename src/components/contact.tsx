@@ -91,7 +91,7 @@ export function Contact() {
   }
 
   return (
-    <div className="space-y-6 p-4 overflow-y-auto h-full">
+    <div className="space-y-6 p-4 md:p-6">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">Get in Touch</h2>

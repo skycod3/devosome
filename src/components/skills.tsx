@@ -18,10 +18,7 @@ const PROFICIENCY_COLORS: Record<Proficiency, string> = {
 
 export function Skills() {
   return (
-    <div
-      className="h-full overflow-auto p-4"
-      style={{ scrollbarGutter: "stable" }}
-    >
+    <div className="p-4 md:p-6">
       {SKILLS.map(({ category, skills }) => (
         <div key={category} className="mt-6 first:mt-0">
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">

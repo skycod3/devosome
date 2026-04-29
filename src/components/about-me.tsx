@@ -18,7 +18,7 @@ export function AboutMe() {
   }
 
   return (
-    <div className="space-y-6 p-4">
+    <div className="space-y-6 p-4 md:p-6">
       {/* Hero */}
       <div className="grid justify-items-center gap-4">
         <div className="relative size-24 overflow-hidden rounded-full border-2 border-border bg-accent">

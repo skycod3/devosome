@@ -128,7 +128,7 @@ export function Portfolio() {
   const rest = PROJECTS.filter((p) => !p.featured);
 
   return (
-    <div className="space-y-6 overflow-y-auto h-full p-4">
+    <div className="space-y-6 p-4 md:p-6">
       {/* Header */}
       <div>
         <h2 className="text-lg font-semibold">Portfolio</h2>
