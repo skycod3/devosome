@@ -58,7 +58,7 @@ export function Desktop() {
 
       <div style={{ gridRow: "desktop" }}>
         <div
-          className="text-white grid-cols-fill-7 grid-rows-fill-7 grid h-full grid-flow-col place-items-center gap-4 p-4"
+          className="text-white grid-cols-fill-5 sm:grid-cols-fill-7 grid-rows-fill-7 grid h-full grid-flow-col place-items-center gap-4 p-4"
           onClick={handleDesktopClick}
         >
           {icons
