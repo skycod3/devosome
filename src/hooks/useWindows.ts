@@ -3,7 +3,7 @@
 import { StaticImageData } from "next/image";
 import { useWindowsStore } from "@/stores/windows.store";
 import { useViewport } from "./useViewport";
-import { DEFAULT_WINDOW_SIZE } from "@/constants/windows";
+import { DEFAULT_WINDOW_SIZE, TABLET_WINDOW_SIZE } from "@/constants/windows";
 import { APPLICATIONS } from "@/constants/applications";
 
 /**
@@ -35,15 +35,23 @@ export const useWindows = () => {
   const setWindowPosition = useWindowsStore((state) => state.setWindowPosition);
   const setWindowSize = useWindowsStore((state) => state.setWindowSize);
   const bringToFront = useWindowsStore((state) => state.bringToFront);
-  const setWindowActiveTab = useWindowsStore((state) => state.setWindowActiveTab);
+  const setWindowActiveTab = useWindowsStore(
+    (state) => state.setWindowActiveTab,
+  );
 
   // Get viewport dimensions for positioning
   const { width, height } = useViewport();
 
+  // Detect breakpoint for responsive window sizing
+  const isMobile = width > 0 && width < 768;
+  const isTablet = width >= 768 && width < 1024;
+
   /**
    * Opens a window centered on the viewport.
-   * Calculates position considering viewport size and window constraints.
-   * Automatically fetches window config (showTabs, defaultSize) from APPLICATIONS registry.
+   * Calculates position and size based on the current breakpoint:
+   * - Mobile (<768px): fullscreen, position (0, 0)
+   * - Tablet (768–1023px): TABLET_WINDOW_SIZE, centered, no cascade
+   * - Desktop (>=1024px): DEFAULT_WINDOW_SIZE, centered, cascading offset
    */
   const openWindowCentered = (
     iconId: string,
@@ -69,20 +77,32 @@ export const useWindows = () => {
       parentTitle,
     );
 
-    // Calculate effective window height (considering maxHeight constraint)
-    const maxAllowedHeight = height * 0.9; // 90% of viewport (10vh reserved)
-    const effectiveHeight = Math.min(
-      DEFAULT_WINDOW_SIZE.height,
-      maxAllowedHeight,
-    );
-
-    // Calculate centered position with an offset for cascading effect
-    const offset = windows.length > 0 ? windows.length * 50 : 0;
-    const calculatedX = width / 2 - DEFAULT_WINDOW_SIZE.width / 2 + offset;
-    const calculatedY = height / 2 - effectiveHeight / 2 + offset;
-
-    // Center the window with the effective dimensions
-    setWindowPosition(windowId, calculatedX, calculatedY);
+    if (isMobile) {
+      // Mobile: fullscreen, no cascade
+      setWindowSize(windowId, width, height);
+      setWindowPosition(windowId, 0, 0);
+    } else if (isTablet) {
+      // Tablet: fixed smaller size, centered, no cascade
+      const tabletX = width / 2 - TABLET_WINDOW_SIZE.width / 2;
+      const tabletY = height / 2 - TABLET_WINDOW_SIZE.height / 2;
+      setWindowSize(
+        windowId,
+        TABLET_WINDOW_SIZE.width,
+        TABLET_WINDOW_SIZE.height,
+      );
+      setWindowPosition(windowId, tabletX, tabletY);
+    } else {
+      // Desktop: default size, centered, cascading offset
+      const maxAllowedHeight = height * 0.9;
+      const effectiveHeight = Math.min(
+        DEFAULT_WINDOW_SIZE.height,
+        maxAllowedHeight,
+      );
+      const offset = windows.length > 0 ? windows.length * 50 : 0;
+      const calculatedX = width / 2 - DEFAULT_WINDOW_SIZE.width / 2 + offset;
+      const calculatedY = height / 2 - effectiveHeight / 2 + offset;
+      setWindowPosition(windowId, calculatedX, calculatedY);
+    }
 
     return windowId;
   };
@@ -92,6 +112,10 @@ export const useWindows = () => {
     windows,
     activeWindowId,
     highestZIndex,
+
+    // Breakpoints
+    isMobile,
+    isTablet,
 
     // Lifecycle
     openWindow,
