@@ -155,7 +155,9 @@ export function Weather() {
         unoptimized // Necessary for external WeatherAPI icons
       />
       <span className="font-bold">{weather.temp}°C</span>
-      <span className="text-xs opacity-75">{weather.location}</span>
+      <span className="hidden sm:inline text-xs opacity-75">
+        {weather.location}
+      </span>
     </div>
   );
 }
