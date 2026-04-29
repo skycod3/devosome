@@ -69,9 +69,9 @@ function ProjectLinks({ github, live }: { github?: string; live?: string }) {
 
 function FeaturedCard({ project }: { project: Project }) {
   return (
-    <div className="grid grid-cols-[auto_1fr] gap-2 overflow-hidden rounded-lg border bg-card transition hover:shadow">
+    <div className="grid sm:grid-cols-[auto_1fr] gap-2 overflow-hidden rounded-lg border bg-card transition hover:shadow">
       {/* Thumbnail */}
-      <div className="relative h-full w-64 shrink-0 overflow-hidden bg-muted">
+      <div className="relative h-36 w-full sm:h-full sm:w-64 shrink-0 overflow-hidden bg-muted">
         <Thumbnail src={project.thumbnail} alt={project.title} />
       </div>
 
