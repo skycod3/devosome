@@ -52,6 +52,7 @@ export function Icon({
           title={title}
           style={
             {
+              wordBreak: "break-word",
               // if the icon has a parent, it should be black in light mode and white in dark mode, otherwise it should always be white
               "--icon-color": parentId
                 ? theme === "dark"
