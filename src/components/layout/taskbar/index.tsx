@@ -10,8 +10,8 @@ export function Taskbar() {
   const { windows } = useWindows();
 
   return (
-    <div className="bg-background/50 text-foreground flex items-center justify-between px-2">
-      <div className="flex gap-8">
+    <div className="bg-background/50 text-foreground flex gap-4 items-center justify-between px-2">
+      <div className="flex flex-wrap gap-x-8">
         <StartDropdown />
 
         {windows.length > 0 && <WindowsDropdown />}
@@ -22,9 +22,7 @@ export function Taskbar() {
         <Weather />
       </div>
 
-      <div>
-        <SystemTray />
-      </div>
+      <SystemTray />
     </div>
   );
 }
