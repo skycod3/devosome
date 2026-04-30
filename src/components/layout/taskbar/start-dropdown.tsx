@@ -30,12 +30,6 @@ const { contact } = ABOUT_ME;
 export function StartDropdown() {
   const { openWindowCentered } = useWindows();
 
-  useHotkey("Shift+A", () => openWindow("about-me"));
-  useHotkey("Shift+P", () => openWindow("portfolio"));
-  useHotkey("Shift+S", () => openWindow("skills"));
-  useHotkey("Shift+T", () => openWindow("contact"));
-  useHotkey("Shift+Q", () => handleLogOut());
-
   function openWindow(iconId: string) {
     const { windowTitle } = APPLICATIONS[iconId];
 
@@ -45,6 +39,12 @@ export function StartDropdown() {
   function handleLogOut() {
     toast("Wanna log out? Just close the browser tab! 😄");
   }
+
+  useHotkey("Shift+A", () => openWindow("about-me"));
+  useHotkey("Shift+P", () => openWindow("portfolio"));
+  useHotkey("Shift+S", () => openWindow("skills"));
+  useHotkey("Shift+T", () => openWindow("contact"));
+  useHotkey("Shift+Q", () => handleLogOut());
 
   return (
     <DropdownMenu>
