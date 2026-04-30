@@ -50,7 +50,7 @@ export function Desktop() {
         backgroundImage: `url(${WallpaperImage.src})`,
         gridTemplateRows: "[taskbar] auto [desktop] 1fr [dock] auto",
       }}
-      className="relative grid h-screen bg-cover bg-top select-none overflow-hidden"
+      className="relative grid h-dvh bg-cover bg-top select-none overflow-hidden"
     >
       <div style={{ gridRow: "taskbar" }}>
         <Taskbar />
