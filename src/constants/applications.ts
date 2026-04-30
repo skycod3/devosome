@@ -1,18 +1,19 @@
+import type { ComponentType } from "react";
 import { Pictures } from "@/components/layout/pictures";
 import { Documents } from "@/components/layout/documents";
 import { Music } from "@/components/layout/music";
 import { Videos } from "@/components/layout/videos";
-import { PdfViewer } from "@/components/pdf-viewer";
 import { Skills } from "@/components/skills";
 import { AboutMe } from "@/components/about-me";
 import { Contact } from "@/components/contact";
 import { Portfolio } from "@/components/portfolio";
 
-type AppComponent = React.ComponentType<{ iconId: string }>;
+type AppComponent = ComponentType<{ iconId: string }>;
 
 interface Application {
   id: string;
-  component: AppComponent;
+  /** Omit for metadata-only entries (e.g. "document-resume" rendered via DOCUMENTS_FILES). */
+  component?: AppComponent;
   windowTitle?: string;
   tabTitle?: string; // Tab label shown in breadcrumb (when different from windowTitle)
   defaultSize?: { width: number; height: number };
@@ -51,13 +52,16 @@ export const APPLICATIONS: Record<string, Application> = {
     showTabs: false,
   },
 
-  // Standalone windows
+  // Metadata-only entry: title lookup for the window chrome.
+  // Rendering is handled by window-content.tsx: NativePdfViewer on mobile,
+  // LazyPdfViewer (pdfjs) on desktop.
   "document-resume": {
     id: "document-resume",
     windowTitle: "Jean's Resume.pdf",
-    component: PdfViewer,
     showTabs: false,
   },
+
+  // Standalone windows
   skills: {
     id: "skills",
     windowTitle: "Skills",
