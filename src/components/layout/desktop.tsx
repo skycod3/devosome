@@ -63,9 +63,7 @@ export function Desktop() {
         >
           {icons
             .filter((icon) => !icon.parentId)
-            .map((icon) => (
-              <Icon key={icon.id} {...icon} />
-            ))}
+            .map((icon) => icon.show && <Icon key={icon.id} {...icon} />)}
         </div>
       </div>
 

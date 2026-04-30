@@ -22,7 +22,7 @@ export const DESKTOP_ICONS: Icon[] = [
     title: "About Me",
     icon: AboutMeImage,
     isHighlighted: false,
-    show: true,
+    show: false,
     size: { width: 48, height: 48 },
   },
   {
@@ -31,7 +31,7 @@ export const DESKTOP_ICONS: Icon[] = [
     title: "Skills",
     icon: SkillsImage,
     isHighlighted: false,
-    show: true,
+    show: false,
     size: { width: 48, height: 48 },
   },
   {
@@ -40,7 +40,7 @@ export const DESKTOP_ICONS: Icon[] = [
     title: "Portfolio",
     icon: PortfolioImage,
     isHighlighted: false,
-    show: true,
+    show: false,
     size: { width: 48, height: 48 },
   },
   {
@@ -49,7 +49,7 @@ export const DESKTOP_ICONS: Icon[] = [
     title: "Contact",
     icon: ContactImage,
     isHighlighted: false,
-    show: true,
+    show: false,
     size: { width: 48, height: 48 },
   },
 ];
