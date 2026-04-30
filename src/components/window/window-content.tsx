@@ -6,9 +6,10 @@ import { PdfViewer } from "../pdf-viewer";
 
 interface WindowContentProps {
   iconId: string;
+  parentId?: string;
 }
 
-export function WindowContent({ iconId }: WindowContentProps) {
+export function WindowContent({ iconId, parentId }: WindowContentProps) {
   const application = APPLICATIONS[iconId];
 
   if (!application) {
@@ -16,7 +17,7 @@ export function WindowContent({ iconId }: WindowContentProps) {
     if (imageFile) {
       return (
         <section className="flex-2">
-          <ImageViewer iconId={iconId} />
+          <ImageViewer iconId={iconId} parentId={parentId} />
         </section>
       );
     }
