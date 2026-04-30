@@ -53,22 +53,6 @@ export function Weather() {
         return;
       }
 
-      // check permission state before prompting (not supported on all browsers)
-      if (navigator.permissions) {
-        const permission = await navigator.permissions.query({
-          name: "geolocation",
-        });
-        if (permission.state === "denied") {
-          toast.error("Location access is blocked", {
-            description:
-              "To enable weather, allow location access in your browser's site settings and reload the page.",
-            duration: 6000,
-          });
-          setError("Permission denied");
-          return;
-        }
-      }
-
       // use cached coordinates if available, otherwise fetch new ones
       const getCoords = (): Promise<GeolocationCoordinates> => {
         if (coordsRef.current) {
@@ -118,16 +102,22 @@ export function Weather() {
       if (err instanceof GeolocationPositionError) {
         switch (err.code) {
           case err.PERMISSION_DENIED:
-            toast.error("Location access is blocked", {
-              description:
-                "To enable weather, allow location access in your browser's site settings and reload the page.",
-              duration: 10000,
-              style: {
-                "--normal-text": "var(--message-error-foreground)",
-                "--normal-bg": "var(--message-error)",
-                "--normal-border": "var(--message-error-border)",
-              } as React.CSSProperties,
-            });
+            if (!localStorage.getItem("loadingWeatherToastDismissed")) {
+              toast.error("Location access is blocked", {
+                description:
+                  "To enable weather, allow location access in your browser's site settings and reload the page.",
+                duration: 10000,
+                style: {
+                  "--normal-text": "var(--message-error-foreground)",
+                  "--normal-bg": "var(--message-error)",
+                  "--normal-border": "var(--message-error-border)",
+                } as React.CSSProperties,
+                onDismiss() {
+                  localStorage.setItem("loadingWeatherToastDismissed", "true");
+                },
+              });
+            }
+
             setError("Permission denied");
             break;
           case err.POSITION_UNAVAILABLE:
