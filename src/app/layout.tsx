@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Fira_Code } from "next/font/google";
 import "./globals.css";
+import "react-pdf/dist/Page/AnnotationLayer.css";
+import "react-pdf/dist/Page/TextLayer.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
