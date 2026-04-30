@@ -74,6 +74,7 @@ export function Window({ window }: WindowProps) {
 
   const windowStyles: CSSProperties = {
     zIndex: window?.zIndex,
+    pointerEvents: window?.isMinimized ? "none" : undefined,
     maxHeight:
       isMobile || isAnimating || window.isMaximized
         ? undefined
