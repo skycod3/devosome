@@ -18,6 +18,11 @@ import {
 
 type IconProps = IconFromStore;
 
+const supportsRelativeColors = CSS.supports(
+  "color",
+  "color-mix(in oklab, red, blue)",
+);
+
 export function Icon({
   id,
   appId,
@@ -61,7 +66,7 @@ export function Icon({
                 : "white",
             } as CSSProperties
           }
-          className={`grid min-h-28 w-full content-center justify-items-center gap-2 rounded p-1 text-center text-(--icon-color) hover:bg-(--icon-color)/10 ${isHighlighted ? "bg-(--icon-color)/20" : ""}`}
+          className={`grid min-h-28 w-full content-center justify-items-center gap-2 rounded p-1 text-center text-(--icon-color) ${supportsRelativeColors ? `${!isHighlighted ? `hover:bg-(--icon-color)/10` : "bg-(--icon-color)/20"}` : ""}`}
         >
           <Image
             src={icon}
