@@ -130,9 +130,7 @@ export function WindowContent({ iconId, parentId }: WindowContentProps) {
     const AppComponent = application.component;
     return (
       <section className="flex-2">
-        <PdfErrorBoundary>
-          <AppComponent iconId={iconId} />
-        </PdfErrorBoundary>
+        <AppComponent iconId={iconId} />
       </section>
     );
   }
