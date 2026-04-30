@@ -1,5 +1,16 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { CloudAlert } from "lucide-react";
+import { toast } from "sonner";
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverDescription,
+  PopoverHeader,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface WeatherData {
   temp: number;
@@ -21,97 +32,126 @@ interface WeatherApiResponse {
   };
 }
 
-// cache for geolocation coordinates to avoid repeated prompts and improve performance
-let cachedCoords: { latitude: number; longitude: number } | null = null;
-
 export function Weather() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchWeather = async () => {
-      try {
-        // check if geolocation is available
-        if (!navigator.geolocation) {
-          setError("Geolocation not available");
-          setLoading(false);
+  // cache for geolocation coordinates scoped to this component instance
+  const coordsRef = useRef<{ latitude: number; longitude: number } | null>(
+    null,
+  );
+
+  const fetchWeather = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      // check if geolocation is available
+      if (!navigator.geolocation) {
+        setError("Geolocation not available");
+        return;
+      }
+
+      // check permission state before prompting (not supported on all browsers)
+      if (navigator.permissions) {
+        const permission = await navigator.permissions.query({
+          name: "geolocation",
+        });
+        if (permission.state === "denied") {
+          toast.error("Location access is blocked", {
+            description:
+              "To enable weather, allow location access in your browser's site settings and reload the page.",
+            duration: 6000,
+          });
+          setError("Permission denied");
           return;
         }
-
-        // use cached coordinates if available, otherwise fetch new ones
-        const getCoords = (): Promise<GeolocationCoordinates> => {
-          if (cachedCoords) {
-            return Promise.resolve({
-              latitude: cachedCoords.latitude,
-              longitude: cachedCoords.longitude,
-            } as GeolocationCoordinates);
-          }
-
-          return new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(
-              (position) => {
-                cachedCoords = {
-                  latitude: position.coords.latitude,
-                  longitude: position.coords.longitude,
-                };
-                resolve(position.coords);
-              },
-              (error) => reject(error),
-              { timeout: 10000 },
-            );
-          });
-        };
-
-        const coords = await getCoords();
-        const { latitude, longitude } = coords;
-
-        const response = await fetch(
-          `https://api.weatherapi.com/v1/current.json?key=${process.env.NEXT_PUBLIC_WEATHER_API_KEY}&q=${latitude},${longitude}&aqi=no`,
-        );
-
-        if (!response.ok) {
-          throw new Error("Failed to fetch weather data");
-        }
-
-        const data: WeatherApiResponse = await response.json();
-
-        setWeather({
-          temp: Math.round(data.current.temp_c),
-          condition: data.current.condition.text,
-          icon: `https:${data.current.condition.icon}`,
-          location: data.location.name,
-        });
-        setError(null);
-      } catch (error) {
-        console.error("Weather fetch error:", error);
-
-        if (error instanceof GeolocationPositionError) {
-          switch (error.code) {
-            case error.PERMISSION_DENIED:
-              setError("Permission denied");
-              break;
-            case error.POSITION_UNAVAILABLE:
-              setError("Position unavailable");
-              break;
-            case error.TIMEOUT:
-              setError("Timeout");
-              break;
-          }
-        } else {
-          setError("Error loading weather");
-        }
-      } finally {
-        setLoading(false);
       }
-    };
 
+      // use cached coordinates if available, otherwise fetch new ones
+      const getCoords = (): Promise<GeolocationCoordinates> => {
+        if (coordsRef.current) {
+          return Promise.resolve({
+            latitude: coordsRef.current.latitude,
+            longitude: coordsRef.current.longitude,
+          } as GeolocationCoordinates);
+        }
+
+        return new Promise((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              coordsRef.current = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+              };
+              resolve(position.coords);
+            },
+            (geoError) => reject(geoError),
+            { timeout: 10000 },
+          );
+        });
+      };
+
+      const coords = await getCoords();
+      const { latitude, longitude } = coords;
+
+      const response = await fetch(
+        `https://api.weatherapi.com/v1/current.json?key=${process.env.NEXT_PUBLIC_WEATHER_API_KEY}&q=${latitude},${longitude}&aqi=no`,
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch weather data");
+      }
+
+      const data: WeatherApiResponse = await response.json();
+
+      setWeather({
+        temp: Math.round(data.current.temp_c),
+        condition: data.current.condition.text,
+        icon: `https:${data.current.condition.icon}`,
+        location: data.location.name,
+      });
+    } catch (err) {
+      console.error("Weather fetch error:", err);
+
+      if (err instanceof GeolocationPositionError) {
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            toast.error("Location access is blocked", {
+              description:
+                "To enable weather, allow location access in your browser's site settings and reload the page.",
+              duration: 10000,
+              style: {
+                "--normal-text": "var(--message-error-foreground)",
+                "--normal-bg": "var(--message-error)",
+                "--normal-border": "var(--message-error-border)",
+              } as React.CSSProperties,
+            });
+            setError("Permission denied");
+            break;
+          case err.POSITION_UNAVAILABLE:
+            setError("Position unavailable");
+            break;
+          case err.TIMEOUT:
+            setError("Timeout");
+            break;
+        }
+      } else {
+        setError("Error loading weather");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
     fetchWeather();
 
     // Update every 10 minutes
     const updateInterval = setInterval(fetchWeather, 10 * 60 * 1000);
     return () => clearInterval(updateInterval);
-  }, []);
+  }, [fetchWeather]);
 
   if (loading) {
     return (
@@ -129,13 +169,31 @@ export function Weather() {
 
   if (error) {
     return (
-      <div
-        className="text-foreground/50 text-xs"
-        role="alert"
-        aria-label="Error loading weather"
-      >
-        {error}
-      </div>
+      <Popover>
+        <div
+          className="text-foreground/50 text-xs"
+          role="alert"
+          aria-label="Error loading weather"
+        >
+          <PopoverTrigger asChild>
+            <div
+              className="leading-0"
+              aria-label={`Error loading weather: ${error}`}
+            >
+              <button className="rounded p-2">
+                <CloudAlert className="size-4" />
+              </button>
+            </div>
+          </PopoverTrigger>
+
+          <PopoverContent>
+            <PopoverHeader>
+              <PopoverTitle>Error</PopoverTitle>
+              <PopoverDescription>{error}</PopoverDescription>
+            </PopoverHeader>
+          </PopoverContent>
+        </div>
+      </Popover>
     );
   }
 
