@@ -216,7 +216,7 @@ export function WindowHeader({
         onPointerDown={(e) => e.stopPropagation()}
       >
         <button
-          className="flex-center size-4 cursor-pointer rounded-full border border-yellow-300 bg-yellow-200 hover:bg-yellow-400"
+          className="flex-center size-5 sm:size-4 cursor-pointer rounded-full border border-yellow-300 bg-yellow-200 hover:bg-yellow-400"
           onClick={() => minimizeWindow(window.id)}
         >
           <VscChromeMinimize className="size-3" />
@@ -236,7 +236,7 @@ export function WindowHeader({
         )}
 
         <button
-          className="flex-center size-4 cursor-pointer rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
+          className="flex-center size-5 sm:size-4 cursor-pointer rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
           onClick={() => closeWindow(window.id)}
         >
           <VscClose className="size-3" />
