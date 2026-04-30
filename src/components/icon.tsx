@@ -16,7 +16,7 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 
-interface IconProps extends IconFromStore {}
+type IconProps = IconFromStore;
 
 export function Icon({
   id,
