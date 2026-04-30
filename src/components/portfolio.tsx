@@ -7,6 +7,11 @@ import { PROJECTS, type Project } from "@/constants/projects";
 
 import { Badge } from "./ui/badge";
 
+const supportsRelativeColors = CSS.supports(
+  "color",
+  "color-mix(in oklab, red, blue)",
+);
+
 function Thumbnail({ src, alt }: { src: string; alt: string }) {
   return (
     <img
@@ -77,7 +82,9 @@ function FeaturedCard({ project }: { project: Project }) {
 
       {/* Content */}
       <div className="flow p-4">
-        <span className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary">
+        <span
+          className={`rounded-full ${supportsRelativeColors ? "bg-primary/10 text-primary" : "bg-neutral-100 text-black border"} px-2 py-0.5 text-xs font-medium`}
+        >
           Featured
         </span>
 
