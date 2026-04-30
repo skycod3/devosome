@@ -2,9 +2,7 @@ import { useIcons } from "@/hooks/useIcons";
 import { useEffect } from "react";
 
 import { IMAGE_FILES } from "@/constants/image-files";
-import { APPLICATIONS } from "@/constants/applications";
 
-import { ImageViewer } from "../image-viewer";
 import { Icon } from "../icon";
 
 interface PicturesProps {
@@ -23,15 +21,6 @@ export function Pictures({ iconId }: PicturesProps) {
 
   useEffect(() => {
     Object.values(IMAGE_FILES).forEach((image) => {
-      if (!APPLICATIONS[image.id]) {
-        APPLICATIONS[image.id] = {
-          id: image.id,
-          windowTitle: image.windowTitle,
-          component: ImageViewer,
-          showTabs: false,
-        };
-      }
-
       addIcon({
         id: image.id,
         title: image.title,
