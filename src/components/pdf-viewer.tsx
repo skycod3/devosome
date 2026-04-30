@@ -12,8 +12,7 @@ import {
   MIN_SCALE,
 } from "@/constants/resume";
 
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
+// CSS for TextLayer and AnnotationLayer is imported in layout.tsx.
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
@@ -49,6 +48,7 @@ export function PdfViewer({ iconId }: PdfViewerProps) {
   const [scale, setScale] = useState<number>(DEFAULT_SCALE);
   const [isDocumentLoaded, setIsDocumentLoaded] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
+  const [errorDetail, setErrorDetail] = useState<string>("");
 
   const options = useMemo(
     () => ({
@@ -65,9 +65,9 @@ export function PdfViewer({ iconId }: PdfViewerProps) {
   }
 
   function onDocumentLoadError(error: Error): void {
-    console.error("Error loading PDF:", error);
     setHasError(true);
     setIsDocumentLoaded(false);
+    setErrorDetail(error?.message ?? String(error));
   }
 
   // Zoom functions with limits
@@ -130,11 +130,16 @@ export function PdfViewer({ iconId }: PdfViewerProps) {
         className={`relative h-full overflow-auto ${theme === "dark" ? "bg-gray-900" : "bg-gray-100"}`}
       >
         {hasError ? (
-          <div className="flex h-full flex-col items-center justify-center gap-4">
+          <div className="flex h-full flex-col items-center justify-center gap-4 p-4">
             <PiWarning className="size-16 text-red-500" />
             <p className="text-lg font-semibold text-foreground">
               Failed to load PDF
             </p>
+            {errorDetail && (
+              <p className="max-w-xs break-all rounded bg-muted px-3 py-2 text-center text-xs text-muted-foreground">
+                {errorDetail}
+              </p>
+            )}
             <p className="text-sm text-muted-foreground">
               Please check if the file exists at /documents/resume.pdf
             </p>
