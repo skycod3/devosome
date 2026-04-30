@@ -5,6 +5,7 @@ import { useHotkey } from "@tanstack/react-hotkeys";
 import { APPLICATIONS } from "@/constants/applications";
 
 import { useWindows } from "@/hooks/useWindows";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 import { toast } from "sonner";
 
@@ -29,6 +30,7 @@ const { contact } = ABOUT_ME;
 
 export function StartDropdown() {
   const { openWindowCentered } = useWindows();
+  const isMobile = useIsMobile();
 
   function openWindow(iconId: string) {
     const { windowTitle } = APPLICATIONS[iconId];
@@ -59,19 +61,19 @@ export function StartDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={() => openWindow("about-me")}>
             About Me
-            <DropdownMenuShortcut>⇧+A</DropdownMenuShortcut>
+            {!isMobile && <DropdownMenuShortcut>⇧+A</DropdownMenuShortcut>}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => openWindow("portfolio")}>
             Portfolio
-            <DropdownMenuShortcut>⇧+P</DropdownMenuShortcut>
+            {!isMobile && <DropdownMenuShortcut>⇧+P</DropdownMenuShortcut>}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => openWindow("skills")}>
             My Skills
-            <DropdownMenuShortcut>⇧+S</DropdownMenuShortcut>
+            {!isMobile && <DropdownMenuShortcut>⇧+S</DropdownMenuShortcut>}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => openWindow("contact")}>
             Get in Touch
-            <DropdownMenuShortcut>⇧+T</DropdownMenuShortcut>
+            {!isMobile && <DropdownMenuShortcut>⇧+T</DropdownMenuShortcut>}
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
@@ -116,7 +118,7 @@ export function StartDropdown() {
 
         <DropdownMenuItem onClick={handleLogOut}>
           Log out
-          <DropdownMenuShortcut>⇧+Q</DropdownMenuShortcut>
+          {!isMobile && <DropdownMenuShortcut>⇧+Q</DropdownMenuShortcut>}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
