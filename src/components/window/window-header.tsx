@@ -212,7 +212,7 @@ export function WindowHeader({
       </div>
 
       <div
-        className="bg-popover flex items-center gap-3 p-3 text-black cursor-default"
+        className="bg-popover flex items-center gap-4 sm:gap-3 p-3 text-black cursor-default"
         onPointerDown={(e) => e.stopPropagation()}
       >
         <button
