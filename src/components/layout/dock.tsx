@@ -27,7 +27,7 @@ const DOCK_ICONS = [
 export function Dock() {
   return (
     <div
-      className="mx-auto flex w-fit items-center justify-center gap-6 rounded bg-neutral-900/50 border border-neutral-800 px-2 py-4"
+      className="relative z-1 mx-auto flex w-fit items-center justify-center gap-6 rounded bg-neutral-900/50 border border-neutral-800 px-2 py-4"
       style={{ height: DOCK_HEIGHT, marginBottom: DOCK_OFFSET_BOTTOM }}
     >
       {DOCK_ICONS.map((icon) => (
