@@ -20,6 +20,14 @@ export const metadata: Metadata = {
   description: "Showcasing projects and portfolio of a passionate developer.",
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  minimumScale: 1,
+  userScalable: "no",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
