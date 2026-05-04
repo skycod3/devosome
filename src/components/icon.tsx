@@ -16,7 +16,9 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 
-type IconProps = IconFromStore;
+type IconProps = IconFromStore & {
+  imagePlaceholder?: "blur" | "empty";
+};
 
 const supportsRelativeColors = CSS.supports(
   "color",
@@ -31,6 +33,7 @@ export function Icon({
   size,
   isHighlighted,
   parentId,
+  imagePlaceholder,
 }: IconProps) {
   const { highlightIcon, unhighlightAllIcons } = useIcons();
   const { openWindowCentered } = useWindows();
@@ -74,6 +77,7 @@ export function Icon({
             width={size.width}
             height={size.height}
             loading="eager"
+            placeholder={imagePlaceholder}
           />
 
           <p className="line-clamp-2 leading-normal">{title}</p>

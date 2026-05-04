@@ -48,7 +48,7 @@ export function Pictures({ iconId }: PicturesProps) {
       className="grid-cols-fill-6 grid-rows-fill-6 grid h-full gap-4 p-4"
     >
       {iconsFromStore.map((icon) => (
-        <Icon key={icon.id} {...icon} />
+        <Icon imagePlaceholder="blur" key={icon.id} {...icon} />
       ))}
     </div>
   );
