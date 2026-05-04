@@ -66,7 +66,7 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
     initialIndex >= 0 ? initialIndex : 0,
   );
 
-  const currentId = imageList[currentIndex];
+  const currentId = imageList[clamp(currentIndex, 0, imageList.length - 1)];
   const imageFile = IMAGE_FILES[currentId];
 
   // ─── Motion values ─────────────────────────────────────────────────────────
