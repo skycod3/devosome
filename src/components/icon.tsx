@@ -66,7 +66,7 @@ export function Icon({
                 : "white",
             } as CSSProperties
           }
-          className={`grid min-h-28 w-full content-center justify-items-center gap-2 rounded p-1 text-center text-(--icon-color) ${supportsRelativeColors ? `${!isHighlighted ? `hover:bg-(--icon-color)/10` : "bg-(--icon-color)/20"}` : ""}`}
+          className={`z-1 grid min-h-28 w-full content-center justify-items-center gap-2 rounded p-1 text-center text-(--icon-color) ${supportsRelativeColors ? `${!isHighlighted ? `hover:bg-(--icon-color)/10` : "bg-(--icon-color)/20"}` : ""}`}
         >
           <Image
             src={icon}
