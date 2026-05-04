@@ -16,6 +16,7 @@ import {
   PiMagnifyingGlassMinus,
   PiMagnifyingGlassPlus,
   PiArrowsOut,
+  PiSpinnerLight,
 } from "react-icons/pi";
 
 import { IMAGE_FILES } from "@/constants/image-files";
@@ -80,6 +81,7 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
   const [rotation, setRotation] = useState(0);
   const [zoomLabel, setZoomLabel] = useState(formatZoom(1));
   const [isDragging, setIsDragging] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   // ─── Refs ──────────────────────────────────────────────────────────────────
 
@@ -123,6 +125,7 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
     panX.set(0);
     panY.set(0);
     setRotation(0);
+    setIsLoaded(false);
     containerRef.current?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
@@ -273,6 +276,13 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
     >
       {/* ── Image area ── */}
       <div ref={imageAreaRef} className="relative flex-1 overflow-hidden">
+        {!isLoaded && (
+          <div className="absolute inset-0 grid place-items-center">
+            <PiSpinnerLight
+              className={`size-8 animate-spin ${isLoaded ? "opacity-0" : "opacity-100"}`}
+            />
+          </div>
+        )}
         <motion.div
           drag={canDrag}
           dragMomentum={false}
@@ -293,10 +303,11 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
           <Image
             src={imageFile.icon}
             alt={imageFile.title}
-            className="max-h-full max-w-full object-contain select-none"
+            className={`max-h-full max-w-full object-contain select-none transition-opacity duration-150 ${isLoaded ? "opacity-100" : "opacity-0"}`}
             sizes="(max-width: 768px) 100vw, 80vw"
             priority
             draggable={false}
+            onLoad={() => setIsLoaded(true)}
           />
         </motion.div>
 
