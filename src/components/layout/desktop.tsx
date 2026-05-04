@@ -8,6 +8,9 @@ import { DESKTOP_ICONS } from "@/constants/icons";
 
 import { useIcons } from "@/hooks/useIcons";
 import { useWindows } from "@/hooks/useWindows";
+import { useIsMobile } from "@/hooks/useIsMobile";
+
+import GridDistortion from "@/components/effects/grid-distortion";
 
 import { Taskbar } from "./taskbar";
 import { Icon } from "../icon";
@@ -19,9 +22,9 @@ import { toast } from "sonner";
 export function Desktop() {
   const { icons, setIcons, unhighlightAllIcons } = useIcons();
   const { windows } = useWindows();
+  const isMobile = useIsMobile();
 
-  function handleDesktopClick(event: React.MouseEvent<HTMLDivElement>) {
-    if (event.target !== event.currentTarget) return;
+  function handleDesktopClick() {
     if (icons.some((icon) => icon.isHighlighted)) unhighlightAllIcons();
   }
 
@@ -52,15 +55,24 @@ export function Desktop() {
       }}
       className="relative grid h-dvh bg-cover bg-top select-none overflow-hidden"
     >
-      <div style={{ gridRow: "taskbar" }}>
+      {!isMobile && (
+        <div className="absolute inset-0" onClick={handleDesktopClick}>
+          <GridDistortion
+            imageSrc={WallpaperImage.src}
+            grid={100}
+            mouse={0.1}
+            strength={0.15}
+            relaxation={0.9}
+          />
+        </div>
+      )}
+
+      <div className="z-1" style={{ gridRow: "taskbar" }}>
         <Taskbar />
       </div>
 
       <div style={{ gridRow: "desktop" }}>
-        <div
-          className="text-white grid-cols-fill-5 sm:grid-cols-fill-6 grid-rows-fill-6 grid h-full grid-flow-col place-items-center gap-4 p-4"
-          onClick={handleDesktopClick}
-        >
+        <div className="text-white grid-cols-fill-5 sm:grid-cols-fill-6 grid-rows-fill-6 grid h-full grid-flow-col place-items-center gap-4 p-4">
           {icons
             .filter((icon) => !icon.parentId)
             .map((icon) => icon.show && <Icon key={icon.id} {...icon} />)}
