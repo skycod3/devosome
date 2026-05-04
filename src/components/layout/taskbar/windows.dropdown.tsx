@@ -70,7 +70,7 @@ export function WindowsDropdown() {
                   e.stopPropagation();
                   closeWindow(window.id);
                 }}
-                className="flex-center ml-auto size-4 rounded-full border border-red-500"
+                className="flex-center ml-auto size-5 sm:size-4 rounded-full border border-red-500"
               >
                 <X className="size-3 text-red-500" />
               </button>
