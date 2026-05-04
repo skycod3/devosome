@@ -105,6 +105,10 @@ export function WindowHeader({
     // Click on "Home" breadcrumb → close current window and return to desktop
     if (targetIconId === "icon-home") {
       closeWindow(window.id);
+      // Minimize all windows to show desktop (except the one we're closing, which is already being closed)
+      windows.forEach((w) => {
+        if (w.id !== window.id) minimizeWindow(w.id);
+      });
       return;
     }
 
