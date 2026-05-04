@@ -45,7 +45,7 @@ export function Pictures({ iconId }: PicturesProps) {
   return (
     <div
       onClick={handleIconsAreaClick}
-      className="grid-cols-fill-6 grid h-full items-start gap-4 p-4"
+      className="grid-cols-fill-6 grid-rows-fill-6 grid h-full items-start gap-4 p-4"
     >
       {iconsFromStore.map((icon) => (
         <Icon key={icon.id} {...icon} />
