@@ -73,6 +73,7 @@ export function Icon({
             alt={title}
             width={size.width}
             height={size.height}
+            loading="eager"
           />
 
           <p className="line-clamp-2 leading-normal">{title}</p>
