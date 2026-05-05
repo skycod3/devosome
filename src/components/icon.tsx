@@ -71,14 +71,17 @@ export function Icon({
           }
           className={`z-1 grid min-h-28 w-full content-center justify-items-center gap-2 rounded text-center text-(--icon-color) ${supportsRelativeColors ? `${!isHighlighted ? `hover:bg-(--icon-color)/10` : "bg-(--icon-color)/20"}` : ""}`}
         >
-          <Image
-            src={icon}
-            alt={title}
-            width={size.width}
-            height={size.height}
-            loading="eager"
-            placeholder={imagePlaceholder}
-          />
+          <div className="grid min-h-16 relative">
+            <Image
+              src={icon}
+              alt={title}
+              width={size.width}
+              height={size.height}
+              loading="eager"
+              className="object-contain self-end"
+              placeholder={imagePlaceholder}
+            />
+          </div>
 
           <p className="line-clamp-2 leading-normal text-sm">{title}</p>
         </button>
