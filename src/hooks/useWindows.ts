@@ -38,6 +38,9 @@ export const useWindows = () => {
   const setWindowActiveTab = useWindowsStore(
     (state) => state.setWindowActiveTab,
   );
+  const updateWindowTitle = useWindowsStore(
+    (state) => state.updateWindowTitle,
+  );
 
   // Get viewport dimensions for positioning
   const { width, height } = useViewport();
@@ -137,5 +140,6 @@ export const useWindows = () => {
     setWindowSize,
     bringToFront,
     setWindowActiveTab,
+    updateWindowTitle,
   };
 };

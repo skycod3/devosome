@@ -99,6 +99,7 @@ interface WindowsState {
   setWindowSize: (id: string, width: number, height: number) => void;
   bringToFront: (id: string) => void;
   setWindowActiveTab: (id: string, activeTabIconId: string) => void;
+  updateWindowTitle: (id: string, title: string) => void;
 }
 
 export const useWindowsStore = create<WindowsState>()(
@@ -512,6 +513,14 @@ export const useWindowsStore = create<WindowsState>()(
         set((state) => ({
           windows: state.windows.map((w) =>
             w.id === id ? { ...w, activeTab: activeTabIconId } : w,
+          ),
+        }));
+      },
+
+      updateWindowTitle(id, title) {
+        set((state) => ({
+          windows: state.windows.map((w) =>
+            w.id === id ? { ...w, title, tab: { title } } : w,
           ),
         }));
       },
