@@ -1,5 +1,5 @@
 import { useIcons } from "@/hooks/useIcons";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 import { IMAGE_FILES } from "@/constants/image-files";
 
@@ -40,7 +40,10 @@ export function Pictures({ iconId }: PicturesProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const iconsFromStore = icons.filter((icon) => icon.parentId === iconId);
+  const iconsFromStore = useMemo(
+    () => icons.filter((icon) => icon.parentId === iconId),
+    [icons, iconId],
+  );
 
   return (
     <div
