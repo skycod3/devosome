@@ -1,6 +1,6 @@
 import WallpaperImage from "@/assets/wallpaper.jpg";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { AnimatePresence } from "motion/react";
 
@@ -23,6 +23,7 @@ export function Desktop() {
   const { icons, setIcons, unhighlightAllIcons } = useIcons();
   const { windows } = useWindows();
   const isMobile = useIsMobile();
+  const desktopRef = useRef<HTMLDivElement>(null);
 
   function handleDesktopClick() {
     if (icons.some((icon) => icon.isHighlighted)) unhighlightAllIcons();
@@ -49,6 +50,7 @@ export function Desktop() {
 
   return (
     <div
+      ref={desktopRef}
       style={{
         backgroundImage: `url(${WallpaperImage.src})`,
         gridTemplateRows: "[taskbar] auto [desktop] 1fr [dock] auto",
@@ -85,7 +87,7 @@ export function Desktop() {
 
       <AnimatePresence>
         {windows.map((window) => (
-          <Window key={window.id} window={window} />
+          <Window key={window.id} window={window} dragConstraintsRef={desktopRef} />
         ))}
       </AnimatePresence>
     </div>

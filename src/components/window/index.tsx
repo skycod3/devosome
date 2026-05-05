@@ -1,7 +1,6 @@
-import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
 import { Window as WindowType } from "@/stores/windows.store";
-import { CSSProperties, useEffect, useState } from "react";
+import { CSSProperties, RefObject, useEffect, useState } from "react";
 
 import { motion, useMotionValue, useDragControls } from "motion/react";
 
@@ -14,9 +13,10 @@ import { WindowContent } from "./window-content";
 
 interface WindowProps {
   window: WindowType;
+  dragConstraintsRef: RefObject<HTMLDivElement | null>;
 }
 
-export function Window({ window }: WindowProps) {
+export function Window({ window, dragConstraintsRef }: WindowProps) {
   const {
     bringToFront,
     activeWindowId,
@@ -24,7 +24,6 @@ export function Window({ window }: WindowProps) {
     setWindowActiveTab,
     isMobile,
   } = useWindows();
-  const { width, height } = useViewport();
 
   // Get activeTab from store, fallback to window.iconId
   const activeTab = window.activeTab || window.iconId;
@@ -76,9 +75,7 @@ export function Window({ window }: WindowProps) {
     zIndex: window?.zIndex,
     pointerEvents: window?.isMinimized ? "none" : undefined,
     maxHeight:
-      isMobile || isAnimating || window.isMaximized
-        ? undefined
-        : `calc(${height}px - 10vh)`,
+      isMobile || isAnimating || window.isMaximized ? undefined : "90dvh",
   };
 
   const getWindowAnimations = () => {
@@ -111,31 +108,11 @@ export function Window({ window }: WindowProps) {
       dragControls={dragControls}
       dragElastic={0.1}
       dragListener={false}
-      dragConstraints={{
-        top: 0,
-        left: 0,
-        right: width - window.size.width,
-        bottom: height - window.size.height,
-      }}
+      dragConstraints={dragConstraintsRef}
       dragMomentum={false}
-      onDragEnd={(_, info) => {
-        // Calculate new position and clamp within bounds
-        const newX = Math.max(
-          0,
-          Math.min(
-            window.position.x + info.offset.x,
-            width - window.size.width,
-          ),
-        );
-        const newY = Math.max(
-          0,
-          Math.min(
-            window.position.y + info.offset.y,
-            height - window.size.height,
-          ),
-        );
-
-        setWindowPosition(window.id, newX, newY);
+      onDragEnd={() => {
+        // Persist final clamped position to store using the current MotionValue
+        setWindowPosition(window.id, x.get(), y.get());
       }}
       whileDrag={{
         scale: window.isMaximized ? 1 : 1.02,
