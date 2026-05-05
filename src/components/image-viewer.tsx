@@ -144,19 +144,19 @@ export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
       // Coming from a swipe: entryX is pre-positioned, swipeX is already 0.
       // Disable drag during animation to prevent elastic interference.
       setIsAnimating(true);
-      setIsLoaded(true); // don't wait for onLoad — image may already be cached
+      setIsLoaded(false);
       animate(entryX, 0, {
         type: "tween",
         duration: 0.3,
         ease: [0.25, 0.1, 0.25, 1],
         onComplete: () => setIsAnimating(false),
       });
-      animate(imageOpacity, 1, { type: "tween", duration: 0.2 });
+      // imageOpacity animates to 1 only after onLoad fires (see <Image> onLoad handler)
     } else {
-      // Button / keyboard navigation: instant reset, normal onLoad fade.
+      // Button / keyboard navigation: instant reset, onLoad triggers fade-in.
       swipeX.set(0);
       entryX.set(0);
-      imageOpacity.set(1);
+      imageOpacity.set(0);
       setIsLoaded(false);
       setIsAnimating(false);
     }
@@ -406,11 +406,14 @@ export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
               <Image
                 src={imageFile.icon}
                 alt={imageFile.title}
-                className={`max-h-full max-w-full object-contain select-none transition-opacity duration-200 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+                className="max-h-full max-w-full object-contain select-none"
                 sizes="(max-width: 768px) 100vw, 80vw"
                 priority
                 draggable={false}
-                onLoad={() => setIsLoaded(true)}
+                onLoad={() => {
+                  setIsLoaded(true);
+                  animate(imageOpacity, 1, { type: "tween", duration: 0.2 });
+                }}
               />
             </motion.div>
           </motion.div>
