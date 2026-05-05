@@ -1,5 +1,5 @@
 import type { StaticImageData } from "next/image";
-import ResumeIcon from "@/assets/resume.svg";
+import ResumeIcon from "@/assets/resume.png";
 
 export type DocumentViewer = "pdf" | "text";
 
