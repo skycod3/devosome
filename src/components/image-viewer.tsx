@@ -7,33 +7,25 @@ import {
   useMotionValue,
   useMotionValueEvent,
   animate,
+  type PanInfo,
 } from "motion/react";
 
-import {
-  PiArrowLeft,
-  PiArrowRight,
-  PiArrowCounterClockwise,
-  PiMagnifyingGlassMinus,
-  PiMagnifyingGlassPlus,
-  PiArrowsOut,
-  PiSpinnerLight,
-} from "react-icons/pi";
+// prettier-ignore
+import { PiArrowLeft, PiArrowRight, PiArrowCounterClockwise, PiMagnifyingGlassMinus, PiMagnifyingGlassPlus, PiArrowsOut, PiSpinnerLight } from "react-icons/pi";
+
+import { useIcons } from "@/hooks/useIcons";
+import { useWindows } from "@/hooks/useWindows";
 
 import { IMAGE_FILES } from "@/constants/image-files";
-import { useIcons } from "@/hooks/useIcons";
-
-// ─── Constants ───────────────────────────────────────────────────────────────
-
-const ZOOM_MIN = 0.1;
-const ZOOM_MAX = 5;
-const ZOOM_STEP = 0.25;
-const ZOOM_WHEEL_FACTOR = 0.001;
+// prettier-ignore
+import { ZOOM_MIN, ZOOM_MAX, ZOOM_STEP, ZOOM_WHEEL_FACTOR, SWIPE_THRESHOLD, SWIPE_OUT_DISTANCE, SWIPE_SPRING } from "@/constants/image-viewer";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface ImageViewerProps {
   iconId: string;
   parentId?: string;
+  windowId?: string;
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -48,8 +40,9 @@ function formatZoom(scale: number) {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
+export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
   const { icons } = useIcons();
+  const { updateWindowTitle } = useWindows();
 
   // Build ordered list of image IDs from the same parent folder
   const siblingIds = parentId
@@ -75,6 +68,9 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
   const scale = useMotionValue(1);
   const panX = useMotionValue(0);
   const panY = useMotionValue(0);
+  const swipeX = useMotionValue(0); // drag offset during swipe gesture
+  const entryX = useMotionValue(0); // slide-in animation for incoming image
+  const imageOpacity = useMotionValue(1);
 
   // ─── Local state ───────────────────────────────────────────────────────────
 
@@ -82,6 +78,8 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
   const [zoomLabel, setZoomLabel] = useState(formatZoom(1));
   const [isDragging, setIsDragging] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isAtDefaultZoom, setIsAtDefaultZoom] = useState(true);
 
   // ─── Refs ──────────────────────────────────────────────────────────────────
 
@@ -94,9 +92,16 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
   // Pinch-to-zoom state
   const lastPinchDistRef = useRef<number | null>(null);
 
+  // Prevent double-navigation during swipe animation
+  const isNavigatingRef = useRef(false);
+
+  // Direction the next image should enter from (-1 = from right, 1 = from left)
+  const swipeEntryRef = useRef<-1 | 1 | 0>(0);
+
   // Track scale changes: update zoom label + pan constraints
   useMotionValueEvent(scale, "change", (v) => {
     setZoomLabel(formatZoom(v));
+    setIsAtDefaultZoom(v === 1);
     const area = imageAreaRef.current;
     if (!area) return;
     const areaW = area.clientWidth;
@@ -122,11 +127,42 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
   // Reset view + focus whenever the displayed image changes (also runs on mount)
   useEffect(() => {
     scale.set(1);
+    setIsAtDefaultZoom(true);
     panX.set(0);
     panY.set(0);
     setRotation(0);
-    setIsLoaded(false);
     containerRef.current?.focus();
+
+    // Update the window title to reflect the current image
+    if (windowId) {
+      updateWindowTitle(windowId, imageFile.title);
+    }
+
+    const entry = swipeEntryRef.current;
+
+    if (entry !== 0) {
+      // Coming from a swipe: entryX is pre-positioned, swipeX is already 0.
+      // Disable drag during animation to prevent elastic interference.
+      setIsAnimating(true);
+      setIsLoaded(true); // don't wait for onLoad — image may already be cached
+      animate(entryX, 0, {
+        type: "tween",
+        duration: 0.3,
+        ease: [0.25, 0.1, 0.25, 1],
+        onComplete: () => setIsAnimating(false),
+      });
+      animate(imageOpacity, 1, { type: "tween", duration: 0.2 });
+    } else {
+      // Button / keyboard navigation: instant reset, normal onLoad fade.
+      swipeX.set(0);
+      entryX.set(0);
+      imageOpacity.set(1);
+      setIsLoaded(false);
+      setIsAnimating(false);
+    }
+
+    swipeEntryRef.current = 0;
+    isNavigatingRef.current = false;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentIndex]);
 
@@ -226,6 +262,51 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
     lastPinchDistRef.current = null;
   }, []);
 
+  // ─── Swipe ─────────────────────────────────────────────────────────────────
+
+  const handleSwipeEnd = useCallback(
+    (_: unknown, info: PanInfo) => {
+      // Only swipe at 100% zoom
+      if (!isAtDefaultZoom) return;
+      // Prevent double-navigation
+      if (isNavigatingRef.current) return;
+
+      const offsetX = info.offset.x;
+
+      if (offsetX < -SWIPE_THRESHOLD && hasNext) {
+        // Swipe right-to-left → fade out from current dragged position, next enters from right
+        isNavigatingRef.current = true;
+        swipeEntryRef.current = -1;
+        swipeX.stop();
+        swipeX.set(0);
+        animate(imageOpacity, 0, {
+          duration: 0.15,
+          onComplete: () => {
+            entryX.set(SWIPE_OUT_DISTANCE);
+            goNext();
+          },
+        });
+      } else if (offsetX > SWIPE_THRESHOLD && hasPrev) {
+        // Swipe left-to-right → fade out from current dragged position, prev enters from left
+        isNavigatingRef.current = true;
+        swipeEntryRef.current = 1;
+        swipeX.stop();
+        swipeX.set(0);
+        animate(imageOpacity, 0, {
+          duration: 0.15,
+          onComplete: () => {
+            entryX.set(-SWIPE_OUT_DISTANCE);
+            goPrev();
+          },
+        });
+      } else {
+        // Boundary bounce or sub-threshold swipe: spring back to center
+        animate(swipeX, 0, SWIPE_SPRING);
+      }
+    },
+    [isAtDefaultZoom, swipeX, imageOpacity, hasNext, hasPrev, goNext, goPrev],
+  );
+
   // ─── Rotation ──────────────────────────────────────────────────────────────
 
   const rotate = useCallback(() => {
@@ -262,7 +343,9 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
     );
   }
 
-  const canDrag = scale.get() > 1;
+  const canDrag = !isAtDefaultZoom && scale.get() > 1;
+  const isAtStart = currentIndex === 0;
+  const isAtEnd = currentIndex === imageList.length - 1;
 
   return (
     <div
@@ -283,32 +366,54 @@ export function ImageViewer({ iconId, parentId }: ImageViewerProps) {
             />
           </div>
         )}
+        {/* ── Swipe wrapper (active only at 100% zoom) ── */}
         <motion.div
-          drag={canDrag}
-          dragMomentum={false}
-          dragConstraints={constraintsRef.current}
-          dragElastic={0.05}
-          style={{ x: panX, y: panY, scale, rotate: rotation }}
-          onDragStart={() => setIsDragging(true)}
-          onDragEnd={() => setIsDragging(false)}
-          className={
-            "absolute inset-0 flex items-center justify-center " +
-            (canDrag
-              ? isDragging
-                ? "cursor-grabbing"
-                : "cursor-grab"
-              : "cursor-default")
-          }
+          drag={!isAnimating && isAtDefaultZoom ? "x" : false}
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={{
+            left: isAtEnd ? 0.4 : 0.4,
+            right: isAtStart ? 0.4 : 0.4,
+          }}
+          style={{ x: swipeX }}
+          onDragEnd={handleSwipeEnd}
+          className="absolute inset-0"
         >
-          <Image
-            src={imageFile.icon}
-            alt={imageFile.title}
-            className={`max-h-full max-w-full object-contain select-none transition-opacity duration-150 ${isLoaded ? "opacity-100" : "opacity-0"}`}
-            sizes="(max-width: 768px) 100vw, 80vw"
-            priority
-            draggable={false}
-            onLoad={() => setIsLoaded(true)}
-          />
+          {/* ── Entry slide wrapper (animates incoming image position) ── */}
+          <motion.div style={{ x: entryX }} className="absolute inset-0">
+            <motion.div
+              drag={canDrag}
+              dragMomentum={false}
+              dragConstraints={constraintsRef.current}
+              dragElastic={0.05}
+              style={{
+                x: panX,
+                y: panY,
+                scale,
+                rotate: rotation,
+                opacity: imageOpacity,
+              }}
+              onDragStart={() => setIsDragging(true)}
+              onDragEnd={() => setIsDragging(false)}
+              className={
+                "absolute inset-0 flex items-center justify-center " +
+                (canDrag
+                  ? isDragging
+                    ? "cursor-grabbing"
+                    : "cursor-grab"
+                  : "cursor-default")
+              }
+            >
+              <Image
+                src={imageFile.icon}
+                alt={imageFile.title}
+                className={`max-h-full max-w-full object-contain select-none transition-opacity duration-200 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+                sizes="(max-width: 768px) 100vw, 80vw"
+                priority
+                draggable={false}
+                onLoad={() => setIsLoaded(true)}
+              />
+            </motion.div>
+          </motion.div>
         </motion.div>
 
         {/* ── Prev / Next arrows (floating) ── */}
