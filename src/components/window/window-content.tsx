@@ -119,9 +119,10 @@ function LazyPdfViewer({ iconId }: { iconId: string }) {
 interface WindowContentProps {
   iconId: string;
   parentId?: string;
+  windowId?: string;
 }
 
-export function WindowContent({ iconId, parentId }: WindowContentProps) {
+export function WindowContent({ iconId, parentId, windowId }: WindowContentProps) {
   const { isMobile } = useWindows();
   const application = APPLICATIONS[iconId];
 
@@ -140,7 +141,7 @@ export function WindowContent({ iconId, parentId }: WindowContentProps) {
   if (imageFile) {
     return (
       <section className="flex-2">
-        <ImageViewer iconId={iconId} parentId={parentId} />
+        <ImageViewer iconId={iconId} parentId={parentId} windowId={windowId} />
       </section>
     );
   }
