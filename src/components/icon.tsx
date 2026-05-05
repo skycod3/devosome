@@ -80,7 +80,7 @@ export function Icon({
             placeholder={imagePlaceholder}
           />
 
-          <p className="line-clamp-2 leading-normal">{title}</p>
+          <p className="line-clamp-2 leading-normal text-sm">{title}</p>
         </button>
       </ContextMenuTrigger>
 
