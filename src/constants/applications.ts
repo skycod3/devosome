@@ -26,13 +26,18 @@ export const APPLICATIONS: Record<string, Application> = {
   files: {
     id: "files",
     windowTitle: "Files",
-    tabTitle: "Documents",
-    component: Documents,
     showTabs: true,
-    availableTabs: ["files", "pictures", "music", "videos"],
+    availableTabs: ["documents", "pictures", "music", "videos"],
   },
 
   // Tab views
+  documents: {
+    id: "documents",
+    windowTitle: "Files",
+    tabTitle: "Documents",
+    component: Documents,
+    showTabs: false,
+  },
   pictures: {
     id: "pictures",
     windowTitle: "Pictures",

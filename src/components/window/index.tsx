@@ -176,11 +176,11 @@ export function Window({ window, desktopRect }: WindowProps) {
               </li>
               <li>
                 <button
-                  onClick={() => setWindowActiveTab(window.id, "files")}
-                  className={`flex items-center gap-1 font-medium ${activeTab === "files" ? "text-blue-600" : ""}`}
+                  onClick={() => setWindowActiveTab(window.id, "documents")}
+                  className={`flex items-center gap-1 font-medium ${activeTab === "documents" ? "text-blue-600" : ""}`}
                 >
                   <PiNote className="size-6 sm:size-4" />
-                  <span className="hidden sm:inline">Files</span>
+                  <span className="hidden sm:inline">Documents</span>
                 </button>
               </li>
               <li>

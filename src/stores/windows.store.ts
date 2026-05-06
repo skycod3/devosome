@@ -18,7 +18,7 @@ import { APPLICATIONS } from "@/constants/applications";
  * 
  * @example
  * findTabParentApplication("pictures") // Returns files app
- * findTabParentApplication("files") // Returns files app (itself)
+ * findTabParentApplication("documents") // Returns files app (tab of files)
  * findTabParentApplication("document-resume") // Returns null (no tabs)
  * findTabParentApplication("image-xxx") // Returns null (images are not tabs)
  */
