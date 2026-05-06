@@ -17,6 +17,8 @@ import {
   VscClose,
 } from "react-icons/vsc";
 
+import { supportsRelativeColors } from "@/utils/css-supports";
+
 interface WindowHeaderProps {
   window: Window;
   windowTitle: string;
@@ -59,11 +61,6 @@ export function WindowHeader({
   const { width, height } = useViewport();
 
   const parentIcon = icons.find((icon) => icon.id === window.parentId);
-
-  const supportsRelativeColors = CSS.supports(
-    "color",
-    "color-mix(in oklab, red, blue)",
-  );
 
   function handleMaximize() {
     const wasMaximized = window.isMaximized;

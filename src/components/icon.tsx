@@ -8,6 +8,8 @@ import { useIcons } from "@/hooks/useIcons";
 import { useWindows } from "@/hooks/useWindows";
 import { useTheme } from "@/hooks/useTheme";
 
+import { supportsRelativeColors } from "@/utils/css-supports";
+
 import {
   ContextMenu,
   ContextMenuContent,
@@ -19,11 +21,6 @@ import {
 type IconProps = IconFromStore & {
   imagePlaceholder?: "blur" | "empty";
 };
-
-const supportsRelativeColors = CSS.supports(
-  "color",
-  "color-mix(in oklab, red, blue)",
-);
 
 export function Icon({
   id,

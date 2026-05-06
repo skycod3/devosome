@@ -19,10 +19,7 @@ import {
 import { DOCK_HEIGHT, DOCK_OFFSET_BOTTOM, DOCK_BASE_ITEM_SIZE, DOCK_MAGNIFICATION, DOCK_DISTANCE, DOCK_SPRING_MASS, DOCK_SPRING_STIFFNESS, DOCK_SPRING_DAMPING, DOCK_LABEL_ANIMATION_DURATION, DOCK_ICON_SIZE } from "@/constants/dock";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
-const supportsRelativeColors = CSS.supports(
-  "color",
-  "color-mix(in oklab, red, blue)",
-);
+import { supportsRelativeColors } from "@/utils/css-supports";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

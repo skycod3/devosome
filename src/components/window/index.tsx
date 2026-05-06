@@ -11,10 +11,7 @@ import { APPLICATIONS } from "@/constants/applications";
 import { WindowHeader } from "./window-header";
 import { WindowContent } from "./window-content";
 
-const supportsRelativeColors = CSS.supports(
-  "color",
-  "color-mix(in oklab, red, blue)",
-);
+import { supportsRelativeColors } from "@/utils/css-supports";
 
 interface WindowProps {
   window: WindowType;

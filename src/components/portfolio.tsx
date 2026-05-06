@@ -7,10 +7,7 @@ import { PROJECTS, type Project } from "@/constants/projects";
 
 import { Badge } from "./ui/badge";
 
-const supportsRelativeColors = CSS.supports(
-  "color",
-  "color-mix(in oklab, red, blue)",
-);
+import { supportsRelativeColors } from "@/utils/css-supports";
 
 function Thumbnail({ src, alt }: { src: string; alt: string }) {
   return (
