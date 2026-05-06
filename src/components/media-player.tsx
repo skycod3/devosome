@@ -8,6 +8,10 @@ import {
   PiStop,
   PiPlayThin,
   PiPauseThin,
+  PiSpeakerX,
+  PiSpeakerLow,
+  PiSpeakerHigh,
+  PiArrowsOut,
 } from "react-icons/pi";
 
 import { VIDEO_FILES } from "@/constants/video-files";
@@ -22,6 +26,10 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
+function clamp(value: number, min = 0, max = 1): number {
+  return Math.min(Math.max(value, min), max);
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface MediaPlayerProps {
@@ -33,10 +41,13 @@ interface MediaPlayerProps {
 
 export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
   const mediaRef = useRef<HTMLVideoElement & HTMLAudioElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [isMuted, setIsMuted] = useState(false);
 
   const src =
     mediaType === "video"
@@ -60,12 +71,17 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
       setIsPlaying(false);
       setCurrentTime(0);
     };
+    const onVolumeChange = () => {
+      setVolume(el.volume);
+      setIsMuted(el.muted);
+    };
 
     el.addEventListener("timeupdate", onTimeUpdate);
     el.addEventListener("loadedmetadata", onLoadedMetadata);
     el.addEventListener("play", onPlay);
     el.addEventListener("pause", onPause);
     el.addEventListener("ended", onEnded);
+    el.addEventListener("volumechange", onVolumeChange);
 
     return () => {
       el.removeEventListener("timeupdate", onTimeUpdate);
@@ -73,7 +89,13 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
       el.removeEventListener("play", onPlay);
       el.removeEventListener("pause", onPause);
       el.removeEventListener("ended", onEnded);
+      el.removeEventListener("volumechange", onVolumeChange);
     };
+  }, []);
+
+  // Focus container on mount so keyboard shortcuts work immediately
+  useEffect(() => {
+    containerRef.current?.focus();
   }, []);
 
   // ─── Controls ──────────────────────────────────────────────────────────────
@@ -102,6 +124,63 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
     setCurrentTime(Number(e.target.value));
   }, []);
 
+  const handleVolumeChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const el = mediaRef.current;
+      if (!el) return;
+      const v = Number(e.target.value);
+      el.volume = v;
+      el.muted = false;
+    },
+    [],
+  );
+
+  const handleMute = useCallback(() => {
+    const el = mediaRef.current;
+    if (!el) return;
+    el.muted = !el.muted;
+  }, []);
+
+  const handleFullscreen = useCallback(() => {
+    mediaRef.current?.requestFullscreen();
+  }, []);
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLDivElement>) => {
+      const el = mediaRef.current;
+      if (!el) return;
+
+      switch (e.key) {
+        case " ":
+          e.preventDefault();
+          handlePlayPause();
+          break;
+        case "ArrowLeft":
+          e.preventDefault();
+          el.currentTime = clamp(el.currentTime - 5, 0, el.duration);
+          break;
+        case "ArrowRight":
+          e.preventDefault();
+          el.currentTime = clamp(el.currentTime + 5, 0, el.duration);
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          el.volume = clamp(el.volume + 0.1);
+          el.muted = false;
+          break;
+        case "ArrowDown":
+          e.preventDefault();
+          el.volume = clamp(el.volume - 0.1);
+          break;
+        case "m":
+        case "M":
+          handleMute();
+          break;
+      }
+    },
+    [handlePlayPause, handleMute],
+  );
+
   // ─── No source guard ───────────────────────────────────────────────────────
 
   if (!src) {
@@ -112,10 +191,26 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
     );
   }
 
+  // ─── Derived ───────────────────────────────────────────────────────────────
+
+  const effectiveVolume = isMuted ? 0 : volume;
+
+  const VolumeIcon =
+    effectiveVolume === 0
+      ? PiSpeakerX
+      : effectiveVolume < 0.5
+        ? PiSpeakerLow
+        : PiSpeakerHigh;
+
   // ─── Render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="flex flex-col size-full bg-black/5">
+    <div
+      ref={containerRef}
+      className="flex flex-col size-full bg-black/5 outline-none"
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+    >
       {/* ── Media area ── */}
       <div className="group relative flex-1 overflow-hidden bg-black flex-center">
         {mediaType === "video" ? (
@@ -143,10 +238,12 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
           <audio ref={mediaRef} src={src} preload="metadata" />
         )}
 
-        <div
-          className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/75 grid place-items-center`}
-        >
-          <button onClick={handlePlayPause}>
+        {/* Play/Pause overlay */}
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/75 grid place-items-center">
+          <button
+            onClick={handlePlayPause}
+            aria-label={isPlaying ? "Pause" : "Play"}
+          >
             {isPlaying ? (
               <PiPauseThin className="size-20 text-white" />
             ) : (
@@ -172,13 +269,13 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
 
       {/* ── Toolbar ── */}
       <div className="flex shrink-0 items-center justify-between gap-2 border-t bg-popover/80 px-3 py-2 backdrop-blur-sm text-sm">
-        {/* Controls */}
+        {/* Left: play controls */}
         <div className="flex items-center gap-1">
           <button
             onClick={handlePlayPause}
             className="rounded p-1.5 hover:bg-accent transition"
             aria-label={isPlaying ? "Pause" : "Play"}
-            title={isPlaying ? "Pause" : "Play"}
+            title={isPlaying ? "Pause (Space)" : "Play (Space)"}
           >
             {isPlaying ? (
               <PiPause className="size-4" />
@@ -196,10 +293,43 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
           </button>
         </div>
 
-        {/* Time */}
+        {/* Center: time */}
         <span className="text-xs text-muted-foreground tabular-nums">
           {formatTime(currentTime)} / {formatTime(duration)}
         </span>
+
+        {/* Right: volume + fullscreen */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={handleMute}
+            className="rounded p-1.5 hover:bg-accent transition"
+            aria-label={isMuted ? "Unmute" : "Mute"}
+            title={isMuted ? "Unmute (M)" : "Mute (M)"}
+          >
+            <VolumeIcon className="size-4" />
+          </button>
+          <input
+            type="range"
+            min={0}
+            max={1}
+            step={0.05}
+            value={effectiveVolume}
+            onChange={handleVolumeChange}
+            className="w-16 h-1.5 accent-primary cursor-pointer"
+            aria-label="Volume"
+            title="Volume (↑ ↓)"
+          />
+          {mediaType === "video" && (
+            <button
+              onClick={handleFullscreen}
+              className="rounded p-1.5 hover:bg-accent transition ml-1"
+              aria-label="Fullscreen"
+              title="Fullscreen"
+            >
+              <PiArrowsOut className="size-4" />
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
