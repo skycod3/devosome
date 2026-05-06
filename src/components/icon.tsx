@@ -66,20 +66,22 @@ export function Icon({
                 : "white",
             } as CSSProperties
           }
-          className={`z-1 w-full grid justify-items-center grid-rows-[min(4.25rem,17vw)_auto] gap-1.5 rounded text-center text-(--icon-color) ${supportsRelativeColors ? `${!isHighlighted ? `hover:bg-(--icon-color)/10` : "bg-(--icon-color)/20"}` : ""}`}
+          className={`z-1 w-full flex-center flex-col gap-1.5 rounded text-center text-(--icon-color) ${supportsRelativeColors ? `${!isHighlighted ? `hover:bg-(--icon-color)/10` : "bg-(--icon-color)/20"}` : ""}`}
         >
-          <div className="grid relative self-end">
+          <div>
             <Image
               src={icon}
               alt={title}
+              width={size.width}
+              height={size.height}
               loading="eager"
-              className="object-contain self-end max-w-12"
+              className="flex-2 object-contain max-h-full max-w-16 mx-auto"
               placeholder={imagePlaceholder}
             />
           </div>
 
-          <p className="line-clamp-2 leading-4 sm:leading-normal text-sm">
-            {title}
+          <p className="leading-4 sm:leading-normal text-sm">
+            {title.length > 18 ? `${title.slice(0, 18)}...` : title}
           </p>
         </button>
       </ContextMenuTrigger>
