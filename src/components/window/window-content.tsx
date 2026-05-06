@@ -10,7 +10,10 @@ import {
 import { APPLICATIONS } from "@/constants/applications";
 import { IMAGE_FILES } from "@/constants/image-files";
 import { DOCUMENTS_FILES } from "@/constants/documents-files";
+import { VIDEO_FILES } from "@/constants/video-files";
+import { AUDIO_FILES } from "@/constants/audio-files";
 import { ImageViewer } from "../image-viewer";
+import { MediaPlayer } from "../media-player";
 import { useWindows } from "@/hooks/useWindows";
 
 // ---------------------------------------------------------------------------
@@ -161,6 +164,26 @@ export function WindowContent({ iconId, parentId, windowId }: WindowContentProps
             <LazyPdfViewer iconId={iconId} />
           </PdfErrorBoundary>
         )}
+      </section>
+    );
+  }
+
+  // Video player
+  const videoFile = VIDEO_FILES[iconId];
+  if (videoFile) {
+    return (
+      <section className="flex-2">
+        <MediaPlayer iconId={iconId} mediaType="video" />
+      </section>
+    );
+  }
+
+  // Audio player
+  const audioFile = AUDIO_FILES[iconId];
+  if (audioFile) {
+    return (
+      <section className="flex-2">
+        <MediaPlayer iconId={iconId} mediaType="audio" />
       </section>
     );
   }
