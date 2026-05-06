@@ -11,6 +11,11 @@ import { APPLICATIONS } from "@/constants/applications";
 import { WindowHeader } from "./window-header";
 import { WindowContent } from "./window-content";
 
+const supportsRelativeColors = CSS.supports(
+  "color",
+  "color-mix(in oklab, red, blue)",
+);
+
 interface WindowProps {
   window: WindowType;
   desktopRect: { width: number; height: number; top: number; left: number };
@@ -159,7 +164,9 @@ export function Window({ window, desktopRect }: WindowProps) {
 
       <div className="flex overflow-auto">
         {window.showTabs && (
-          <aside className="sticky top-0 sm:flex-[0.6] bg-[rgb(from_var(--foreground)_r_g_b/0.1)] p-4">
+          <aside
+            className={`sticky top-0 sm:flex-[0.6] ${supportsRelativeColors ? "bg-[rgb(from_var(--foreground)_r_g_b/0.1)]" : "bg-sidebar-accent"} p-4`}
+          >
             <ul className="space-y-6 sm:space-y-3">
               <li>
                 <button

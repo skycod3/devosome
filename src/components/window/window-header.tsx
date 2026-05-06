@@ -60,6 +60,11 @@ export function WindowHeader({
 
   const parentIcon = icons.find((icon) => icon.id === window.parentId);
 
+  const supportsRelativeColors = CSS.supports(
+    "color",
+    "color-mix(in oklab, red, blue)",
+  );
+
   function handleMaximize() {
     const wasMaximized = window.isMaximized;
     const transition = { duration: 0.18, ease: "easeOut" as const };
@@ -185,8 +190,9 @@ export function WindowHeader({
     >
       <div
         style={{
-          background: `linear-gradient(to right, rgb(from var(--background) r g b / 0.2), transparent 50%), repeating-linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.05) 8%),
-              repeating-linear-gradient(-45deg, transparent, rgb(from var(--foreground) r g b / 0.05) 8%)`,
+          background: supportsRelativeColors
+            ? `linear-gradient(to right, rgb(from var(--background) r g b / 0.2), transparent 50%), repeating-linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.05) 8%), repeating-linear-gradient(-45deg, transparent, rgb(from var(--foreground) r g b / 0.05) 8%)`
+            : "var(--secondary)", // Fallback sólido para navegadores sem suporte a cores relativas
         }}
         className={`flex flex-wrap flex-1 items-center gap-x-3 gap-y-1 p-2`}
       >
