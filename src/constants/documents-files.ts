@@ -16,7 +16,7 @@ export interface DocumentFile {
 export const DOCUMENTS_FILES: Record<string, DocumentFile> = {
   "document-resume": {
     id: "document-resume",
-    title: "Resume",
+    title: "Jean's Resume.pdf",
     icon: ResumeIcon,
     file: "/documents/resume.pdf",
     mimeType: "application/pdf",
