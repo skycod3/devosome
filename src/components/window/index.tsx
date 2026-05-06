@@ -208,7 +208,11 @@ export function Window({ window, desktopRect }: WindowProps) {
           </aside>
         )}
 
-        <WindowContent iconId={activeTab} parentId={window.parentId} windowId={window.id} />
+        <WindowContent
+          iconId={activeTab}
+          parentId={window.parentId}
+          windowId={window.id}
+        />
       </div>
     </motion.div>
   );
