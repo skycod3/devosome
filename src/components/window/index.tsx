@@ -110,8 +110,10 @@ export function Window({ window, dragConstraintsRef }: WindowProps) {
       dragListener={false}
       dragConstraints={dragConstraintsRef}
       dragMomentum={false}
-      onDragEnd={() => {
-        // Persist final clamped position to store using the current MotionValue
+      onDragTransitionEnd={() => {
+        // Persist final clamped position from MotionValue to store.
+        // onDragTransitionEnd fires after the elastic snap-back animation completes,
+        // so x.get()/y.get() are guaranteed to be the final constrained values.
         setWindowPosition(window.id, x.get(), y.get());
       }}
       whileDrag={{
