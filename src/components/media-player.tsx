@@ -2,7 +2,13 @@
 
 import Image from "next/image";
 import { useRef, useState, useCallback, useEffect } from "react";
-import { PiPlay, PiPause, PiStop } from "react-icons/pi";
+import {
+  PiPlay,
+  PiPause,
+  PiStop,
+  PiPlayThin,
+  PiPauseThin,
+} from "react-icons/pi";
 
 import { VIDEO_FILES } from "@/constants/video-files";
 import { AUDIO_FILES } from "@/constants/audio-files";
@@ -111,7 +117,7 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
   return (
     <div className="flex flex-col size-full bg-black/5">
       {/* ── Media area ── */}
-      <div className="relative flex-1 overflow-hidden bg-black flex-center">
+      <div className="group relative flex-1 overflow-hidden bg-black flex-center">
         {mediaType === "video" ? (
           <video
             ref={mediaRef}
@@ -136,6 +142,18 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
           // eslint-disable-next-line jsx-a11y/media-has-caption
           <audio ref={mediaRef} src={src} preload="metadata" />
         )}
+
+        <div
+          className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/75 grid place-items-center`}
+        >
+          <button onClick={handlePlayPause}>
+            {isPlaying ? (
+              <PiPauseThin className="size-20 text-white" />
+            ) : (
+              <PiPlayThin className="size-20 text-white" />
+            )}
+          </button>
+        </div>
       </div>
 
       {/* ── Progress bar ── */}
