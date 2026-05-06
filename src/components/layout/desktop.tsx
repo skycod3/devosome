@@ -1,6 +1,6 @@
 import WallpaperImage from "@/assets/wallpaper.jpg";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { AnimatePresence } from "motion/react";
 
@@ -24,6 +24,7 @@ export function Desktop() {
   const { windows } = useWindows();
   const isMobile = useIsMobile();
   const desktopRef = useRef<HTMLDivElement>(null);
+  const [desktopRect, setDesktopRect] = useState({ width: 0, height: 0, top: 0, left: 0 });
 
   function handleDesktopClick() {
     if (icons.some((icon) => icon.isHighlighted)) unhighlightAllIcons();
@@ -46,6 +47,22 @@ export function Desktop() {
         localStorage.setItem("welcomeToastDismissed", "true");
       },
     });
+  }, []);
+
+  useEffect(() => {
+    const el = desktopRef.current;
+    if (!el) return;
+
+    const measure = () => {
+      const rect = el.getBoundingClientRect();
+      setDesktopRect({ width: rect.width, height: rect.height, top: rect.top, left: rect.left });
+    };
+
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    measure();
+
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -87,7 +104,7 @@ export function Desktop() {
 
       <AnimatePresence>
         {windows.map((window) => (
-          <Window key={window.id} window={window} dragConstraintsRef={desktopRef} />
+          <Window key={window.id} window={window} desktopRect={desktopRect} />
         ))}
       </AnimatePresence>
     </div>

@@ -1,6 +1,6 @@
 import { useWindows } from "@/hooks/useWindows";
 import { Window as WindowType } from "@/stores/windows.store";
-import { CSSProperties, RefObject, useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 
 import { motion, useMotionValue, useDragControls } from "motion/react";
 
@@ -13,10 +13,10 @@ import { WindowContent } from "./window-content";
 
 interface WindowProps {
   window: WindowType;
-  dragConstraintsRef: RefObject<HTMLDivElement | null>;
+  desktopRect: { width: number; height: number; top: number; left: number };
 }
 
-export function Window({ window, dragConstraintsRef }: WindowProps) {
+export function Window({ window, desktopRect }: WindowProps) {
   const {
     bringToFront,
     activeWindowId,
@@ -24,6 +24,13 @@ export function Window({ window, dragConstraintsRef }: WindowProps) {
     setWindowActiveTab,
     isMobile,
   } = useWindows();
+
+  // dragConstraints values are relative to the element's own position as measured
+  // by getBoundingClientRect(). Since the window uses position:absolute inside the
+  // desktop container, its BCR.top already includes the container's top offset
+  // (Taskbar height). We compensate here so the numeric constraints are correctly
+  // anchored to the container's coordinate space.
+  const { width, height, top: containerTop, left: containerLeft } = desktopRect;
 
   // Get activeTab from store, fallback to window.iconId
   const activeTab = window.activeTab || window.iconId;
@@ -108,7 +115,12 @@ export function Window({ window, dragConstraintsRef }: WindowProps) {
       dragControls={dragControls}
       dragElastic={0.1}
       dragListener={false}
-      dragConstraints={dragConstraintsRef}
+      dragConstraints={{
+        top: -containerTop,
+        left: -containerLeft,
+        right: width - window.size.width - containerLeft,
+        bottom: height - window.size.height - containerTop,
+      }}
       dragMomentum={false}
       onDragTransitionEnd={() => {
         // Persist final clamped position from MotionValue to store.
