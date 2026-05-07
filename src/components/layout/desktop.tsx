@@ -101,7 +101,7 @@ export function Desktop() {
       </div>
 
       <div style={{ gridRow: "desktop" }}>
-        <div className="text-white grid-cols-fill-5 sm:grid-cols-fill-6 grid-rows-fill-6 grid h-full grid-flow-col place-items-center gap-4 p-4">
+        <div className="text-white grid-cols-fill-5 grid-rows-fill-5 sm:grid-cols-fill-6 sm:grid-rows-fill-6 grid h-full grid-flow-col place-items-center gap-4 p-4">
           {icons
             .filter((icon) => !icon.parentId)
             .map((icon) => icon.show && <Icon key={icon.id} {...icon} />)}
