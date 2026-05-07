@@ -137,7 +137,7 @@ export const useWindowsStore = create<WindowsState>()(
               // Parent window exists: set the active tab and restore/focus
               const activeTabId = tabParentApp.availableTabs?.includes(iconId)
                 ? iconId
-                : tabParentApp.availableTabs?.[0] ?? iconId;
+                : (tabParentApp.availableTabs?.[0] ?? iconId);
               get().setWindowActiveTab(existingParentWindow.id, activeTabId);
               get().restoreWindow(existingParentWindow.id);
               return existingParentWindow.id;
@@ -172,7 +172,7 @@ export const useWindowsStore = create<WindowsState>()(
               parentTitle,
               activeTab: tabParentApp.availableTabs?.includes(iconId)
                 ? iconId
-                : tabParentApp.availableTabs?.[0] ?? iconId, // Set the requested tab as active; fallback to first available tab
+                : (tabParentApp.availableTabs?.[0] ?? iconId), // Set the requested tab as active; fallback to first available tab
             };
 
             set((state) => ({
