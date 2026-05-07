@@ -317,13 +317,15 @@ export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
 
   const handleKeyDown = useCallback(
     (e: KeyboardEvent<HTMLDivElement>) => {
-      if (e.key === "ArrowLeft") {
-        e.preventDefault();
-        goPrev();
-      }
-      if (e.key === "ArrowRight") {
-        e.preventDefault();
-        goNext();
+      if (imageList.length > 1) {
+        if (e.key === "ArrowLeft") {
+          e.preventDefault();
+          goPrev();
+        }
+        if (e.key === "ArrowRight") {
+          e.preventDefault();
+          goNext();
+        }
       }
       if (e.key === "+" || e.key === "=") zoomIn();
       if (e.key === "-") zoomOut();
@@ -366,9 +368,13 @@ export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
             />
           </div>
         )}
-        {/* ── Swipe wrapper (active only at 100% zoom) ── */}
+        {/* ── Swipe wrapper (active only at 100% zoom and multiple images) ── */}
         <motion.div
-          drag={!isAnimating && isAtDefaultZoom ? "x" : false}
+          drag={
+            !isAnimating && isAtDefaultZoom && imageList.length > 1
+              ? "x"
+              : false
+          }
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={{
             left: isAtEnd ? 0.4 : 0.4,
