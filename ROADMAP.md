@@ -21,7 +21,7 @@ Recursos planejados para o projeto, organizados por categoria e status.
 | Calendário | ✅ | Popover com calendário ao clicar no relógio |
 | Clima (Weather) | ✅ | Widget com dados reais via WeatherAPI + geolocalização |
 | Tema (Light/Dark/Auto) | ✅ | Seletor de tema no system tray |
-| Bateria / Status de Rede | 📋 | `navigator.getBattery()` e `navigator.onLine` — exibir no system tray |
+| Bateria / Status de Rede | ✅ | `navigator.getBattery()` e `navigator.onLine` — ícones com tooltip no system tray; ocultos se API indisponível |
 
 ---
 
