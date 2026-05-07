@@ -12,10 +12,10 @@ import { APPLICATIONS } from "@/constants/applications";
 /**
  * Helper function to find the parent application that contains tabs
  * for a given iconId.
- * 
+ *
  * @param iconId - The icon ID to search for
  * @returns The parent Application with tabs, or null if not found
- * 
+ *
  * @example
  * findTabParentApplication("pictures") // Returns files app
  * findTabParentApplication("documents") // Returns files app (tab of files)
@@ -28,13 +28,13 @@ function findTabParentApplication(iconId: string) {
   if (iconId.startsWith("image-")) {
     return null;
   }
-  
+
   // Check if the iconId itself has showTabs and availableTabs
   const app = APPLICATIONS[iconId];
   if (app?.showTabs && app?.availableTabs) {
     return app;
   }
-  
+
   // Search for an application that lists this iconId in its availableTabs
   for (const appKey in APPLICATIONS) {
     const parentApp = APPLICATIONS[appKey];
@@ -42,7 +42,7 @@ function findTabParentApplication(iconId: string) {
       return parentApp;
     }
   }
-  
+
   return null;
 }
 
@@ -234,11 +234,12 @@ export const useWindowsStore = create<WindowsState>()(
       closeWindow(id) {
         const { windows, activeWindowId } = get();
         const newWindows = windows.filter((w) => w.id !== id);
+        const windowsNotMinimized = newWindows.filter((w) => !w.isMinimized);
 
-        // If closed window was active, activate the last window
+        // If closed window was active, activate the last window (not minimized)
         let newActiveId = activeWindowId === id ? null : activeWindowId;
-        if (newActiveId === null && newWindows.length > 0) {
-          const lastWindow = newWindows.reduce((prev, current) =>
+        if (newActiveId === null && windowsNotMinimized.length > 0) {
+          const lastWindow = windowsNotMinimized.reduce((prev, current) =>
             current.zIndex > prev.zIndex ? current : prev,
           );
           newActiveId = lastWindow.id;
