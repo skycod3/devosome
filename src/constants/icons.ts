@@ -5,6 +5,7 @@ import SkillsImage from "@/assets/skills.svg";
 import AboutMeImage from "@/assets/about-me.svg";
 import ContactImage from "@/assets/contact.svg";
 import PortfolioImage from "@/assets/portfolio.svg";
+import TerminalImage from "@/assets/terminal.svg";
 
 export const DESKTOP_ICONS: Icon[] = [
   {
@@ -50,6 +51,15 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: ContactImage,
     isHighlighted: false,
     show: false,
+    size: { width: 48, height: 48 },
+  },
+  {
+    id: "icon-terminal",
+    appId: "terminal",
+    title: "Terminal",
+    icon: TerminalImage,
+    isHighlighted: false,
+    show: true,
     size: { width: 48, height: 48 },
   },
 ];
