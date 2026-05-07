@@ -6,17 +6,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sun, Moon, Monitor } from "lucide-react";
+import { Battery } from "@/components/layout/taskbar/battery";
+import { Network } from "@/components/layout/taskbar/network";
 
 export function SystemTray() {
   const { theme, setTheme, systemThemeEnabled, setSystemThemeEnabled } =
     useTheme();
 
   return (
-    <div className="flex items-center justify-end gap-2">
+    <div className="flex items-center justify-end gap-3 p-2">
+      <Battery />
+      <Network />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="rounded p-2"
+            className="rounded"
             title={
               systemThemeEnabled
                 ? "Theme: Auto (System)"
@@ -26,7 +30,7 @@ export function SystemTray() {
             {systemThemeEnabled ? (
               <Monitor className="size-4" />
             ) : theme === "light" ? (
-              <Sun className="size-4 text-yellow-400" />
+              <Sun className="size-4 text-yellow-800" />
             ) : (
               <Moon className="size-4 text-blue-400" />
             )}
