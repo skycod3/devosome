@@ -5,7 +5,6 @@ import { Window } from "@/stores/windows.store";
 import { useIcons } from "@/hooks/useIcons";
 import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
-import { APPLICATIONS } from "@/constants/applications";
 
 import { animate, DragControls, MotionValue } from "motion/react";
 
@@ -44,16 +43,8 @@ export function WindowHeader({
   dragControls,
   isMobile = false,
 }: WindowHeaderProps) {
-  const {
-    windows,
-    restoreWindow,
-    openWindowCentered,
-    closeWindow,
-    toggleMaximize,
-    setWindowSize,
-    minimizeWindow,
-    setWindowActiveTab,
-  } = useWindows();
+  const { closeWindow, toggleMaximize, setWindowSize, minimizeWindow } =
+    useWindows();
 
   const [isGrabbing, setIsGrabbing] = useState(false);
 
@@ -103,78 +94,6 @@ export function WindowHeader({
     }
   }
 
-  function handleBreadcrumbClick(targetIconId: string) {
-    // Click on "Home" breadcrumb → close current window and return to desktop
-    if (targetIconId === "icon-home") {
-      closeWindow(window.id);
-      // Minimize all windows to show desktop (except the one we're closing, which is already being closed)
-      windows.forEach((w) => {
-        if (w.id !== window.id) minimizeWindow(w.id);
-      });
-      return;
-    }
-
-    // Try to find icon data first (for desktop icons)
-    const targetIconData = icons.find((icon) => icon.id === targetIconId);
-    // Fall back to APPLICATIONS registry (for apps without desktop icons, like Pictures)
-    const targetAppData = APPLICATIONS[targetIconId];
-
-    const breadcrumbTitle = targetIconData?.title ?? targetAppData?.windowTitle;
-    const breadcrumbIcon = targetIconData?.icon;
-
-    if (!breadcrumbTitle) {
-      console.warn(`Icon or application not found: ${targetIconId}`);
-      closeWindow(window.id);
-      return;
-    }
-
-    // Check if target is a tab or has tabs
-    // First, look for a window that has this tab active
-    const windowWithActiveTab = windows.find(
-      (w) => w.activeTab === targetIconId,
-    );
-
-    if (windowWithActiveTab) {
-      // Found a window with this tab active → Restore and bring to front
-      restoreWindow(windowWithActiveTab.id);
-      closeWindow(window.id);
-      return;
-    }
-
-    // Check if target has tabs enabled (could be the parent window itself)
-    const targetApp = APPLICATIONS[targetIconId];
-    if (targetApp?.showTabs && targetApp?.availableTabs) {
-      // Target is a tabbed window, look for it by iconId
-      const targetWindow = windows.find((w) => w.iconId === targetIconId);
-      if (targetWindow) {
-        // Window exists, make sure the correct tab is active
-        setWindowActiveTab(targetWindow.id, targetIconId);
-        restoreWindow(targetWindow.id);
-        closeWindow(window.id);
-        return;
-      }
-    }
-
-    // Find target window by iconId (non-tabbed windows or parent window)
-    const targetWindow = windows.find((w) => w.iconId === targetIconId);
-
-    if (targetWindow) {
-      // Window already exists → Bring to front and restore if minimized
-      restoreWindow(targetWindow.id);
-    } else {
-      // Window does not exist → Open new window (openWindow handles tab logic)
-      openWindowCentered(
-        targetIconId,
-        targetIconData?.parentId || "",
-        breadcrumbTitle,
-        breadcrumbIcon ?? "",
-      );
-    }
-
-    // Always close the current window when navigating via breadcrumb
-    closeWindow(window.id);
-  }
-
   return (
     <header
       onPointerDown={(event) => {
@@ -194,25 +113,17 @@ export function WindowHeader({
         className={`flex basis-full line-clamp-1 items-center gap-x-3 gap-y-1 p-2`}
       >
         {/* Breadcrumb dinâmico */}
-        <button
-          className="shrink-0 flex items-center gap-2"
-          onClick={() => handleBreadcrumbClick("icon-home")}
-        >
+        <div className="shrink-0 flex items-center gap-2">
           <LuHouse className="size-4 shrink-0" />
 
           <span>Home</span>
-        </button>
+        </div>
 
         {(parentIcon || window.parentTitle) && (
-          <button
-            className="shrink-0"
-            onClick={() =>
-              handleBreadcrumbClick(parentIcon?.id ?? window.parentId)
-            }
-          >
+          <div className="shrink-0">
             <span>/</span>{" "}
             <span>{window.parentTitle ?? parentIcon?.title}</span>
-          </button>
+          </div>
         )}
 
         <span>/</span>
