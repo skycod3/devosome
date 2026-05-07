@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar } from "@/components/ui/calendar";
 
 export function Clock() {
   const [time, setTime] = useState(new Date());
+  const [calendarMonth, setCalendarMonth] = useState(new Date());
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -28,8 +31,25 @@ export function Clock() {
   }, []);
 
   return (
-    <p>
-      {format(time, "EEE")} {format(time, "HH:mm")}
-    </p>
+    <Popover>
+      <PopoverTrigger asChild>
+        <button className="cursor-pointer hover:text-foreground/70 transition-colors">
+          {format(time, "EEE")} {format(time, "HH:mm")}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-fit p-0" align="end">
+        <div className="px-4 pt-3 pb-1 text-center">
+          <p className="text-sm font-medium">{format(time, "EEEE, MMMM d, yyyy")}</p>
+        </div>
+        <Calendar
+          mode="single"
+          selected={time}
+          month={calendarMonth}
+          onMonthChange={setCalendarMonth}
+          showOutsideDays
+          className="border-none"
+        />
+      </PopoverContent>
+    </Popover>
   );
 }
