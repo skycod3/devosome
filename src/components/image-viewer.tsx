@@ -445,7 +445,7 @@ export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
       {/* ── Toolbar ── */}
       <div className="flex shrink-0 items-center justify-between gap-2 border-t bg-popover/80 px-3 py-2 backdrop-blur-sm text-sm">
         {/* Navigation counter */}
-        <span className="text-muted-foreground tabular-nums w-16 text-center">
+        <span className="text-muted-foreground tabular-nums line-clamp-2 text-center text-xs sm:text-sm">
           {imageList.length > 1
             ? `${currentIndex + 1} / ${imageList.length}`
             : imageFile.title}
