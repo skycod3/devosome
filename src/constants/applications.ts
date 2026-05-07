@@ -7,6 +7,7 @@ import { Skills } from "@/components/skills";
 import { AboutMe } from "@/components/about-me";
 import { Contact } from "@/components/contact";
 import { Portfolio } from "@/components/portfolio";
+import { Terminal } from "@/components/terminal";
 
 type AppComponent = ComponentType<{ iconId: string }>;
 
@@ -90,5 +91,12 @@ export const APPLICATIONS: Record<string, Application> = {
     windowTitle: "Portfolio",
     component: Portfolio,
     showTabs: false,
+  },
+  terminal: {
+    id: "terminal",
+    windowTitle: "Terminal",
+    component: Terminal,
+    showTabs: false,
+    defaultSize: { width: 620, height: 420 },
   },
 };
