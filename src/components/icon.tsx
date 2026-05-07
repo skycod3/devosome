@@ -80,7 +80,7 @@ export function Icon({
             />
           </div>
 
-          <p className="leading-4 sm:leading-normal text-sm">
+          <p className="leading-4 sm:leading-normal text-sm line-clamp-2">
             {title.length > 18 ? `${title.slice(0, 18)}...` : title}
           </p>
         </button>
