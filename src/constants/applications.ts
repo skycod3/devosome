@@ -10,6 +10,7 @@ import { Portfolio } from "@/components/portfolio";
 import { Terminal } from "@/components/terminal";
 import { ClipboardHistory } from "@/components/clipboard-history";
 import { SystemMonitor } from "@/components/system-monitor";
+import { SystemSettings } from "@/components/system-settings";
 
 type AppComponent = ComponentType<{ iconId: string }>;
 
@@ -114,5 +115,12 @@ export const APPLICATIONS: Record<string, Application> = {
     component: SystemMonitor,
     showTabs: false,
     defaultSize: { width: 420, height: 500 },
+  },
+  "system-settings": {
+    id: "system-settings",
+    windowTitle: "System Settings",
+    component: SystemSettings,
+    showTabs: false,
+    defaultSize: { width: 560, height: 420 },
   },
 };

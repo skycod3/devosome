@@ -13,6 +13,7 @@ import {
   PiBookOpenDuotone,
   PiGameControllerDuotone,
   PiEnvelopeDuotone,
+  PiGearDuotone,
 } from "react-icons/pi";
 
 // prettier-ignore
@@ -265,6 +266,11 @@ export function Dock() {
       icon: <PiEnvelopeDuotone size={DOCK_ICON_SIZE} />,
       label: "Contact",
       onClick: () => openWindow("contact"),
+    },
+    {
+      icon: <PiGearDuotone size={DOCK_ICON_SIZE} />,
+      label: "Settings",
+      onClick: () => openWindow("system-settings"),
     },
   ];
 
