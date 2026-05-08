@@ -48,7 +48,7 @@ export function Videos({ iconId }: VideosProps) {
   return (
     <div
       onClick={handleIconsAreaClick}
-      className="grid-cols-fill-6 grid-rows-fill-6 grid h-full gap-4 p-4"
+      className="grid-cols-fill-6 @min-5xl:grid-cols-fill-7 grid-rows-fill-6 grid h-full gap-4 p-4"
     >
       {iconsFromStore.map((icon) => (
         <Icon imagePlaceholder="blur" key={icon.id} {...icon} />
