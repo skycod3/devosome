@@ -57,8 +57,6 @@ export function Icon({
           title={title}
           style={
             {
-              wordBreak: "break-word",
-              // if the icon has a parent, it should be black in light mode and white in dark mode, otherwise it should always be white
               "--icon-color": parentId
                 ? theme === "dark"
                   ? "white"
@@ -66,22 +64,22 @@ export function Icon({
                 : "white",
             } as CSSProperties
           }
-          className={`z-1 w-full flex-center flex-col gap-1.5 rounded text-center text-(--icon-color) ${supportsRelativeColors ? `${!isHighlighted ? `hover:bg-(--icon-color)/10` : "bg-(--icon-color)/20"}` : ""}`}
+          className={`z-1 grid grid-rows-[1fr_auto] gap-1.5 p-1 rounded text-center text-(--icon-color) ${supportsRelativeColors ? `${!isHighlighted ? `hover:bg-(--icon-color)/10` : "bg-(--icon-color)/20"}` : ""}`}
         >
-          <div>
+          <div className="flex-center min-h-0">
             <Image
               src={icon}
               alt={title}
               width={size.width}
               height={size.height}
               loading="eager"
-              className="flex-2 object-contain max-h-full max-w-16 mx-auto"
+              className="object-contain max-h-full max-w-full"
               placeholder={imagePlaceholder}
             />
           </div>
 
-          <p className="leading-4 sm:leading-normal text-sm line-clamp-2">
-            {title.length > 18 ? `${title.slice(0, 18)}...` : title}
+          <p className="leading-4 sm:leading-normal text-sm line-clamp-2 text-center wrap-break-word">
+            {title}
           </p>
         </button>
       </ContextMenuTrigger>
