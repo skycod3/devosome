@@ -141,7 +141,7 @@ export function WindowContent({
   if (application?.component) {
     const AppComponent = application.component;
     return (
-      <section className="flex-2">
+      <section className="flex-2 @container">
         <AppComponent iconId={iconId} />
       </section>
     );
