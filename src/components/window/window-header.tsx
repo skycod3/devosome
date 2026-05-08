@@ -102,6 +102,7 @@ export function WindowHeader({
         dragControls.start(event);
       }}
       onPointerUp={() => setIsGrabbing(false)}
+      onPointerOut={() => setIsGrabbing(false)}
       className={`flex select-none ${window.isMaximized ? "rounded-none" : `${!isMobile ? (isGrabbing ? "cursor-grabbing" : "cursor-grab") : ""}`} touch-none`}
     >
       <div
