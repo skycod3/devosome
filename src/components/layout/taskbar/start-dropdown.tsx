@@ -75,6 +75,9 @@ export function StartDropdown() {
             Get in Touch
             {!isMobile && <DropdownMenuShortcut>⇧+T</DropdownMenuShortcut>}
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => openWindow("clipboard-history")}>
+            Clipboard History
+          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />

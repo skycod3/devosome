@@ -8,6 +8,7 @@ import { AboutMe } from "@/components/about-me";
 import { Contact } from "@/components/contact";
 import { Portfolio } from "@/components/portfolio";
 import { Terminal } from "@/components/terminal";
+import { ClipboardHistory } from "@/components/clipboard-history";
 
 type AppComponent = ComponentType<{ iconId: string }>;
 
@@ -98,5 +99,12 @@ export const APPLICATIONS: Record<string, Application> = {
     component: Terminal,
     showTabs: false,
     defaultSize: { width: 620, height: 420 },
+  },
+  "clipboard-history": {
+    id: "clipboard-history",
+    windowTitle: "Clipboard History",
+    component: ClipboardHistory,
+    showTabs: false,
+    defaultSize: { width: 420, height: 480 },
   },
 };
