@@ -1,10 +1,10 @@
-import WallpaperImage from "@/assets/wallpaper.jpg";
-
 import { useEffect, useRef, useState } from "react";
 
 import { AnimatePresence } from "motion/react";
 
 import { DESKTOP_ICONS } from "@/constants/icons";
+
+import { useSettingsStore } from "@/stores/settings-store";
 
 import { useIcons } from "@/hooks/useIcons";
 import { useWindows } from "@/hooks/useWindows";
@@ -23,6 +23,9 @@ export function Desktop() {
   const { icons, setIcons, unhighlightAllIcons } = useIcons();
   const { windows } = useWindows();
   const isMobile = useIsMobile();
+  const wallpaper = useSettingsStore((state) => state.wallpaper);
+  const iconVisibility = useSettingsStore((state) => state.iconVisibility);
+  const wallpaperSrc = `/wallpapers/${wallpaper}`;
   const desktopRef = useRef<HTMLDivElement>(null);
   const [desktopRect, setDesktopRect] = useState({
     width: 0,
@@ -36,7 +39,12 @@ export function Desktop() {
   }
 
   useEffect(() => {
-    setIcons(DESKTOP_ICONS);
+    setIcons(
+      DESKTOP_ICONS.map((icon) => ({
+        ...icon,
+        show: iconVisibility[icon.id] ?? icon.show,
+      })),
+    );
 
     const welcomeToastDismissed = localStorage.getItem("welcomeToastDismissed");
     if (welcomeToastDismissed) return;
@@ -79,7 +87,7 @@ export function Desktop() {
     <div
       ref={desktopRef}
       style={{
-        backgroundImage: `url(${WallpaperImage.src})`,
+        backgroundImage: `url(${wallpaperSrc})`,
         gridTemplateRows: "[taskbar] auto [desktop] 1fr [dock] auto",
       }}
       className="relative grid h-dvh bg-cover bg-top select-none overflow-hidden"
@@ -87,7 +95,7 @@ export function Desktop() {
       {!isMobile && (
         <div className="absolute inset-0" onClick={handleDesktopClick}>
           <GridDistortion
-            imageSrc={WallpaperImage.src}
+            imageSrc={wallpaperSrc}
             grid={100}
             mouse={0.1}
             strength={0.15}
