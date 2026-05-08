@@ -78,6 +78,9 @@ export function StartDropdown() {
           <DropdownMenuItem onClick={() => openWindow("clipboard-history")}>
             Clipboard History
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => openWindow("system-monitor")}>
+            System Monitor
+          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator />

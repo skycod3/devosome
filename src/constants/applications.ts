@@ -9,6 +9,7 @@ import { Contact } from "@/components/contact";
 import { Portfolio } from "@/components/portfolio";
 import { Terminal } from "@/components/terminal";
 import { ClipboardHistory } from "@/components/clipboard-history";
+import { SystemMonitor } from "@/components/system-monitor";
 
 type AppComponent = ComponentType<{ iconId: string }>;
 
@@ -106,5 +107,12 @@ export const APPLICATIONS: Record<string, Application> = {
     component: ClipboardHistory,
     showTabs: false,
     defaultSize: { width: 420, height: 480 },
+  },
+  "system-monitor": {
+    id: "system-monitor",
+    windowTitle: "System Monitor",
+    component: SystemMonitor,
+    showTabs: false,
+    defaultSize: { width: 420, height: 500 },
   },
 };
