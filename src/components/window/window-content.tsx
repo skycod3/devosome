@@ -31,7 +31,9 @@ class PdfErrorBoundary extends Component<
     if (this.state.error) {
       return (
         <div className="flex h-full flex-col items-center justify-center gap-3 p-4 text-center">
-          <p className="font-semibold text-destructive">PDF failed to initialize</p>
+          <p className="font-semibold text-destructive">
+            PDF failed to initialize
+          </p>
           <p className="max-w-xs break-all rounded bg-muted px-3 py-2 text-xs text-muted-foreground">
             {this.state.error}
           </p>
@@ -96,7 +98,9 @@ function LazyPdfViewer({ iconId }: { iconId: string }) {
   if (status === "error") {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-3 p-4 text-center">
-        <p className="font-semibold text-destructive">PDF module failed to load</p>
+        <p className="font-semibold text-destructive">
+          PDF module failed to load
+        </p>
         <p className="max-w-xs break-all rounded bg-muted px-3 py-2 text-xs text-muted-foreground">
           {importError}
         </p>
@@ -125,7 +129,11 @@ interface WindowContentProps {
   windowId?: string;
 }
 
-export function WindowContent({ iconId, parentId, windowId }: WindowContentProps) {
+export function WindowContent({
+  iconId,
+  parentId,
+  windowId,
+}: WindowContentProps) {
   const { isMobile } = useWindows();
   const application = APPLICATIONS[iconId];
 
