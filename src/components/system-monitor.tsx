@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useWindowsStore } from "@/stores/windows.store";
+import { useWindows } from "@/hooks/useWindows";
 import { Progress } from "@/components/ui/progress";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -102,7 +102,7 @@ export function SystemMonitor({ iconId: _ }: { iconId: string }) {
   const [memory, setMemory] = useState<MemoryInfo | null>(null);
   const memorySupported = useRef<boolean>(typeof performance !== "undefined" && "memory" in performance);
 
-  const windows = useWindowsStore((state) => state.windows);
+  const { windows } = useWindows();
   const openCount = windows.length;
   const minimizedCount = windows.filter((w) => w.isMinimized).length;
 

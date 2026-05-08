@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { executeCommand } from "@/constants/terminal";
 import { useWindows } from "@/hooks/useWindows";
-import { useWindowsStore } from "@/stores/windows.store";
 import { useTheme } from "@/hooks/useTheme";
 
 const PROMPT = "visitor@devosome:~$";
@@ -30,9 +29,7 @@ export function Terminal({ iconId }: { iconId: string }) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { openWindowCentered } = useWindows();
-  const windows = useWindowsStore((state) => state.windows);
-  const closeWindow = useWindowsStore((state) => state.closeWindow);
+  const { openWindowCentered, windows, closeWindow } = useWindows();
 
   const { theme } = useTheme();
 

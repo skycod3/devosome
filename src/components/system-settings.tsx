@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
-import { useIconsStore } from "@/stores/icons-store";
-import { useSettingsStore } from "@/stores/settings-store";
+import { useIcons } from "@/hooks/useIcons";
+import { useSettings } from "@/hooks/useSettings";
 import { WALLPAPERS } from "@/constants/wallpapers";
 import { DESKTOP_ICONS } from "@/constants/icons";
 import { cn } from "@/lib/utils";
@@ -95,8 +95,7 @@ function AppearancePanel() {
 }
 
 function WallpaperPanel() {
-  const wallpaper = useSettingsStore((state) => state.wallpaper);
-  const setWallpaper = useSettingsStore((state) => state.setWallpaper);
+  const { wallpaper, setWallpaper } = useSettings();
 
   return (
     <div className="flow">
@@ -130,12 +129,8 @@ function WallpaperPanel() {
 }
 
 function DesktopPanel() {
-  const icons = useIconsStore((state) => state.icons);
-  const showIcon = useIconsStore((state) => state.showIcon);
-  const hideIcon = useIconsStore((state) => state.hideIcon);
-  const setIconVisibility = useSettingsStore(
-    (state) => state.setIconVisibility,
-  );
+  const { icons, showIcon, hideIcon } = useIcons();
+  const { setIconVisibility } = useSettings();
 
   const desktopIconIds = new Set(DESKTOP_ICONS.map((i) => i.id));
   const controllable = icons.filter((i) => desktopIconIds.has(i.id));

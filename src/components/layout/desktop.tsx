@@ -4,11 +4,10 @@ import { AnimatePresence } from "motion/react";
 
 import { DESKTOP_ICONS } from "@/constants/icons";
 
-import { useSettingsStore } from "@/stores/settings-store";
-
 import { useIcons } from "@/hooks/useIcons";
 import { useWindows } from "@/hooks/useWindows";
 import { useIsMobile } from "@/hooks/useIsMobile";
+import { useSettings } from "@/hooks/useSettings";
 
 import GridDistortion from "@/components/effects/grid-distortion";
 
@@ -23,8 +22,7 @@ export function Desktop() {
   const { icons, setIcons, unhighlightAllIcons } = useIcons();
   const { windows } = useWindows();
   const isMobile = useIsMobile();
-  const wallpaper = useSettingsStore((state) => state.wallpaper);
-  const iconVisibility = useSettingsStore((state) => state.iconVisibility);
+  const { wallpaper, iconVisibility } = useSettings();
   const wallpaperSrc = `/wallpapers/${wallpaper}`;
   const desktopRef = useRef<HTMLDivElement>(null);
   const [desktopRect, setDesktopRect] = useState({
