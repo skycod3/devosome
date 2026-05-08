@@ -1,4 +1,8 @@
+/** ≥1600px viewports */
 export const DEFAULT_WINDOW_SIZE = { width: 800, height: 600 };
+/** 1024–1599px viewports */
+export const SMALL_DESKTOP_WINDOW_SIZE = { width: 680, height: 480 };
+/** 768–1023px viewports */
 export const TABLET_WINDOW_SIZE = { width: 600, height: 480 };
 export const DEFAULT_WINDOW_POSITION = { x: 100, y: 100 };
 export const BASE_Z_INDEX = 10;

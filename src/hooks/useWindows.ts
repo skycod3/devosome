@@ -3,7 +3,7 @@
 import { StaticImageData } from "next/image";
 import { useWindowsStore } from "@/stores/windows.store";
 import { useViewport } from "./useViewport";
-import { DEFAULT_WINDOW_SIZE, TABLET_WINDOW_SIZE } from "@/constants/windows";
+import { DEFAULT_WINDOW_SIZE, SMALL_DESKTOP_WINDOW_SIZE, TABLET_WINDOW_SIZE } from "@/constants/windows";
 import { APPLICATIONS } from "@/constants/applications";
 
 /**
@@ -48,13 +48,15 @@ export const useWindows = () => {
   // Detect breakpoint for responsive window sizing
   const isMobile = width > 0 && width < 768;
   const isTablet = width >= 768 && width < 1024;
+  const isSmallDesktop = width >= 1024 && width < 1600;
 
   /**
    * Opens a window centered on the viewport.
    * Calculates position and size based on the current breakpoint:
    * - Mobile (<768px): fullscreen, position (0, 0)
    * - Tablet (768–1023px): TABLET_WINDOW_SIZE, centered, no cascade
-   * - Desktop (>=1024px): DEFAULT_WINDOW_SIZE, centered, cascading offset
+   * - Small desktop (1024–1599px): SMALL_DESKTOP_WINDOW_SIZE, centered, cascading offset
+   * - Large desktop (≥1600px): DEFAULT_WINDOW_SIZE, centered, cascading offset
    */
   const openWindowCentered = (
     iconId: string,
@@ -95,15 +97,14 @@ export const useWindows = () => {
       );
       setWindowPosition(windowId, tabletX, tabletY);
     } else {
-      // Desktop: default size, centered, cascading offset
+      // Desktop: size based on viewport width, centered, cascading offset
+      const windowSize = isSmallDesktop ? SMALL_DESKTOP_WINDOW_SIZE : DEFAULT_WINDOW_SIZE;
       const maxAllowedHeight = height * 0.9;
-      const effectiveHeight = Math.min(
-        DEFAULT_WINDOW_SIZE.height,
-        maxAllowedHeight,
-      );
+      const effectiveHeight = Math.min(windowSize.height, maxAllowedHeight);
       const offset = windows.length > 0 ? windows.length * 50 : 0;
-      const calculatedX = width / 2 - DEFAULT_WINDOW_SIZE.width / 2 + offset;
+      const calculatedX = width / 2 - windowSize.width / 2 + offset;
       const calculatedY = height / 2 - effectiveHeight / 2 + offset;
+      setWindowSize(windowId, windowSize.width, effectiveHeight);
       setWindowPosition(windowId, calculatedX, calculatedY);
     }
 
