@@ -58,7 +58,7 @@ function NotificationItem({ n }: { n: Notification }) {
             >
               {n.type}
             </span>
-            <span className="text-xs text-muted-foreground">
+            <span className="text-xs text-muted-foreground line-clamp-1">
               {formatDistanceToNow(n.timestamp, { addSuffix: true })}
             </span>
           </div>
