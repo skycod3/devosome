@@ -46,7 +46,7 @@ Recursos planejados para o projeto, organizados por categoria e status.
 
 | Recurso | Status | Descrição |
 |---|---|---|
-| Notification Center | 📋 | Central de notificações persistente (Zustand store). Cada `toast()` também dispara `addNotification()`. Painel deslizante listando notificações da sessão |
+| Notification Center | ✅ | Central de notificações persistente (Zustand store). Cada `toast()` também dispara `addNotification()`. Painel deslizante listando notificações da sessão |
 | Barra de Pesquisa (Spotlight) | 📋 | Modal de busca global via atalho (`Ctrl+K` / `Cmd+Space`). Pesquisa entre apps, projetos e skills. `@tanstack/react-hotkeys` já instalado |
 | Boot / Login Screen | ✅ | Tela animada de "login" ao carregar a página pela primeira vez antes de revelar o desktop |
 | Screen Saver | 📋 | Ativado após X minutos de inatividade (`idle detection`). Usar Three.js (já instalado) para o efeito visual |
