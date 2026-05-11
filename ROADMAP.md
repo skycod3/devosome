@@ -37,7 +37,7 @@ Recursos planejados para o projeto, organizados por categoria e status.
 | Terminal simulado | ✅ | App "Terminal" com comandos (`whoami`, `skills`, `ls projects`, `open <app>`, etc.) integrado ao windows store |
 | Clipboard History | ✅ | Janela com links/contatos pré-definidos (email, GitHub, LinkedIn) — clicar copia para o clipboard real via `navigator.clipboard.writeText` |
 | Monitor de Sistema | ✅ | Janela mostrando dados reais do browser: memória JS heap (`performance.memory`), uptime da sessão, janelas abertas |
-| Configurações do Sistema | 📋 | Centralizar tema, idioma, wallpaper, tamanho de ícones em uma janela "Settings" |
+| Configurações do Sistema | ✅ | Centralizar tema, idioma, wallpaper, tamanho de ícones em uma janela "Settings" |
 | Gerenciador de Arquivos aprimorado | 📋 | Navegação por pastas, breadcrumb, visualização em grid/lista na janela Files |
 
 ---
