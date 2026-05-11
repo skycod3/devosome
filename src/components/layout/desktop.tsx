@@ -45,9 +45,9 @@ export function Desktop() {
       })),
     );
 
-    if (sessionStorage.getItem("welcomeShown")) return;
+    if (localStorage.getItem("welcomeShown")) return;
 
-    sessionStorage.setItem("welcomeShown", "true");
+    localStorage.setItem("welcomeShown", "true");
     notify.info("Welcome to DevOSome! 🖖", {
       description:
         "Explore the projects and portfolio of a passionate developer.",
