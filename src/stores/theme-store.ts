@@ -135,5 +135,6 @@ export const useThemeStore = create<ThemeState>()(
       }),
       { name: "theme-store" },
     ),
+    { name: "theme-store" },
   ),
 );
