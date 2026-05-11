@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
+import { BootScreen } from "@/components/boot-screen";
 
 import {
   ContextMenu,
@@ -22,14 +24,13 @@ const Desktop = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-screen items-center justify-center bg-black">
-        <div className="size-8 animate-spin rounded-full border-4 border-white/20 border-t-white" />
-      </div>
+      <div className="flex h-screen items-center justify-center bg-black" />
     ),
   },
 );
 
 export function DesktopWrapper() {
+  const [booting, setBooting] = useState(true);
   const { theme, setTheme, systemThemeEnabled, setSystemThemeEnabled } =
     useTheme();
 
@@ -43,10 +44,9 @@ export function DesktopWrapper() {
 
   return (
     <>
+      {booting && <BootScreen onComplete={() => setBooting(false)} />}
       <ContextMenu>
-        <ContextMenuTrigger>
-          <Desktop />
-        </ContextMenuTrigger>
+        <ContextMenuTrigger>{!booting && <Desktop />}</ContextMenuTrigger>
 
         <ContextMenuContent>
           <ContextMenuGroup>
