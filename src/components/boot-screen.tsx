@@ -192,7 +192,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
       ref={containerRef}
       className="fixed inset-0 z-9999 bg-black overflow-hidden"
     >
-      <div className="h-full overflow-y-auto p-6 text-sm leading-relaxed [&::-webkit-scrollbar]:hidden">
+      <div className="h-full overflow-y-auto p-6 text-xs sm:text-sm leading-relaxed [&::-webkit-scrollbar]:hidden">
         {/* BIOS section */}
         {biosLines.map((line, i) => (
           <div
