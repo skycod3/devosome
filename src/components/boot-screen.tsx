@@ -232,7 +232,9 @@ export function BootScreen({ onComplete }: BootScreenProps) {
         )}
 
         {/* Blinking cursor */}
-        <span className="inline-block w-2 h-[1em] bg-green-400 animate-pulse align-middle ml-0.5" />
+        {countdown === null && (
+          <span className="inline-block w-2 h-[1em] bg-green-400 animate-pulse align-middle ml-0.5" />
+        )}
       </div>
     </div>
   );
