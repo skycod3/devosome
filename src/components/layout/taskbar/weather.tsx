@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { CloudAlert } from "lucide-react";
-import { toast } from "sonner";
+import { useNotify } from "@/hooks/useNotify";
 
 import {
   Popover,
@@ -36,6 +36,7 @@ export function Weather() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { notify } = useNotify();
 
   // cache for geolocation coordinates scoped to this component instance
   const coordsRef = useRef<{ latitude: number; longitude: number } | null>(
@@ -102,19 +103,13 @@ export function Weather() {
       if (err instanceof GeolocationPositionError) {
         switch (err.code) {
           case err.PERMISSION_DENIED:
-            if (!localStorage.getItem("loadingWeatherToastDismissed")) {
-              toast.error("Location access is blocked", {
+            if (!sessionStorage.getItem("weatherErrorShown")) {
+              sessionStorage.setItem("weatherErrorShown", "true");
+              notify.error("Location access is blocked", {
                 description:
                   "To enable weather, allow location access in your browser's site settings and reload the page.",
                 duration: 10000,
-                style: {
-                  "--normal-text": "var(--message-error-foreground)",
-                  "--normal-bg": "var(--message-error)",
-                  "--normal-border": "var(--message-error-border)",
-                } as React.CSSProperties,
-                onDismiss() {
-                  localStorage.setItem("loadingWeatherToastDismissed", "true");
-                },
+                dedupeId: "weather-location-blocked",
               });
             }
 

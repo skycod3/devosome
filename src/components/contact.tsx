@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { toast } from "sonner";
+import { useNotify } from "@/hooks/useNotify";
 
 import { ABOUT_ME } from "@/constants/about";
 
@@ -30,6 +30,7 @@ type FormStatus = "idle" | "sending";
 export function Contact() {
   const [status, setStatus] = useState<FormStatus>("idle");
   const [copied, setCopied] = useState(false);
+  const { notify } = useNotify();
 
   const {
     register,
@@ -57,27 +58,15 @@ export function Contact() {
       }
 
       reset();
-      toast.success("Message sent! I'll get back to you soon.", {
+      notify.success("Message sent! I'll get back to you soon.", {
         duration: 7000,
-        style: {
-          "--normal-text": "var(--message-success-foreground)",
-          "--normal-bg": "var(--message-success)",
-          "--normal-border": "var(--message-success-border)",
-        } as React.CSSProperties,
       });
     } catch (err) {
-      toast.error(
+      notify.error(
         err instanceof Error
           ? err.message
           : "Failed to send message. Please try again.",
-        {
-          duration: 7000,
-          style: {
-            "--normal-text": "var(--message-error-foreground)",
-            "--normal-bg": "var(--message-error)",
-            "--normal-border": "var(--message-error-border)",
-          } as React.CSSProperties,
-        },
+        { duration: 7000 },
       );
     } finally {
       setStatus("idle");

@@ -16,13 +16,14 @@ import { Icon } from "../icon";
 import { Window } from "../window";
 import { Dock } from "./dock";
 
-import { toast } from "sonner";
+import { useNotify } from "@/hooks/useNotify";
 
 export function Desktop() {
   const { icons, setIcons, unhighlightAllIcons } = useIcons();
   const { windows } = useWindows();
   const isMobile = useIsMobile();
   const { wallpaper, iconVisibility } = useSettings();
+  const { notify } = useNotify();
   const wallpaperSrc = `/wallpapers/${wallpaper}`;
   const desktopRef = useRef<HTMLDivElement>(null);
   const [desktopRect, setDesktopRect] = useState({
@@ -44,19 +45,15 @@ export function Desktop() {
       })),
     );
 
-    const welcomeToastDismissed = localStorage.getItem("welcomeToastDismissed");
-    if (welcomeToastDismissed) return;
+    if (sessionStorage.getItem("welcomeShown")) return;
 
-    toast("Welcome to DevOSome! 🖖", {
+    sessionStorage.setItem("welcomeShown", "true");
+    notify.info("Welcome to DevOSome! 🖖", {
       description:
         "Explore the projects and portfolio of a passionate developer.",
       duration: 1000 * 60 * 1, // 1 minute
-      onDismiss() {
-        localStorage.setItem("welcomeToastDismissed", "true");
-      },
-      onAutoClose() {
-        localStorage.setItem("welcomeToastDismissed", "true");
-      },
+      dedupeId: "welcome",
+      expiresIn: 1000 * 60 * 60 * 24 * 3, // 3 days
     });
   }, []);
 

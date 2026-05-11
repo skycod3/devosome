@@ -7,7 +7,7 @@ import { APPLICATIONS } from "@/constants/applications";
 import { useWindows } from "@/hooks/useWindows";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
-import { toast } from "sonner";
+import { useNotify } from "@/hooks/useNotify";
 
 import { ABOUT_ME } from "@/constants/about";
 
@@ -31,6 +31,7 @@ const { contact } = ABOUT_ME;
 export function StartDropdown() {
   const { openWindowCentered } = useWindows();
   const isMobile = useIsMobile();
+  const { notify } = useNotify();
 
   function openWindow(iconId: string) {
     const { windowTitle } = APPLICATIONS[iconId];
@@ -39,7 +40,7 @@ export function StartDropdown() {
   }
 
   function handleLogOut() {
-    toast("Wanna log out? Just close the browser tab! 😄");
+    notify.info("Wanna log out? Just close the browser tab! 😄");
   }
 
   useHotkey("Shift+A", () => openWindow("about-me"));
