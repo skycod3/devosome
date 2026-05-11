@@ -24,7 +24,7 @@ const Desktop = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-screen items-center justify-center bg-black" />
+      <div className="flex h-screen items-center justify-center bg-background" />
     ),
   },
 );
