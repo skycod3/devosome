@@ -6,6 +6,12 @@ import AboutMeImage from "@/assets/about-me.svg";
 import ContactImage from "@/assets/contact.svg";
 import PortfolioImage from "@/assets/portfolio.svg";
 import TerminalImage from "@/assets/terminal.svg";
+import PicturesImage from "@/assets/pictures.svg";
+import MusicImage from "@/assets/music.svg";
+import VideosImage from "@/assets/videos.svg";
+import ClipboardImage from "@/assets/clipboard.svg";
+import SystemMonitorImage from "@/assets/system-monitor.svg";
+import SettingsImage from "@/assets/settings.svg";
 
 export const DESKTOP_ICONS: Icon[] = [
   {
@@ -60,6 +66,60 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: TerminalImage,
     isHighlighted: false,
     show: true,
+    size: { width: 48, height: 48 },
+  },
+  {
+    id: "icon-pictures",
+    appId: "pictures",
+    title: "Pictures",
+    icon: PicturesImage,
+    isHighlighted: false,
+    show: false,
+    size: { width: 48, height: 48 },
+  },
+  {
+    id: "icon-music",
+    appId: "music",
+    title: "Music",
+    icon: MusicImage,
+    isHighlighted: false,
+    show: false,
+    size: { width: 48, height: 48 },
+  },
+  {
+    id: "icon-videos",
+    appId: "videos",
+    title: "Videos",
+    icon: VideosImage,
+    isHighlighted: false,
+    show: false,
+    size: { width: 48, height: 48 },
+  },
+  {
+    id: "icon-clipboard-history",
+    appId: "clipboard-history",
+    title: "Clipboard History",
+    icon: ClipboardImage,
+    isHighlighted: false,
+    show: false,
+    size: { width: 48, height: 48 },
+  },
+  {
+    id: "icon-system-monitor",
+    appId: "system-monitor",
+    title: "System Monitor",
+    icon: SystemMonitorImage,
+    isHighlighted: false,
+    show: false,
+    size: { width: 48, height: 48 },
+  },
+  {
+    id: "icon-system-settings",
+    appId: "system-settings",
+    title: "System Settings",
+    icon: SettingsImage,
+    isHighlighted: false,
+    show: false,
     size: { width: 48, height: 48 },
   },
 ];
