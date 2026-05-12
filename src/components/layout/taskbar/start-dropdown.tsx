@@ -87,7 +87,11 @@ export function StartDropdown() {
         <button className="rounded px-2 py-1">Start</button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="w-56" align="start">
+      <DropdownMenuContent
+        className="w-56"
+        align="start"
+        onCloseAutoFocus={(e) => e.preventDefault()}
+      >
         {/* Search bar — visible on mobile only */}
         {isMobile && (
           <>
@@ -96,6 +100,8 @@ export function StartDropdown() {
               <input
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => e.stopPropagation()}
+                onPointerDown={(e) => e.stopPropagation()}
                 placeholder="Search apps..."
                 className="text-foreground placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none"
               />
