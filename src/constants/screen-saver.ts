@@ -4,7 +4,7 @@
 // ── Idle detection ────────────────────────────────────────────────────────────
 
 /** Time without interaction before the screen saver activates (ms) */
-export const SCREENSAVER_IDLE_TIMEOUT = 1000; // 2 minutes
+export const SCREENSAVER_IDLE_TIMEOUT = 1000 * 60 * 2; // 2 minutes
 
 /** Events that reset the idle timer and dismiss the screen saver */
 export const SCREENSAVER_WAKE_EVENTS: (keyof WindowEventMap)[] = [
@@ -64,4 +64,4 @@ export const SCREENSAVER_DIR_LIGHT_POSITION: [number, number, number] = [
 // ── Transition ────────────────────────────────────────────────────────────────
 
 /** GSAP fade-in duration when screen saver appears (seconds) */
-export const SCREENSAVER_FADEIN_DURATION = 0.4;
+export const SCREENSAVER_FADEIN_DURATION = 0.6;
