@@ -50,6 +50,14 @@ export function Spotlight({ onClose }: SpotlightProps) {
   }, []);
 
   useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => window.removeEventListener("keydown", handleGlobalKeyDown);
+  }, [onClose]);
+
+  useEffect(() => {
     const item = listRef.current?.children[selectedIndex] as
       | HTMLElement
       | undefined;
@@ -62,9 +70,7 @@ export function Spotlight({ onClose }: SpotlightProps) {
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Escape") {
-      onClose();
-    } else if (e.key === "ArrowDown") {
+    if (e.key === "ArrowDown") {
       e.preventDefault();
       setSelectedIndex((i) => Math.min(i + 1, results.length - 1));
     } else if (e.key === "ArrowUp") {
