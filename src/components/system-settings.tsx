@@ -49,6 +49,7 @@ export function SystemSettings({ iconId: _ }: { iconId: string }) {
 function AppearancePanel() {
   const { theme, systemThemeEnabled, setTheme, setSystemThemeEnabled } =
     useTheme();
+  const { screenSaverEnabled, setScreenSaverEnabled } = useSettings();
 
   const options: { value: "light" | "dark" | "system"; label: string }[] = [
     { value: "light", label: "Light" },
@@ -90,6 +91,17 @@ function AppearancePanel() {
           </label>
         ))}
       </div>
+
+      <h2 className="text-sm font-semibold">Screen Saver</h2>
+      <label className="inline-flex cursor-pointer items-center gap-3">
+        <input
+          type="checkbox"
+          checked={screenSaverEnabled}
+          onChange={(e) => setScreenSaverEnabled(e.target.checked)}
+          className="accent-primary"
+        />
+        <span className="text-sm">Enable screen saver</span>
+      </label>
     </div>
   );
 }
