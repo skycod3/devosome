@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AnimatePresence } from "motion/react";
 
@@ -17,6 +17,7 @@ import { Window } from "../window";
 import { Dock } from "./dock";
 
 import { useNotify } from "@/hooks/useNotify";
+import { Spotlight } from "@/components/spotlight";
 
 export function Desktop() {
   const { icons, setIcons, unhighlightAllIcons } = useIcons();
@@ -24,6 +25,7 @@ export function Desktop() {
   const isMobile = useIsMobile();
   const { wallpaper, iconVisibility } = useSettings();
   const { notify } = useNotify();
+  const [spotlightOpen, setSpotlightOpen] = useState(false);
   const wallpaperSrc = `/wallpapers/${wallpaper}`;
   const desktopRef = useRef<HTMLDivElement>(null);
   const [desktopRect, setDesktopRect] = useState({
@@ -36,6 +38,18 @@ export function Desktop() {
   function handleDesktopClick() {
     if (icons.some((icon) => icon.isHighlighted)) unhighlightAllIcons();
   }
+
+  const handleSpotlightKeyDown = useCallback((e: KeyboardEvent) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
+      e.preventDefault();
+      setSpotlightOpen((prev) => !prev);
+    }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleSpotlightKeyDown);
+    return () => window.removeEventListener("keydown", handleSpotlightKeyDown);
+  }, [handleSpotlightKeyDown]);
 
   useEffect(() => {
     setIcons(
@@ -120,6 +134,8 @@ export function Desktop() {
           <Window key={window.id} window={window} desktopRect={desktopRect} />
         ))}
       </AnimatePresence>
+
+      {spotlightOpen && <Spotlight onClose={() => setSpotlightOpen(false)} />}
     </div>
   );
 }
