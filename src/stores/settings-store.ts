@@ -6,6 +6,8 @@ interface SettingsState {
   setWallpaper: (wallpaper: string) => void;
   iconVisibility: Record<string, boolean>; // iconId → show
   setIconVisibility: (id: string, show: boolean) => void;
+  screenSaverEnabled: boolean;
+  setScreenSaverEnabled: (enabled: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -19,6 +21,8 @@ export const useSettingsStore = create<SettingsState>()(
           set((state) => ({
             iconVisibility: { ...state.iconVisibility, [id]: show },
           })),
+        screenSaverEnabled: true,
+        setScreenSaverEnabled: (enabled) => set({ screenSaverEnabled: enabled }),
       }),
       { name: "settings-store" },
     ),

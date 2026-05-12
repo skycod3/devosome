@@ -13,13 +13,21 @@ export const useSettings = () => {
   const setIconVisibility = useSettingsStore(
     (state) => state.setIconVisibility,
   );
+  const screenSaverEnabled = useSettingsStore(
+    (state) => state.screenSaverEnabled,
+  );
+  const setScreenSaverEnabled = useSettingsStore(
+    (state) => state.setScreenSaverEnabled,
+  );
 
   return {
     // state
     wallpaper,
     iconVisibility,
+    screenSaverEnabled,
     // actions
     setWallpaper,
     setIconVisibility,
+    setScreenSaverEnabled,
   };
 };
