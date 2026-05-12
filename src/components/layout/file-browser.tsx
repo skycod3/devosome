@@ -96,7 +96,7 @@ export function FileBrowser({ iconId, files }: FileBrowserProps) {
       ) : (
         <ul
           onClick={handleAreaClick}
-          className="flex flex-col overflow-auto p-2"
+          className="flex flex-col gap-1 overflow-auto p-2"
         >
           {iconsFromStore.map((icon) => (
             <ListRow key={icon.id} icon={icon} />
