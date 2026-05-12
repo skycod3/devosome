@@ -2,12 +2,14 @@ import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
 interface SettingsState {
-  wallpaper: string; // filename, e.g. "wallpaper-1.jpg"
+  wallpaper: string;
   setWallpaper: (wallpaper: string) => void;
-  iconVisibility: Record<string, boolean>; // iconId → show
+  iconVisibility: Record<string, boolean>;
   setIconVisibility: (id: string, show: boolean) => void;
   screenSaverEnabled: boolean;
   setScreenSaverEnabled: (enabled: boolean) => void;
+  viewModes: Record<string, "grid" | "list">;
+  setViewMode: (tabId: string, mode: "grid" | "list") => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -23,6 +25,11 @@ export const useSettingsStore = create<SettingsState>()(
           })),
         screenSaverEnabled: true,
         setScreenSaverEnabled: (enabled) => set({ screenSaverEnabled: enabled }),
+        viewModes: {},
+        setViewMode: (tabId, mode) =>
+          set((state) => ({
+            viewModes: { ...state.viewModes, [tabId]: mode },
+          })),
       }),
       { name: "settings-store" },
     ),

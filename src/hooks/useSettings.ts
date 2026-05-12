@@ -19,15 +19,19 @@ export const useSettings = () => {
   const setScreenSaverEnabled = useSettingsStore(
     (state) => state.setScreenSaverEnabled,
   );
+  const viewModes = useSettingsStore((state) => state.viewModes);
+  const setViewMode = useSettingsStore((state) => state.setViewMode);
 
   return {
     // state
     wallpaper,
     iconVisibility,
     screenSaverEnabled,
+    viewModes,
     // actions
     setWallpaper,
     setIconVisibility,
     setScreenSaverEnabled,
+    setViewMode,
   };
 };
