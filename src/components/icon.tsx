@@ -64,7 +64,7 @@ export function Icon({
                 : "white",
             } as CSSProperties
           }
-          className={`z-1 min-w-full grid grid-rows-[1fr_auto] gap-1.5 p-1 rounded text-center text-(--icon-color) ${supportsRelativeColors ? `${!isHighlighted ? `hover:bg-(--icon-color)/10` : "bg-(--icon-color)/20"}` : ""}`}
+          className={`z-1 min-w-full sm:grid grid-rows-[1fr_auto] gap-1.5 p-1 rounded text-center text-(--icon-color) ${supportsRelativeColors ? `${!isHighlighted ? `hover:bg-(--icon-color)/10` : "bg-(--icon-color)/20"}` : ""}`}
         >
           <div className="flex-center min-h-0">
             <Image
@@ -78,7 +78,7 @@ export function Icon({
             />
           </div>
 
-          <p className="leading-4 sm:leading-normal text-sm line-clamp-2 text-center wrap-break-word">
+          <p className="leading-4 sm:leading-normal text-sm line-clamp-2 text-center wrap-break-word mt-2 sm:mt-0">
             {title}
           </p>
         </button>
