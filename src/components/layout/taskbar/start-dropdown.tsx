@@ -1,8 +1,11 @@
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
+import { Search } from "lucide-react";
+import { useState } from "react";
 
 import { useHotkey } from "@tanstack/react-hotkeys";
 
 import { APPLICATIONS } from "@/constants/applications";
+import { DESKTOP_ICONS } from "@/constants/icons";
 
 import { useWindows } from "@/hooks/useWindows";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -26,17 +29,46 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import Image from "next/image";
+
 const { contact } = ABOUT_ME;
+
+// All searchable apps (same logic as Spotlight)
+const TAB_IDS = new Set(
+  Object.values(APPLICATIONS).flatMap((app) => app.availableTabs ?? []),
+);
+const ALL_APPS = Object.values(APPLICATIONS)
+  .filter((app) => (!!app.component || !!app.showTabs) && !TAB_IDS.has(app.id))
+  .map((app) => {
+    const iconEntry = DESKTOP_ICONS.find((i) => i.appId === app.id);
+    return {
+      id: app.id,
+      title: app.windowTitle ?? app.id,
+      icon: iconEntry?.icon ?? null,
+    };
+  });
 
 export function StartDropdown() {
   const { openWindowCentered } = useWindows();
   const isMobile = useIsMobile();
   const { notify } = useNotify();
+  const [query, setQuery] = useState("");
+
+  const searchResults = query.trim()
+    ? ALL_APPS.filter((app) =>
+        app.title.toLowerCase().includes(query.toLowerCase()),
+      )
+    : [];
 
   function openWindow(iconId: string) {
     const { windowTitle } = APPLICATIONS[iconId];
 
     openWindowCentered(iconId, "", windowTitle ?? "", "");
+  }
+
+  function openApp(iconId: string, title: string) {
+    openWindowCentered(iconId, "", title, "");
+    setQuery("");
   }
 
   function handleLogOut() {
@@ -56,6 +88,48 @@ export function StartDropdown() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="w-56" align="start">
+        {/* Search bar — visible on mobile only */}
+        {isMobile && (
+          <>
+            <div className="flex items-center gap-2 px-2 py-1.5">
+              <Search className="text-muted-foreground size-3.5 shrink-0" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search apps..."
+                className="text-foreground placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none"
+              />
+            </div>
+            <DropdownMenuSeparator />
+          </>
+        )}
+
+        {/* Search results */}
+        {searchResults.length > 0 && (
+          <>
+            <DropdownMenuGroup>
+              {searchResults.map((app) => (
+                <DropdownMenuItem
+                  key={app.id}
+                  onClick={() => openApp(app.id, app.title)}
+                >
+                  {app.icon && (
+                    <Image
+                      src={app.icon}
+                      alt={app.title}
+                      width={16}
+                      height={16}
+                      className="shrink-0"
+                    />
+                  )}
+                  {app.title}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
+          </>
+        )}
+
         <DropdownMenuLabel>Jean Medeiros</DropdownMenuLabel>
         <DropdownMenuSeparator />
 
