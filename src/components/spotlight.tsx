@@ -83,12 +83,12 @@ export function Spotlight({ onClose }: SpotlightProps) {
 
   return (
     <div
-      className="fixed inset-0 z-[9997] flex items-start justify-center bg-black/40 pt-[20vh] backdrop-blur-sm"
+      className="fixed inset-0 z-9997 flex items-start justify-center bg-black/40 pt-[20vh] backdrop-blur-sm"
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="bg-background border-border w-[560px] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border shadow-2xl">
+      <div className="bg-background border-border w-140 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border shadow-2xl">
         <div className="flex items-center gap-3 px-4 py-3">
           <Search className="text-muted-foreground size-4 shrink-0" />
           <input
