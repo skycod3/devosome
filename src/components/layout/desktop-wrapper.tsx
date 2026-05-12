@@ -2,7 +2,10 @@
 
 import { useState } from "react";
 import { useTheme } from "@/hooks/useTheme";
+import { useSettings } from "@/hooks/useSettings";
+import { useIdleTimer } from "@/hooks/useIdleTimer";
 import { BootScreen } from "@/components/boot-screen";
+import { ScreenSaver } from "@/components/screen-saver";
 
 import {
   ContextMenu,
@@ -33,6 +36,8 @@ export function DesktopWrapper() {
   const [booting, setBooting] = useState(true);
   const { theme, setTheme, systemThemeEnabled, setSystemThemeEnabled } =
     useTheme();
+  const { screenSaverEnabled } = useSettings();
+  const { isIdle } = useIdleTimer();
 
   function handleValueChange(value: string) {
     if (value === "system") {
@@ -41,6 +46,8 @@ export function DesktopWrapper() {
       setTheme(value as typeof theme);
     }
   }
+
+  const showScreenSaver = !booting && screenSaverEnabled && isIdle;
 
   return (
     <>
@@ -62,6 +69,7 @@ export function DesktopWrapper() {
           </ContextMenuGroup>
         </ContextMenuContent>
       </ContextMenu>
+      {showScreenSaver && <ScreenSaver />}
     </>
   );
 }
