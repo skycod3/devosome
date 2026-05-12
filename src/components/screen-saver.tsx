@@ -64,6 +64,13 @@ export function ScreenSaver() {
           mixer.clipAction(animations[SCREENSAVER_ANIMATION_INDEX]).play();
         }
         scene.add(modelRoot);
+
+        // Start fade-in only after model is ready
+        gsap.fromTo(
+          container,
+          { opacity: 0 },
+          { opacity: 1, duration: SCREENSAVER_FADEIN_DURATION, ease: "power2.out" },
+        );
       },
       undefined,
       (err) => console.error("[ScreenSaver] model load error", err),
@@ -88,13 +95,6 @@ export function ScreenSaver() {
       renderer.render(scene, camera);
     }
     animate();
-
-    // ── Fade in ──────────────────────────────────────────────────────────────
-    gsap.fromTo(
-      container,
-      { opacity: 0 },
-      { opacity: 1, duration: SCREENSAVER_FADEIN_DURATION, ease: "power2.out" },
-    );
 
     // ── Cleanup ──────────────────────────────────────────────────────────────
     return () => {
