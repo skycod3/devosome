@@ -82,7 +82,7 @@ function NotificationItem({ n }: { n: Notification }) {
                 markAsRead(n.id);
               }}
               title="Mark as read"
-              className="rounded hover:bg-accent transition-colors"
+              className="rounded p-1.5 hover:bg-accent transition-colors"
             >
               <Eye className="size-3.5 text-muted-foreground hover:text-accent-foreground transition-colors" />
             </button>
@@ -145,14 +145,14 @@ export function NotificationCenter() {
             <button
               onClick={markAllAsRead}
               title="Mark all as read"
-              className="rounded p-1 hover:bg-accent transition-colors"
+              className="rounded p-1.5 hover:bg-accent transition-colors"
             >
               <CheckCheck className="size-3.5 text-muted-foreground" />
             </button>
             <button
               onClick={dismissAll}
               title="Clear all"
-              className="rounded p-1 hover:bg-accent transition-colors"
+              className="rounded p-1.5 hover:bg-accent transition-colors"
             >
               <Trash2 className="size-3.5 text-muted-foreground" />
             </button>

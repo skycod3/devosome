@@ -22,7 +22,7 @@ export function SystemTray() {
   const { unreadCount } = useNotificationsStore();
 
   return (
-    <div className="flex items-center justify-end gap-3 p-2">
+    <div className="flex items-center justify-end gap-1 sm:gap-2 p-2">
       <Battery />
       <Network />
 
@@ -30,7 +30,7 @@ export function SystemTray() {
       <Popover>
         <PopoverTrigger asChild>
           <button
-            className="relative rounded p-1 hover:bg-foreground/10 transition-colors"
+            className="relative rounded p-1.5 hover:bg-foreground/10 transition-colors"
             title="Notifications"
           >
             <Bell className="size-4" />
@@ -48,7 +48,7 @@ export function SystemTray() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="relative rounded p-1 hover:bg-foreground/10 transition-colors"
+            className="relative rounded p-1.5 hover:bg-foreground/10 transition-colors"
             title={
               systemThemeEnabled
                 ? "Theme: Auto (System)"

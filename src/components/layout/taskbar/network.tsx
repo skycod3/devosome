@@ -31,7 +31,7 @@ export function Network() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="p-1 flex items-center cursor-default">
+        <div className="p-1.5 flex items-center cursor-default">
           {online ? (
             <Wifi className="size-4" />
           ) : (

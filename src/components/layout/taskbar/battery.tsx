@@ -126,7 +126,7 @@ export function Battery() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="p-1 flex items-center cursor-default">
+        <div className="p-1.5 flex items-center cursor-default">
           <Icon className={`size-4 ${color}`} />
         </div>
       </TooltipTrigger>
