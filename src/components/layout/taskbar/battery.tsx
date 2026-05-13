@@ -84,7 +84,12 @@ export function Battery() {
   // No battery info to show: unsupported, not yet loaded, or desktop PC
   // (level=1, charging=true, dischargingTime=Infinity → AC-only device)
   if (!supported || battery === null) return null;
-  if (battery.level === 1 && battery.charging && !isFinite(battery.dischargingTime)) return null;
+  if (
+    battery.level === 1 &&
+    battery.charging &&
+    !isFinite(battery.dischargingTime)
+  )
+    return null;
 
   const pct = Math.round(battery.level * 100);
 
@@ -121,7 +126,7 @@ export function Battery() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="flex items-center cursor-default">
+        <div className="p-1 flex items-center cursor-default">
           <Icon className={`size-4 ${color}`} />
         </div>
       </TooltipTrigger>

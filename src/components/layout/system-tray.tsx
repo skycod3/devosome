@@ -48,7 +48,7 @@ export function SystemTray() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="rounded"
+            className="relative rounded p-1 hover:bg-foreground/10 transition-colors"
             title={
               systemThemeEnabled
                 ? "Theme: Auto (System)"
