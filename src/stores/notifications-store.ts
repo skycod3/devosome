@@ -41,7 +41,7 @@ function generateId(): string {
 export const useNotificationsStore = create<NotificationsStore>()(
   devtools(
     persist(
-      (set) => ({
+      (set, get) => ({
         notifications: [],
         unreadCount: 0,
 
@@ -56,13 +56,23 @@ export const useNotificationsStore = create<NotificationsStore>()(
             }
 
             const { expiresIn, ...rest } = n;
+            const expiresAt =
+              expiresIn != null ? Date.now() + expiresIn : undefined;
             const notification: Notification = {
               ...rest,
               id: generateId(),
               timestamp: Date.now(),
-              expiresAt: expiresIn != null ? Date.now() + expiresIn : undefined,
+              expiresAt,
               read: false,
             };
+
+            // Schedule runtime removal at the exact expiry time
+            if (expiresAt != null) {
+              const ms = expiresAt - Date.now();
+              setTimeout(() => {
+                get().dismiss(notification.id);
+              }, ms);
+            }
 
             return {
               notifications: [notification, ...state.notifications],
