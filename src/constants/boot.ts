@@ -55,3 +55,6 @@ export const BOOT_KERNEL_TRAILING_LINES = [
 
 /** Label shown in the kernel log for wallpaper preload */
 export const BOOT_WALLPAPER_LABEL = "Loading wallpapers";
+
+/** Label shown in the kernel log for audio sprite preload */
+export const BOOT_AUDIO_LABEL = "Starting audio subsystem";

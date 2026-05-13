@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { useSettingsStore } from "@/stores/settings-store";
 // prettier-ignore
-import { BOOT_BIOS_INITIAL_DELAY, BOOT_BIOS_LINE_DELAY, BOOT_BIOS_LINES, BOOT_BIOS_TO_KERNEL_DELAY, BOOT_BEFORE_FADEOUT_DELAY, BOOT_COUNTDOWN_INTERVAL, BOOT_FADEOUT_DURATION, BOOT_KERNEL_LEADING_LINES, BOOT_KERNEL_MIN_LINE_DELAY, BOOT_KERNEL_TRAILING_LINES, BOOT_WALLPAPER_LABEL } from "@/constants/boot";
+import { BOOT_BIOS_INITIAL_DELAY, BOOT_BIOS_LINE_DELAY, BOOT_BIOS_LINES, BOOT_BIOS_TO_KERNEL_DELAY, BOOT_BEFORE_FADEOUT_DELAY, BOOT_COUNTDOWN_INTERVAL, BOOT_FADEOUT_DURATION, BOOT_KERNEL_LEADING_LINES, BOOT_KERNEL_MIN_LINE_DELAY, BOOT_KERNEL_TRAILING_LINES, BOOT_WALLPAPER_LABEL, BOOT_AUDIO_LABEL } from "@/constants/boot";
 
 type BootScreenProps = {
   onComplete: () => void;
@@ -25,12 +25,30 @@ function preloadImage(url: string): Promise<void> {
   });
 }
 
+function preloadAudio(url: string): Promise<void> {
+  return new Promise((resolve) => {
+    const audio = new Audio();
+    audio.oncanplaythrough = () => resolve();
+    audio.onerror = () => resolve();
+    audio.src = url;
+  });
+}
+
 const BIOS_LINES = BOOT_BIOS_LINES;
 
 export function BootScreen({ onComplete }: BootScreenProps) {
   const { wallpaper } = useSettingsStore();
-  const preloadAssets = [
+  const preloadAssets: {
+    url: string;
+    label: string;
+    preload?: (url: string) => Promise<void>;
+  }[] = [
     { url: `/wallpapers/${wallpaper}`, label: BOOT_WALLPAPER_LABEL },
+    {
+      url: "/sounds/ui-sounds.mp3",
+      label: BOOT_AUDIO_LABEL,
+      preload: preloadAudio,
+    },
   ];
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -67,7 +85,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
       // Kick off all preloads immediately (in parallel)
       const preloadPromises = preloadAssets.map((a) => ({
         ...a,
-        promise: preloadImage(a.url),
+        promise: (a.preload ?? preloadImage)(a.url),
       }));
 
       // Fixed leading lines before asset-driven ones
