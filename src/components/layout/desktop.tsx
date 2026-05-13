@@ -92,6 +92,8 @@ export function Desktop() {
 
   // Show spotlight tip on first visit
   useEffect(() => {
+    if (isMobile) return;
+
     if (localStorage.getItem("spotlightTipShown")) return;
 
     localStorage.setItem("spotlightTipShown", "true");
@@ -99,7 +101,7 @@ export function Desktop() {
       duration: 1000 * 8, // 8 seconds
       dedupeId: "spotlight-tip",
       expiresIn: 1000 * 60 * 60 * 24 * 3, // 3 days
-      delay: 1000 * 10, // Show after 8 seconds
+      delay: 1000 * 10, // Show after 10 seconds
     });
   }, []);
 
