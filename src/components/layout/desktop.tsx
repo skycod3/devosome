@@ -17,6 +17,7 @@ import { Window } from "../window";
 import { Dock } from "./dock";
 
 import { useNotify } from "@/hooks/useNotify";
+import { useSounds } from "@/hooks/useSounds";
 import { Spotlight } from "@/components/spotlight";
 
 export function Desktop() {
@@ -25,6 +26,7 @@ export function Desktop() {
   const isMobile = useIsMobile();
   const { wallpaper, iconVisibility } = useSettings();
   const { notify } = useNotify();
+  const { playClickLeft, playClickRight } = useSounds();
   const [spotlightOpen, setSpotlightOpen] = useState(false);
   const wallpaperSrc = `/wallpapers/${wallpaper}`;
   const desktopRef = useRef<HTMLDivElement>(null);
@@ -50,6 +52,19 @@ export function Desktop() {
     window.addEventListener("keydown", handleSpotlightKeyDown);
     return () => window.removeEventListener("keydown", handleSpotlightKeyDown);
   }, [handleSpotlightKeyDown]);
+
+  useEffect(() => {
+    const handlePointerDown = (e: PointerEvent) => {
+      if (e.button === 0) playClickLeft();
+    };
+    const handleContextMenu = () => playClickRight();
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("contextmenu", handleContextMenu);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  }, [playClickLeft, playClickRight]);
 
   useEffect(() => {
     setIcons(
