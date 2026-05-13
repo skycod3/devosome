@@ -72,7 +72,9 @@ export function StartDropdown() {
   }
 
   function handleLogOut() {
-    notify.info("Wanna log out? Just close the browser tab! 😄");
+    notify.info("Wanna log out? Just close the browser tab! 😄", {
+      expiresIn: 5000,
+    });
   }
 
   useHotkey("Shift+A", () => openWindow("about-me"));
