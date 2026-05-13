@@ -84,7 +84,9 @@ export function StartDropdown() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="rounded px-2 py-1">Start</button>
+        <button className="leading-none rounded p-1.5 hover:bg-foreground/10 transition-colors">
+          Start
+        </button>
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
