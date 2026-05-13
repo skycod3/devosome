@@ -7,13 +7,15 @@ import { useSettings } from "@/hooks/useSettings";
 import { WALLPAPERS } from "@/constants/wallpapers";
 import { DESKTOP_ICONS } from "@/constants/icons";
 import { cn } from "@/lib/utils";
+import { Switch } from "@/components/ui/switch";
 
-type Tab = "appearance" | "wallpaper" | "desktop";
+type Tab = "appearance" | "wallpaper" | "desktop" | "sound";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "appearance", label: "Appearance" },
   { id: "wallpaper", label: "Wallpaper" },
   { id: "desktop", label: "Desktop" },
+  { id: "sound", label: "Sound" },
 ];
 
 export function SystemSettings({ iconId: _ }: { iconId: string }) {
@@ -41,6 +43,7 @@ export function SystemSettings({ iconId: _ }: { iconId: string }) {
         {activeTab === "appearance" && <AppearancePanel />}
         {activeTab === "wallpaper" && <WallpaperPanel />}
         {activeTab === "desktop" && <DesktopPanel />}
+        {activeTab === "sound" && <SoundPanel />}
       </div>
     </div>
   );
@@ -171,6 +174,20 @@ function DesktopPanel() {
           </label>
         ))}
       </div>
+    </div>
+  );
+}
+
+function SoundPanel() {
+  const { soundEnabled, setSoundEnabled } = useSettings();
+
+  return (
+    <div className="flow">
+      <h2 className="text-sm font-semibold">Sound Effects</h2>
+      <label className="inline-flex cursor-pointer items-center gap-3">
+        <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} />
+        <span className="text-sm">Enable sound effects</span>
+      </label>
     </div>
   );
 }
