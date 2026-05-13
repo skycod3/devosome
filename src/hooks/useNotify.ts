@@ -1,6 +1,7 @@
 import { toast } from "sonner";
 import { useNotificationsStore } from "@/stores/notifications-store";
 import type { NotificationType } from "@/stores/notifications-store";
+import { useSounds } from "@/hooks/useSounds";
 
 type NotifyOptions = {
   description?: string;
@@ -14,6 +15,8 @@ type NotifyOptions = {
   expiresIn?: number;
   /** Delay before showing the toast, in milliseconds */
   delay?: number;
+  /** Add to notification center without showing a toast */
+  silent?: boolean;
 };
 
 function truncateText(text: string, max: number): string {
@@ -23,6 +26,7 @@ function truncateText(text: string, max: number): string {
 
 function useNotify() {
   const { addNotification } = useNotificationsStore();
+  const { playToast, playNotification } = useSounds();
 
   function fire(
     type: NotificationType,
@@ -38,6 +42,7 @@ function useNotify() {
       dedupeId,
       expiresIn,
       delay,
+      silent,
     } = options;
 
     // Check for duplicate before adding — if it already exists, skip both
@@ -57,21 +62,26 @@ function useNotify() {
     const toastTitle = truncateText(title, 80);
 
     const showToast = () => {
-      // Store receives full text; Sonner receives truncated text
       addNotification({ type, title, description, dedupeId, expiresIn });
 
-      switch (type) {
-        case "success":
-          toast.success(toastTitle, toastOptions);
-          break;
-        case "error":
-          toast.error(toastTitle, toastOptions);
-          break;
-        case "warning":
-          toast.warning(toastTitle, toastOptions);
-          break;
-        default:
-          toast(toastTitle, toastOptions);
+      if (!silent) {
+        playToast();
+
+        switch (type) {
+          case "success":
+            toast.success(toastTitle, toastOptions);
+            break;
+          case "error":
+            toast.error(toastTitle, toastOptions);
+            break;
+          case "warning":
+            toast.warning(toastTitle, toastOptions);
+            break;
+          default:
+            toast(toastTitle, toastOptions);
+        }
+      } else {
+        playNotification();
       }
     };
 
