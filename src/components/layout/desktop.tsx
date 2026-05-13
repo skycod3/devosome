@@ -58,16 +58,33 @@ export function Desktop() {
         show: iconVisibility[icon.id] ?? icon.show,
       })),
     );
+  }, []);
 
+  // Show welcome message on first visit
+  useEffect(() => {
     if (localStorage.getItem("welcomeShown")) return;
 
     localStorage.setItem("welcomeShown", "true");
     notify.info("Welcome to DevOSome! 🖖", {
       description:
         "Explore the projects and portfolio of a passionate developer.",
-      duration: 1000 * 60 * 1, // 1 minute
+      duration: 1000 * 8, // 8 seconds
       dedupeId: "welcome",
       expiresIn: 1000 * 60 * 60 * 24 * 3, // 3 days
+      delay: 1000 * 2, // Show after 2 seconds
+    });
+  }, []);
+
+  // Show spotlight tip on first visit
+  useEffect(() => {
+    if (localStorage.getItem("spotlightTipShown")) return;
+
+    localStorage.setItem("spotlightTipShown", "true");
+    notify.info("Tip: Press Ctrl+K to open Spotlight Search 🔍", {
+      duration: 1000 * 8, // 8 seconds
+      dedupeId: "spotlight-tip",
+      expiresIn: 1000 * 60 * 60 * 24 * 3, // 3 days
+      delay: 1000 * 10, // Show after 8 seconds
     });
   }, []);
 
