@@ -160,11 +160,19 @@ export function StartDropdown() {
             Get in Touch
             {!isMobile && <DropdownMenuShortcut>⇧+T</DropdownMenuShortcut>}
           </DropdownMenuItem>
+        </DropdownMenuGroup>
+
+        <DropdownMenuSeparator />
+
+        <DropdownMenuGroup>
           <DropdownMenuItem onClick={() => openWindow("clipboard-history")}>
             Clipboard History
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => openWindow("system-monitor")}>
             System Monitor
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => openWindow("system-settings")}>
+            System Settings
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
