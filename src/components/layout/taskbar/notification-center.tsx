@@ -84,7 +84,7 @@ function NotificationItem({ n }: { n: Notification }) {
               title="Mark as read"
               className="rounded hover:bg-accent transition-colors"
             >
-              <Eye className="size-3.5 text-muted-foreground" />
+              <Eye className="size-3.5 text-muted-foreground hover:text-accent-foreground transition-colors" />
             </button>
           )}
           <button
@@ -95,7 +95,7 @@ function NotificationItem({ n }: { n: Notification }) {
             title="Dismiss"
             className="rounded hover:bg-accent transition-colors"
           >
-            <X className="size-3.5 text-muted-foreground" />
+            <X className="size-3.5 text-muted-foreground hover:text-accent-foreground transition-colors" />
           </button>
         </div>
       </li>
