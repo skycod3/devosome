@@ -12,6 +12,8 @@ type NotifyOptions = {
   dedupeId?: string;
   /** Auto-expire after this many milliseconds (persisted across sessions) */
   expiresIn?: number;
+  /** Delay before showing the toast, in milliseconds */
+  delay?: number;
 };
 
 function truncateText(text: string, max: number): string {
@@ -27,7 +29,16 @@ function useNotify() {
     title: string,
     options: NotifyOptions = {},
   ) {
-    const { description, duration, style, onDismiss, onAutoClose, dedupeId, expiresIn } = options;
+    const {
+      description,
+      duration,
+      style,
+      onDismiss,
+      onAutoClose,
+      dedupeId,
+      expiresIn,
+      delay,
+    } = options;
 
     // Check for duplicate before adding — if it already exists, skip both
     // the store entry and the toast (notification persisted from a prior session).
@@ -35,9 +46,6 @@ function useNotify() {
       const { notifications } = useNotificationsStore.getState();
       if (notifications.some((n) => n.dedupeId === dedupeId)) return;
     }
-
-    // Store receives full text; Sonner receives truncated text
-    addNotification({ type, title, description, dedupeId, expiresIn });
 
     const toastOptions = {
       description: description ? truncateText(description, 120) : undefined,
@@ -48,18 +56,29 @@ function useNotify() {
     };
     const toastTitle = truncateText(title, 80);
 
-    switch (type) {
-      case "success":
-        toast.success(toastTitle, toastOptions);
-        break;
-      case "error":
-        toast.error(toastTitle, toastOptions);
-        break;
-      case "warning":
-        toast.warning(toastTitle, toastOptions);
-        break;
-      default:
-        toast(toastTitle, toastOptions);
+    const showToast = () => {
+      // Store receives full text; Sonner receives truncated text
+      addNotification({ type, title, description, dedupeId, expiresIn });
+
+      switch (type) {
+        case "success":
+          toast.success(toastTitle, toastOptions);
+          break;
+        case "error":
+          toast.error(toastTitle, toastOptions);
+          break;
+        case "warning":
+          toast.warning(toastTitle, toastOptions);
+          break;
+        default:
+          toast(toastTitle, toastOptions);
+      }
+    };
+
+    if (delay) {
+      setTimeout(showToast, delay);
+    } else {
+      showToast();
     }
   }
 
