@@ -157,7 +157,9 @@ export function WindowHeader({
 
         <button
           className="flex-center size-5 sm:size-4 cursor-pointer rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
-          onClick={() => closeWindow(window.id)}
+          onClick={() => {
+            closeWindow(window.id);
+          }}
         >
           <VscClose className="size-3" />
         </button>
