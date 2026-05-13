@@ -59,14 +59,14 @@ export function Contact() {
 
       reset();
       notify.success("Message sent! I'll get back to you soon.", {
-        duration: 7000,
+        duration: 1000 * 8, // 8 seconds
       });
     } catch (err) {
       notify.error(
         err instanceof Error
           ? err.message
           : "Failed to send message. Please try again.",
-        { duration: 7000 },
+        { duration: 1000 * 8 }, // 8 seconds
       );
     } finally {
       setStatus("idle");
