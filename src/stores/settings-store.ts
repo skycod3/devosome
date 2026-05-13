@@ -10,6 +10,8 @@ interface SettingsState {
   setScreenSaverEnabled: (enabled: boolean) => void;
   viewModes: Record<string, "grid" | "list">;
   setViewMode: (tabId: string, mode: "grid" | "list") => void;
+  soundEnabled: boolean;
+  setSoundEnabled: (enabled: boolean) => void;
 }
 
 export const useSettingsStore = create<SettingsState>()(
@@ -24,12 +26,15 @@ export const useSettingsStore = create<SettingsState>()(
             iconVisibility: { ...state.iconVisibility, [id]: show },
           })),
         screenSaverEnabled: true,
-        setScreenSaverEnabled: (enabled) => set({ screenSaverEnabled: enabled }),
+        setScreenSaverEnabled: (enabled) =>
+          set({ screenSaverEnabled: enabled }),
         viewModes: {},
         setViewMode: (tabId, mode) =>
           set((state) => ({
             viewModes: { ...state.viewModes, [tabId]: mode },
           })),
+        soundEnabled: true,
+        setSoundEnabled: (enabled) => set({ soundEnabled: enabled }),
       }),
       { name: "settings-store" },
     ),

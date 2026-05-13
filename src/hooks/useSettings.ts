@@ -21,6 +21,8 @@ export const useSettings = () => {
   );
   const viewModes = useSettingsStore((state) => state.viewModes);
   const setViewMode = useSettingsStore((state) => state.setViewMode);
+  const soundEnabled = useSettingsStore((state) => state.soundEnabled);
+  const setSoundEnabled = useSettingsStore((state) => state.setSoundEnabled);
 
   return {
     // state
@@ -28,10 +30,12 @@ export const useSettings = () => {
     iconVisibility,
     screenSaverEnabled,
     viewModes,
+    soundEnabled,
     // actions
     setWallpaper,
     setIconVisibility,
     setScreenSaverEnabled,
     setViewMode,
+    setSoundEnabled,
   };
 };
