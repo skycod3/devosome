@@ -1,6 +1,10 @@
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 
 export function Clock() {
@@ -33,13 +37,15 @@ export function Clock() {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="cursor-pointer hover:text-foreground/70 transition-colors">
+        <button className="hover:text-foreground/70 transition-colors">
           {format(time, "EEE")} {format(time, "HH:mm")}
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-fit p-0" align="end">
         <div className="px-4 pt-3 pb-1 text-center">
-          <p className="text-sm font-medium">{format(time, "EEEE, MMMM d, yyyy")}</p>
+          <p className="text-sm font-medium">
+            {format(time, "EEEE, MMMM d, yyyy")}
+          </p>
         </div>
         <Calendar
           mode="single"

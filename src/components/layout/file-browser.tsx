@@ -131,7 +131,7 @@ function ListRow({ icon }: { icon: IconType }) {
     <li
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
-      className={`flex items-center gap-2 rounded px-2 py-1 cursor-pointer select-none ${icon.isHighlighted ? "bg-accent text-accent-foreground" : "hover:bg-accent/50"}`}
+      className={`flex items-center gap-2 rounded px-2 py-1 select-none ${icon.isHighlighted ? "bg-accent text-accent-foreground" : "hover:bg-accent/50"}`}
     >
       <Image
         src={icon.icon}

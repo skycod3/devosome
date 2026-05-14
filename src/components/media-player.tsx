@@ -262,7 +262,7 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
           step={0.1}
           value={currentTime}
           onChange={handleSeek}
-          className="w-full h-1.5 accent-primary cursor-pointer"
+          className="w-full h-1.5 accent-primary"
           aria-label="Seek"
         />
       </div>
@@ -315,7 +315,7 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
             step={0.05}
             value={effectiveVolume}
             onChange={handleVolumeChange}
-            className="w-16 h-1.5 accent-primary cursor-pointer"
+            className="w-16 h-1.5 accent-primary"
             aria-label="Volume"
             title="Volume (↑ ↓)"
           />

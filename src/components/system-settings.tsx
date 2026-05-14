@@ -78,10 +78,7 @@ function AppearancePanel() {
       <h2 className="text-sm font-semibold">Appearance</h2>
       <div className="grid justify-items-start gap-2">
         {options.map((opt) => (
-          <label
-            key={opt.value}
-            className="inline-flex cursor-pointer items-center gap-3"
-          >
+          <label key={opt.value} className="inline-flex items-center gap-3">
             <input
               type="radio"
               name="theme"
@@ -96,7 +93,7 @@ function AppearancePanel() {
       </div>
 
       <h2 className="text-sm font-semibold">Screen Saver</h2>
-      <label className="inline-flex cursor-pointer items-center gap-3">
+      <label className="inline-flex items-center gap-3">
         <input
           type="checkbox"
           checked={screenSaverEnabled}
@@ -160,10 +157,7 @@ function DesktopPanel() {
       <h2 className="text-sm font-semibold">Desktop Icons</h2>
       <div className="grid justify-items-start gap-2">
         {controllable.map((icon) => (
-          <label
-            key={icon.id}
-            className="inline-flex cursor-pointer items-center gap-3"
-          >
+          <label key={icon.id} className="inline-flex items-center gap-3">
             <input
               type="checkbox"
               checked={icon.show}
@@ -184,7 +178,7 @@ function SoundPanel() {
   return (
     <div className="flow">
       <h2 className="text-sm font-semibold">Sound Effects</h2>
-      <label className="inline-flex cursor-pointer items-center gap-3">
+      <label className="inline-flex items-center gap-3">
         <Switch checked={soundEnabled} onCheckedChange={setSoundEnabled} />
         <span className="text-sm">Enable sound effects</span>
       </label>

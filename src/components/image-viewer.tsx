@@ -400,14 +400,7 @@ export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
               }}
               onDragStart={() => setIsDragging(true)}
               onDragEnd={() => setIsDragging(false)}
-              className={
-                "absolute inset-0 flex items-center justify-center " +
-                (canDrag
-                  ? isDragging
-                    ? "cursor-grabbing"
-                    : "cursor-grab"
-                  : "cursor-default")
-              }
+              className={"absolute inset-0 flex items-center justify-center "}
             >
               <Image
                 src={imageFile.icon}

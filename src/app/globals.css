@@ -97,7 +97,7 @@
   }
 
   button {
-    cursor: pointer;
+    cursor: default;
   }
   * {
     @apply border-border outline-ring/50;

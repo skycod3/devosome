@@ -103,7 +103,7 @@ export function WindowHeader({
       }}
       onPointerUp={() => setIsGrabbing(false)}
       onPointerOut={() => setIsGrabbing(false)}
-      className={`flex select-none ${window.isMaximized ? "rounded-none" : `${!isMobile ? (isGrabbing ? "cursor-grabbing" : "cursor-grab") : ""}`} touch-none`}
+      className={`flex select-none ${window.isMaximized ? "rounded-none" : ""}`}
     >
       <div
         style={{
@@ -132,11 +132,11 @@ export function WindowHeader({
       </div>
 
       <div
-        className="shrink-0 bg-popover flex items-center gap-4 sm:gap-3 p-3 text-black cursor-default"
+        className="shrink-0 bg-popover flex items-center gap-4 sm:gap-3 p-3 text-black"
         onPointerDown={(e) => e.stopPropagation()}
       >
         <button
-          className="flex-center size-5 sm:size-4 cursor-pointer rounded-full border border-yellow-300 bg-yellow-200 hover:bg-yellow-400"
+          className="flex-center size-5 sm:size-4 rounded-full border border-yellow-300 bg-yellow-200 hover:bg-yellow-400"
           onClick={() => minimizeWindow(window.id)}
         >
           <VscChromeMinimize className="size-3" />
@@ -144,7 +144,7 @@ export function WindowHeader({
 
         {!isMobile && (
           <button
-            className="flex-center size-4 cursor-pointer rounded-full border border-green-300 bg-green-200 hover:bg-green-400"
+            className="flex-center size-4 rounded-full border border-green-300 bg-green-200 hover:bg-green-400"
             onClick={handleMaximize}
           >
             {window.isMaximized ? (
@@ -156,7 +156,7 @@ export function WindowHeader({
         )}
 
         <button
-          className="flex-center size-5 sm:size-4 cursor-pointer rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
+          className="flex-center size-5 sm:size-4 rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
           onClick={() => {
             closeWindow(window.id);
           }}
