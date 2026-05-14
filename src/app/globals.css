@@ -96,12 +96,16 @@
     max-width: 70ch;
   }
 
-  button {
+  button,
+  a,
+  [role="button"] {
     cursor: default;
   }
+
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
