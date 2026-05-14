@@ -7,14 +7,20 @@ import { useIdleTimer } from "@/hooks/useIdleTimer";
 import { BootScreen } from "@/components/boot-screen";
 import { ScreenSaver } from "@/components/screen-saver";
 
+import { APPLICATIONS } from "@/constants/applications";
+import { useWindows } from "@/hooks/useWindows";
+
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuGroup,
   ContextMenuLabel,
   ContextMenuRadioGroup,
+  ContextMenuItem,
   ContextMenuRadioItem,
   ContextMenuTrigger,
+  ContextMenuSeparator,
+  ContextMenuCheckboxItem,
 } from "@/components/ui/context-menu";
 
 import dynamic from "next/dynamic";
@@ -36,8 +42,9 @@ export function DesktopWrapper() {
   const [booting, setBooting] = useState(true);
   const { theme, setTheme, systemThemeEnabled, setSystemThemeEnabled } =
     useTheme();
-  const { screenSaverEnabled } = useSettings();
+  const { screenSaverEnabled, setScreenSaverEnabled, soundEnabled, setSoundEnabled } = useSettings();
   const { isIdle } = useIdleTimer();
+  const { openWindowCentered } = useWindows();
 
   function handleValueChange(value: string) {
     if (value === "system") {
@@ -48,6 +55,8 @@ export function DesktopWrapper() {
   }
 
   const showScreenSaver = !booting && screenSaverEnabled && isIdle;
+
+  const settingsApp = APPLICATIONS["system-settings"];
 
   return (
     <>
@@ -67,6 +76,37 @@ export function DesktopWrapper() {
               <ContextMenuRadioItem value="system">System</ContextMenuRadioItem>
             </ContextMenuRadioGroup>
           </ContextMenuGroup>
+
+          <ContextMenuSeparator />
+
+          <ContextMenuCheckboxItem
+            checked={soundEnabled}
+            onCheckedChange={setSoundEnabled}
+          >
+            Sound
+          </ContextMenuCheckboxItem>
+
+          <ContextMenuCheckboxItem
+            checked={screenSaverEnabled}
+            onCheckedChange={setScreenSaverEnabled}
+          >
+            Screen Saver
+          </ContextMenuCheckboxItem>
+
+          <ContextMenuSeparator />
+
+          <ContextMenuItem
+            onClick={() =>
+              openWindowCentered(
+                settingsApp.id,
+                "",
+                settingsApp.windowTitle ?? "",
+                "",
+              )
+            }
+          >
+            Settings
+          </ContextMenuItem>
         </ContextMenuContent>
       </ContextMenu>
       {showScreenSaver && <ScreenSaver />}
