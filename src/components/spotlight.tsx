@@ -126,7 +126,7 @@ export function Spotlight({ onClose }: SpotlightProps) {
                     alt={app.title}
                     width={20}
                     height={20}
-                    className="shrink-0"
+                    className="shrink-0 size-5"
                   />
                 ) : (
                   <div className="bg-muted size-5 shrink-0 rounded" />
