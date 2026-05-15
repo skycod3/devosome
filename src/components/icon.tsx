@@ -36,6 +36,8 @@ export function Icon({
   const { openWindowCentered } = useWindows();
   const { theme } = useTheme();
 
+  const isDesktopIcon = !parentId;
+
   function handleClick() {
     // Only unhighlight all if this icon isn't already highlighted
     if (!isHighlighted) {
@@ -78,8 +80,10 @@ export function Icon({
             />
           </div>
 
-          <p className="leading-4 sm:leading-normal text-sm line-clamp-2 text-center wrap-break-word mt-2 sm:mt-0 text-shadow-lg">
-            {title}
+          <p
+            className={`leading-4 sm:leading-normal text-sm line-clamp-2 text-center wrap-break-word mt-2 sm:mt-0 ${isDesktopIcon ? "text-shadow-lg" : ""}`}
+          >
+            {title.length > 17 ? `${title.slice(0, 17)}...` : title}
           </p>
         </button>
       </ContextMenuTrigger>
