@@ -119,7 +119,7 @@ export const DESKTOP_ICONS: Icon[] = [
     title: "System Settings",
     icon: SettingsImage,
     isHighlighted: false,
-    show: false,
+    show: true,
     size: { width: 48, height: 48 },
   },
 ];
