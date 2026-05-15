@@ -78,7 +78,7 @@ export function Icon({
             />
           </div>
 
-          <p className="leading-4 sm:leading-normal text-sm line-clamp-2 text-center wrap-break-word mt-2 sm:mt-0">
+          <p className="leading-4 sm:leading-normal text-sm line-clamp-2 text-center wrap-break-word mt-2 sm:mt-0 text-shadow-lg">
             {title}
           </p>
         </button>
