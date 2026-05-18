@@ -3,6 +3,7 @@ import { Pictures } from "@/components/layout/pictures";
 import { Documents } from "@/components/layout/documents";
 import { Music } from "@/components/layout/music";
 import { Videos } from "@/components/layout/videos";
+import { Recent } from "@/components/layout/recent";
 import { Skills } from "@/components/skills";
 import { AboutMe } from "@/components/about-me";
 import { Contact } from "@/components/contact";
@@ -31,7 +32,7 @@ export const APPLICATIONS: Record<string, Application> = {
     id: "files",
     windowTitle: "Files",
     showTabs: true,
-    availableTabs: ["documents", "pictures", "music", "videos"],
+    availableTabs: ["recent", "documents", "pictures", "music", "videos"],
   },
 
   // Tab views
@@ -58,6 +59,13 @@ export const APPLICATIONS: Record<string, Application> = {
     id: "videos",
     windowTitle: "Videos",
     component: Videos,
+    showTabs: false,
+  },
+  recent: {
+    id: "recent",
+    windowTitle: "Files",
+    tabTitle: "Recent",
+    component: Recent,
     showTabs: false,
   },
 

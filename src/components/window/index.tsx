@@ -4,7 +4,13 @@ import { CSSProperties, useEffect, useState } from "react";
 
 import { motion, useMotionValue, useDragControls } from "motion/react";
 
-import { PiImage, PiMusicNote, PiNote, PiVideo } from "react-icons/pi";
+import {
+  PiClockCounterClockwise,
+  PiImage,
+  PiMusicNote,
+  PiNote,
+  PiVideo,
+} from "react-icons/pi";
 
 import { APPLICATIONS } from "@/constants/applications";
 
@@ -165,6 +171,15 @@ export function Window({ window, desktopRect }: WindowProps) {
             className={`sticky top-0 sm:flex-[0.6] ${supportsRelativeColors ? "bg-[rgb(from_var(--foreground)_r_g_b/0.1)]" : "bg-sidebar-accent"} p-4`}
           >
             <ul className="space-y-6 sm:space-y-3">
+              <li>
+                <button
+                  onClick={() => setWindowActiveTab(window.id, "recent")}
+                  className={`flex items-center gap-1 font-medium ${activeTab === "recent" ? "text-blue-600" : ""}`}
+                >
+                  <PiClockCounterClockwise className="size-6 sm:size-4" />
+                  <span className="hidden sm:inline">Recent</span>
+                </button>
+              </li>
               <li>
                 <button
                   onClick={() => setWindowActiveTab(window.id, "pictures")}
