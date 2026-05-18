@@ -3,8 +3,15 @@
 import { StaticImageData } from "next/image";
 import { useWindowsStore } from "@/stores/windows.store";
 import { useViewport } from "./useViewport";
-import { DEFAULT_WINDOW_SIZE, SMALL_DESKTOP_WINDOW_SIZE, TABLET_WINDOW_SIZE } from "@/constants/windows";
+import {
+  DEFAULT_WINDOW_SIZE,
+  SMALL_DESKTOP_WINDOW_SIZE,
+  TABLET_WINDOW_SIZE,
+} from "@/constants/windows";
 import { APPLICATIONS } from "@/constants/applications";
+import { useRecent } from "./useRecent";
+
+const MEDIA_TABS = new Set(["pictures", "documents", "music", "videos"]);
 
 /**
  * Hook for managing windows.
@@ -38,9 +45,9 @@ export const useWindows = () => {
   const setWindowActiveTab = useWindowsStore(
     (state) => state.setWindowActiveTab,
   );
-  const updateWindowTitle = useWindowsStore(
-    (state) => state.updateWindowTitle,
-  );
+  const updateWindowTitle = useWindowsStore((state) => state.updateWindowTitle);
+
+  const addRecentItem = useRecent().addRecentItem;
 
   // Get viewport dimensions for positioning
   const { width, height } = useViewport();
@@ -73,6 +80,12 @@ export const useWindows = () => {
     const parentApp = parentId ? APPLICATIONS[parentId] : undefined;
     const parentTitle = parentApp?.tabTitle ?? parentApp?.windowTitle;
 
+    // Record in recent history if opened from a media tab
+    if (parentId && MEDIA_TABS.has(parentId)) {
+      const iconSrc = typeof icon === "string" ? icon : icon.src;
+      addRecentItem({ id: iconId, title, icon: iconSrc, sourceTab: parentId });
+    }
+
     const windowId = openWindow(
       iconId,
       parentId,
@@ -98,7 +111,9 @@ export const useWindows = () => {
       setWindowPosition(windowId, tabletX, tabletY);
     } else {
       // Desktop: size based on viewport width, centered, cascading offset
-      const windowSize = isSmallDesktop ? SMALL_DESKTOP_WINDOW_SIZE : DEFAULT_WINDOW_SIZE;
+      const windowSize = isSmallDesktop
+        ? SMALL_DESKTOP_WINDOW_SIZE
+        : DEFAULT_WINDOW_SIZE;
       const maxAllowedHeight = height * 0.9;
       const effectiveHeight = Math.min(windowSize.height, maxAllowedHeight);
       const offset = windows.length > 0 ? windows.length * 50 : 0;
