@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import Image from "next/image";
 import { LayoutGrid, List } from "lucide-react";
 
@@ -13,6 +13,7 @@ import { StaticImageData } from "next/image";
 
 interface FileEntry {
   id: string;
+  appId?: string; // if set, used on double-click instead of id
   title: string;
   icon: StaticImageData | string;
 }
@@ -22,9 +23,18 @@ interface FileBrowserProps {
   iconId: string;
   /** Static file entries from the relevant constants file */
   files: Record<string, FileEntry>;
+  /** Optional content rendered on the left side of the toolbar */
+  toolbarSlot?: React.ReactNode;
+  /** Message shown when the file list is empty */
+  emptyMessage?: string;
 }
 
-export function FileBrowser({ iconId, files }: FileBrowserProps) {
+export function FileBrowser({
+  iconId,
+  files,
+  toolbarSlot,
+  emptyMessage = "No files here.",
+}: FileBrowserProps) {
   const { icons, addIcon, removeIcon, unhighlightAllIcons } = useIcons();
   const { viewModes, setViewMode } = useSettings();
 
@@ -39,6 +49,7 @@ export function FileBrowser({ iconId, files }: FileBrowserProps) {
     Object.values(files).forEach((file) => {
       addIcon({
         id: file.id,
+        appId: file.appId,
         title: file.title,
         isHighlighted: false,
         show: true,
@@ -56,6 +67,45 @@ export function FileBrowser({ iconId, files }: FileBrowserProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Sync icons-store when files change after mount (e.g. clear recent).
+  // Adds new entries and removes entries no longer present in files.
+  const prevFileIdsRef = useRef<Set<string>>(new Set());
+  const isMountedRef = useRef(false);
+  useEffect(() => {
+    if (!isMountedRef.current) {
+      isMountedRef.current = true;
+      prevFileIdsRef.current = new Set(Object.keys(files));
+      return;
+    }
+
+    const currentIds = new Set(Object.keys(files));
+    const prevIds = prevFileIdsRef.current;
+
+    // Remove icons that are no longer in files
+    prevIds.forEach((id) => {
+      if (!currentIds.has(id)) removeIcon(id);
+    });
+
+    // Add icons that are new
+    Object.values(files).forEach((file) => {
+      if (!prevIds.has(file.id)) {
+        addIcon({
+          id: file.id,
+          appId: file.appId,
+          title: file.title,
+          isHighlighted: false,
+          show: true,
+          icon: file.icon as StaticImageData,
+          size: { width: 48, height: 48 },
+          parentId: iconId,
+        });
+      }
+    });
+
+    prevFileIdsRef.current = currentIds;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files]);
+
   const iconsFromStore = useMemo(
     () => icons.filter((icon) => icon.parentId === iconId),
     [icons, iconId],
@@ -63,8 +113,9 @@ export function FileBrowser({ iconId, files }: FileBrowserProps) {
 
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
-      {/* Toolbar: view toggle */}
-      <div className="flex items-center justify-end px-4 py-2 border-b shrink-0">
+      {/* Toolbar */}
+      <div className="flex items-center justify-between px-4 py-2 border-b shrink-0">
+        <div>{toolbarSlot}</div>
         <div className="flex items-center gap-1">
           <button
             onClick={() => setViewMode(iconId, "grid")}
@@ -83,8 +134,15 @@ export function FileBrowser({ iconId, files }: FileBrowserProps) {
         </div>
       </div>
 
-      {/* File area */}
-      {viewMode === "grid" ? (
+      {/* Empty state */}
+      {iconsFromStore.length === 0 && (
+        <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
+          {emptyMessage}
+        </div>
+      )}
+
+      {/* File area — grid */}
+      {iconsFromStore.length > 0 && viewMode === "grid" && (
         <div
           onClick={handleAreaClick}
           className="grid-cols-fill-6 @min-5xl:grid-cols-fill-7 grid-rows-fill-6 grid h-full gap-4 p-4 overflow-auto"
@@ -93,7 +151,10 @@ export function FileBrowser({ iconId, files }: FileBrowserProps) {
             <Icon imagePlaceholder="blur" key={icon.id} {...icon} />
           ))}
         </div>
-      ) : (
+      )}
+
+      {/* File area — list */}
+      {iconsFromStore.length > 0 && viewMode === "list" && (
         <ul
           onClick={handleAreaClick}
           className="flex flex-col gap-1 overflow-auto p-2"
