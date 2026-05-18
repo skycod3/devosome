@@ -32,6 +32,11 @@ export function Icon({
   parentId,
   imagePlaceholder,
 }: IconProps) {
+  // blur placeholder requires a blurDataURL, which is only available on
+  // StaticImageData (static imports). String srcs (e.g. recent items serialised
+  // to localStorage) don't carry that metadata, so fall back to "empty".
+  const resolvedPlaceholder =
+    imagePlaceholder === "blur" && typeof icon === "string" ? "empty" : imagePlaceholder;
   const { highlightIcon, unhighlightAllIcons } = useIcons();
   const { openWindowCentered } = useWindows();
   const { theme } = useTheme();
@@ -76,7 +81,7 @@ export function Icon({
               height={size.height}
               loading="eager"
               className="object-contain self-end max-h-full max-w-full"
-              placeholder={imagePlaceholder}
+              placeholder={resolvedPlaceholder}
             />
           </div>
 
