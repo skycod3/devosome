@@ -13,6 +13,7 @@ import {
 } from "react-icons/pi";
 
 import { APPLICATIONS } from "@/constants/applications";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { WindowHeader } from "./window-header";
 import { WindowContent } from "./window-content";
@@ -165,67 +166,62 @@ export function Window({ window, desktopRect }: WindowProps) {
         isMobile={isMobile}
       />
 
-      <div className="flex overflow-auto">
-        {window.showTabs && (
+      {window.showTabs ? (
+        <Tabs
+          value={activeTab}
+          onValueChange={(tab) => setWindowActiveTab(window.id, tab)}
+          orientation="vertical"
+          className="flex flex-row flex-1 overflow-hidden gap-0"
+        >
           <aside
             className={`sticky top-0 sm:flex-[0.6] ${supportsRelativeColors ? "bg-[rgb(from_var(--foreground)_r_g_b/0.1)]" : "bg-sidebar-accent"} p-4`}
           >
-            <ul className="space-y-6 sm:space-y-3">
-              <li>
-                <button
-                  onClick={() => setWindowActiveTab(window.id, "recent")}
-                  className={`flex items-center gap-1 font-medium ${activeTab === "recent" ? "text-blue-600" : ""}`}
-                >
-                  <PiClockCounterClockwise className="size-6 sm:size-4" />
-                  <span className="hidden sm:inline">Recent</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setWindowActiveTab(window.id, "pictures")}
-                  className={`flex items-center gap-1 font-medium ${activeTab === "pictures" ? "text-blue-600" : ""}`}
-                >
-                  <PiImage className="size-6 sm:size-4" />
-                  <span className="hidden sm:inline">Pictures</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setWindowActiveTab(window.id, "documents")}
-                  className={`flex items-center gap-1 font-medium ${activeTab === "documents" ? "text-blue-600" : ""}`}
-                >
-                  <PiNote className="size-6 sm:size-4" />
-                  <span className="hidden sm:inline">Documents</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setWindowActiveTab(window.id, "music")}
-                  className={`flex items-center gap-1 font-medium ${activeTab === "music" ? "text-blue-600" : ""}`}
-                >
-                  <PiMusicNote className="size-6 sm:size-4" />
-                  <span className="hidden sm:inline">Music</span>
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => setWindowActiveTab(window.id, "videos")}
-                  className={`flex items-center gap-1 font-medium ${activeTab === "videos" ? "text-blue-600" : ""}`}
-                >
-                  <PiVideo className="size-6 sm:size-4" />
-                  <span className="hidden sm:inline">Videos</span>
-                </button>
-              </li>
-            </ul>
-          </aside>
-        )}
+            <TabsList
+              variant="line"
+              className="flex-col items-start gap-6 sm:gap-4 bg-transparent w-full h-auto p-0"
+            >
+              <TabsTrigger className="p-0 after:hidden" value="recent">
+                <PiClockCounterClockwise className="size-6 sm:size-4 shrink-0" />
+                <span className="hidden sm:inline">Recent</span>
+              </TabsTrigger>
 
-        <WindowContent
-          iconId={activeTab}
-          parentId={window.parentId}
-          windowId={window.id}
-        />
-      </div>
+              <TabsTrigger className="p-0 after:hidden" value="pictures">
+                <PiImage className="size-6 sm:size-4 shrink-0" />
+                <span className="hidden sm:inline">Pictures</span>
+              </TabsTrigger>
+
+              <TabsTrigger className="p-0 after:hidden" value="documents">
+                <PiNote className="size-6 sm:size-4 shrink-0" />
+                <span className="hidden sm:inline">Documents</span>
+              </TabsTrigger>
+
+              <TabsTrigger className="p-0 after:hidden" value="music">
+                <PiMusicNote className="size-6 sm:size-4 shrink-0" />
+                <span className="hidden sm:inline">Music</span>
+              </TabsTrigger>
+
+              <TabsTrigger className="p-0 after:hidden" value="videos">
+                <PiVideo className="size-6 sm:size-4 shrink-0" />
+                <span className="hidden sm:inline">Videos</span>
+              </TabsTrigger>
+            </TabsList>
+          </aside>
+
+          <WindowContent
+            iconId={window.iconId}
+            parentId={window.parentId}
+            windowId={window.id}
+          />
+        </Tabs>
+      ) : (
+        <div className="flex overflow-auto">
+          <WindowContent
+            iconId={activeTab}
+            parentId={window.parentId}
+            windowId={window.id}
+          />
+        </div>
+      )}
     </motion.div>
   );
 }

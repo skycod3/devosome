@@ -8,6 +8,7 @@ import {
   type ComponentType,
 } from "react";
 import { APPLICATIONS } from "@/constants/applications";
+import { TabsContent } from "@/components/ui/tabs";
 import { IMAGE_FILES } from "@/constants/image-files";
 import { DOCUMENTS_FILES } from "@/constants/documents-files";
 import { VIDEO_FILES } from "@/constants/video-files";
@@ -136,6 +137,31 @@ export function WindowContent({
 }: WindowContentProps) {
   const { isMobile } = useWindows();
   const application = APPLICATIONS[iconId];
+
+  // Tabbed window (e.g. "files"): render all tabs with forceMount so they stay
+  // in the DOM when inactive — prevents re-mount/blur-flash on tab switch.
+  const availableTabs = application?.availableTabs;
+  if (availableTabs) {
+    return (
+      <section className="flex-2 @container overflow-auto min-w-0">
+        {availableTabs.map((tabId) => {
+          const tabApp = APPLICATIONS[tabId];
+          const AppComponent = tabApp?.component;
+          if (!AppComponent) return null;
+          return (
+            <TabsContent
+              key={tabId}
+              value={tabId}
+              forceMount
+              className="h-full data-[state=inactive]:hidden"
+            >
+              <AppComponent iconId={tabId} />
+            </TabsContent>
+          );
+        })}
+      </section>
+    );
+  }
 
   // Standard application with a registered component
   if (application?.component) {
