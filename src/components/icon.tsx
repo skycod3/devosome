@@ -36,7 +36,9 @@ export function Icon({
   // StaticImageData (static imports). String srcs (e.g. recent items serialised
   // to localStorage) don't carry that metadata, so fall back to "empty".
   const resolvedPlaceholder =
-    imagePlaceholder === "blur" && typeof icon === "string" ? "empty" : imagePlaceholder;
+    imagePlaceholder === "blur" && typeof icon === "string"
+      ? "empty"
+      : imagePlaceholder;
   const { highlightIcon, unhighlightAllIcons } = useIcons();
   const { openWindowCentered } = useWindows();
   const { theme } = useTheme();
