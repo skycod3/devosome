@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo } from "react";
 import Image from "next/image";
 import { LayoutGrid, List } from "lucide-react";
 
@@ -42,73 +42,29 @@ export function FileBrowser({
 
   const viewMode = viewModes[iconId] ?? "grid";
 
+  function toIconPayload(file: FileEntry) {
+    return {
+      id: file.id,
+      appId: file.appId,
+      title: file.title,
+      isHighlighted: false,
+      show: true,
+      icon: file.icon as StaticImageData,
+      size: { width: 48, height: 48 },
+      parentId: iconId,
+      openedAt: file.openedAt,
+    };
+  }
+
+  useEffect(() => {
+    Object.values(files).forEach((file) => addIcon(toIconPayload(file)));
+    return () => Object.values(files).forEach((file) => removeIcon(file.id));
+  }, [files]);
+
   function handleAreaClick(event: React.MouseEvent) {
     if (event.target !== event.currentTarget) return;
     if (icons.some((icon) => icon.isHighlighted)) unhighlightAllIcons();
   }
-
-  useEffect(() => {
-    Object.values(files).forEach((file) => {
-      addIcon({
-        id: file.id,
-        appId: file.appId,
-        title: file.title,
-        isHighlighted: false,
-        show: true,
-        icon: file.icon as StaticImageData,
-        size: { width: 48, height: 48 },
-        parentId: iconId,
-        openedAt: file.openedAt,
-      });
-    });
-
-    return () => {
-      Object.values(files).forEach((file) => {
-        removeIcon(file.id);
-      });
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // Sync icons-store when files change after mount (e.g. clear recent).
-  // Adds new entries and removes entries no longer present in files.
-  const prevFileIdsRef = useRef<Set<string>>(new Set());
-  const isMountedRef = useRef(false);
-  useEffect(() => {
-    if (!isMountedRef.current) {
-      isMountedRef.current = true;
-      prevFileIdsRef.current = new Set(Object.keys(files));
-      return;
-    }
-
-    const currentIds = new Set(Object.keys(files));
-    const prevIds = prevFileIdsRef.current;
-
-    // Remove icons that are no longer in files
-    prevIds.forEach((id) => {
-      if (!currentIds.has(id)) removeIcon(id);
-    });
-
-    // Add icons that are new
-    Object.values(files).forEach((file) => {
-      if (!prevIds.has(file.id)) {
-        addIcon({
-          id: file.id,
-          appId: file.appId,
-          title: file.title,
-          isHighlighted: false,
-          show: true,
-          icon: file.icon as StaticImageData,
-          size: { width: 48, height: 48 },
-          parentId: iconId,
-          openedAt: file.openedAt,
-        });
-      }
-    });
-
-    prevFileIdsRef.current = currentIds;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [files]);
 
   const iconsFromStore = useMemo(
     () => icons.filter((icon) => icon.parentId === iconId),

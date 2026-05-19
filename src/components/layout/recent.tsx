@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Trash2 } from "lucide-react";
 import { useRecent } from "@/hooks/useRecent";
 import { FileBrowser } from "./file-browser";
@@ -11,20 +12,21 @@ interface RecentProps {
 export function Recent({ iconId }: RecentProps) {
   const { items, clearRecent } = useRecent();
 
-  // Convert RecentItem[] to Record<string, FileEntry> with prefixed IDs
-  // to avoid collision with the original tab icons in the icons-store.
-  // appId holds the real icon id used on double-click.
-  const files = Object.fromEntries(
-    items.map((item) => [
-      `recent-${item.id}`,
-      {
-        id: `recent-${item.id}`,
-        appId: item.id,
-        title: item.title,
-        icon: item.icon,
-        openedAt: item.openedAt,
-      },
-    ]),
+  const files = useMemo(
+    () =>
+      Object.fromEntries(
+        items.map((item) => [
+          `recent-${item.id}`,
+          {
+            id: `recent-${item.id}`,
+            appId: item.id,
+            title: item.title,
+            icon: item.icon,
+            openedAt: item.openedAt,
+          },
+        ]),
+      ),
+    [items],
   );
 
   const clearButton = (
