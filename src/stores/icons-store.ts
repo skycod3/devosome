@@ -11,6 +11,7 @@ export interface Icon {
   show: boolean;
   size: { width: number; height: number };
   parentId?: string; // undefined = desktop, string = folder id
+  openedAt?: number; // Unix timestamp, shown as relative time in list view
 }
 
 interface IconsState {

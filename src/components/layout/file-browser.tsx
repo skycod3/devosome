@@ -10,12 +10,14 @@ import { useSettings } from "@/hooks/useSettings";
 import { Icon } from "@/components/icon";
 import { Icon as IconType } from "@/stores/icons-store";
 import { StaticImageData } from "next/image";
+import { formatDistanceToNow } from "date-fns";
 
 interface FileEntry {
   id: string;
   appId?: string; // if set, used on double-click instead of id
   title: string;
   icon: StaticImageData | string;
+  openedAt?: number; // Unix timestamp, shown as relative time in list view
 }
 
 interface FileBrowserProps {
@@ -56,6 +58,7 @@ export function FileBrowser({
         icon: file.icon as StaticImageData,
         size: { width: 48, height: 48 },
         parentId: iconId,
+        openedAt: file.openedAt,
       });
     });
 
@@ -98,6 +101,7 @@ export function FileBrowser({
           icon: file.icon as StaticImageData,
           size: { width: 48, height: 48 },
           parentId: iconId,
+          openedAt: file.openedAt,
         });
       }
     });
@@ -201,7 +205,12 @@ function ListRow({ icon }: { icon: IconType }) {
         height={16}
         className="object-contain shrink-0"
       />
-      <span className="text-sm truncate">{icon.title}</span>
+      <span className="text-sm truncate flex-1">{icon.title}</span>
+      {icon.openedAt && (
+        <span className="text-xs text-muted-foreground shrink-0">
+          {formatDistanceToNow(icon.openedAt, { addSuffix: true })}
+        </span>
+      )}
     </li>
   );
 }

@@ -22,6 +22,7 @@ export function Recent({ iconId }: RecentProps) {
         appId: item.id,
         title: item.title,
         icon: item.icon,
+        openedAt: item.openedAt,
       },
     ]),
   );
