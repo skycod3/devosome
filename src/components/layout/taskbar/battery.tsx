@@ -33,8 +33,8 @@ function formatTime(seconds: number): string {
   if (!isFinite(seconds) || seconds <= 0) return "";
   const h = Math.floor(seconds / 3600);
   const m = Math.floor((seconds % 3600) / 60);
-  if (h > 0) return `~${h}h${m > 0 ? `${m}m` : ""} restantes`;
-  return `~${m}m restantes`;
+  if (h > 0) return `~${h}h${m > 0 ? `${m}m` : ""} remaining`;
+  return `~${m}m remaining`;
 }
 
 export function Battery() {
