@@ -12,8 +12,6 @@ import {
   MIN_SCALE,
 } from "@/constants/resume";
 
-// CSS for TextLayer and AnnotationLayer is imported in layout.tsx.
-
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
   import.meta.url,
@@ -35,7 +33,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
-} from "./ui/tooltip";
+} from "../ui/tooltip";
 
 export interface PdfViewerProps {
   iconId: string;
@@ -70,7 +68,6 @@ export function PdfViewer({ iconId }: PdfViewerProps) {
     setErrorDetail(error?.message ?? String(error));
   }
 
-  // Zoom functions with limits
   const zoomIn = () => {
     setScale((prev) => Math.min(prev + SCALE_STEP, MAX_SCALE));
   };
@@ -83,7 +80,6 @@ export function PdfViewer({ iconId }: PdfViewerProps) {
     setScale(DEFAULT_SCALE);
   };
 
-  // Page navigation
   const goToNextPage = () => {
     setPageNumber((prev) => Math.min(prev + 1, numPages || prev));
   };
@@ -92,7 +88,6 @@ export function PdfViewer({ iconId }: PdfViewerProps) {
     setPageNumber((prev) => Math.max(prev - 1, 1));
   };
 
-  // Keyboard shortcuts
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isDocumentLoaded) return;
@@ -174,19 +169,15 @@ export function PdfViewer({ iconId }: PdfViewerProps) {
 
             {isDocumentLoaded && (
               <>
-                {/* Page counter */}
                 <div className="fixed left-4 top-18 sm:top-14 rounded bg-background/90 px-3 py-1.5 text-sm font-medium text-foreground shadow-md backdrop-blur-sm">
                   Page {pageNumber} of {numPages}
                 </div>
 
-                {/* Zoom level indicator */}
                 <div className="fixed top-18 sm:top-14 right-4 sm:right-8 rounded bg-background/90 px-3 py-1.5 text-sm font-medium text-foreground shadow-md backdrop-blur-sm">
                   {Math.round(scale * 100)}%
                 </div>
 
-                {/* Control buttons */}
                 <div className="fixed z-10 bottom-8 right-4 sm:right-8 flex gap-2">
-                  {/* Page Navigation */}
                   {numPages && numPages > 1 && (
                     <>
                       <Tooltip>
@@ -223,7 +214,6 @@ export function PdfViewer({ iconId }: PdfViewerProps) {
                     </>
                   )}
 
-                  {/* Download */}
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <a
@@ -241,7 +231,6 @@ export function PdfViewer({ iconId }: PdfViewerProps) {
 
                   <div className="mx-1 w-px bg-border" />
 
-                  {/* Zoom Controls */}
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button
