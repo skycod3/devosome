@@ -1,4 +1,5 @@
 import type { StaticImageData } from "next/image";
+import type { FileDetails } from "@/types/files";
 import ResumeIcon from "@/assets/resume.png";
 
 export type DocumentViewer = "pdf" | "text";
@@ -11,6 +12,7 @@ export interface DocumentFile {
   mimeType: string;
   viewer: DocumentViewer;
   windowTitle: string;
+  details?: FileDetails;
 }
 
 export const DOCUMENTS_FILES: Record<string, DocumentFile> = {
@@ -22,5 +24,10 @@ export const DOCUMENTS_FILES: Record<string, DocumentFile> = {
     mimeType: "application/pdf",
     viewer: "pdf",
     windowTitle: "Jean's Resume.pdf",
+    details: {
+      type: "PDF",
+      size: 98553,
+      createdAt: new Date("2025-12-10T07:25:48Z"),
+    },
   },
 };
