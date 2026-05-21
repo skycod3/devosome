@@ -4,9 +4,9 @@ import { StaticImageData } from "next/image";
 import { useWindowsStore } from "@/stores/windows.store";
 import { useViewport } from "./useViewport";
 import {
-  DEFAULT_WINDOW_SIZE,
   SMALL_DESKTOP_WINDOW_SIZE,
   TABLET_WINDOW_SIZE,
+  LARGE_DESKTOP_WINDOW_SIZE,
 } from "@/constants/windows";
 import { APPLICATIONS } from "@/constants/applications";
 import { useRecent } from "./useRecent";
@@ -63,7 +63,7 @@ export const useWindows = () => {
    * - Mobile (<768px): fullscreen, position (0, 0)
    * - Tablet (768–1023px): TABLET_WINDOW_SIZE, centered, no cascade
    * - Small desktop (1024–1599px): SMALL_DESKTOP_WINDOW_SIZE, centered, cascading offset
-   * - Large desktop (≥1600px): DEFAULT_WINDOW_SIZE, centered, cascading offset
+   * - Large desktop (≥1600px): LARGE_DESKTOP_WINDOW_SIZE, centered, cascading offset
    */
   const openWindowCentered = (
     iconId: string,
@@ -113,7 +113,7 @@ export const useWindows = () => {
       // Desktop: size based on viewport width, centered, cascading offset
       const windowSize = isSmallDesktop
         ? SMALL_DESKTOP_WINDOW_SIZE
-        : DEFAULT_WINDOW_SIZE;
+        : LARGE_DESKTOP_WINDOW_SIZE;
       const maxAllowedHeight = height * 0.9;
       const effectiveHeight = Math.min(windowSize.height, maxAllowedHeight);
       const offset = windows.length > 0 ? windows.length * 50 : 0;
