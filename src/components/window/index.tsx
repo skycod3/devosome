@@ -61,25 +61,25 @@ function getSidebarData(
     case "pictures":
       return {
         details: IMAGE_FILES[icon.id]?.details,
-        icon: <PiImage className="size-6 shrink-0" />,
+        icon: getCategoryIcon(icon.id),
         text: getCategoryText("pictures", totalRecentFiles),
       };
     case "documents":
       return {
         details: DOCUMENTS_FILES[icon.id]?.details,
-        icon: <PiNote className="size-6 shrink-0" />,
+        icon: getCategoryIcon(icon.id),
         text: getCategoryText("documents", totalRecentFiles),
       };
     case "music":
       return {
         details: AUDIO_FILES[icon.id]?.details,
-        icon: <PiMusicNote className="size-6 shrink-0" />,
+        icon: getCategoryIcon(icon.id),
         text: getCategoryText("music", totalRecentFiles),
       };
     case "videos":
       return {
         details: VIDEO_FILES[icon.id]?.details,
-        icon: <PiVideo className="size-6 shrink-0" />,
+        icon: getCategoryIcon(icon.id),
         text: getCategoryText("videos", totalRecentFiles),
       };
     case "recent": {
@@ -91,7 +91,7 @@ function getSidebarData(
           DOCUMENTS_FILES[id]?.details ??
           AUDIO_FILES[id]?.details ??
           VIDEO_FILES[id]?.details,
-        icon: <PiClockCounterClockwise className="size-6 shrink-0" />,
+        icon: getCategoryIcon(id),
         text: getCategoryText("recent", totalRecentFiles),
       };
     }
@@ -115,6 +115,13 @@ function getCategoryText(tab: string, totalRecentFiles: number): string {
     default:
       return "";
   }
+}
+
+function getCategoryIcon(id: string) {
+  if (IMAGE_FILES[id]) return <PiImage className="size-6 shrink-0" />;
+  else if (DOCUMENTS_FILES[id]) return <PiNote className="size-6 shrink-0" />;
+  else if (AUDIO_FILES[id]) return <PiMusicNote className="size-6 shrink-0" />;
+  else if (VIDEO_FILES[id]) return <PiVideo className="size-6 shrink-0" />;
 }
 
 function formatSize(bytes: number): string {
