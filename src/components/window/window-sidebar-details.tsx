@@ -121,7 +121,7 @@ export function SidebarToggle({
     <button
       aria-label="Toggle sidebar"
       title="Toggle sidebar"
-      className="flex shrink-0 w-5 cursor-pointer items-center justify-center border-l bg-sidebar-accent/50 transition-colors hover:bg-sidebar-accent"
+      className="hidden md:flex shrink-0 w-5 cursor-pointer items-center justify-center border-l bg-sidebar-accent/50 transition-colors hover:bg-sidebar-accent"
       onClick={onToggle}
     >
       <PiCaretLeft
@@ -142,7 +142,7 @@ export function SidebarDetails({
   const sidebarData = getSidebarData(highlightedIcon, items.length);
 
   return (
-    <aside className="flex h-full w-[30%] shrink-0 flex-col bg-sidebar text-sidebar-foreground">
+    <aside className="hidden md:flex h-full w-[30%] shrink-0 flex-col bg-sidebar text-sidebar-foreground">
       <SidebarContent>
         <div className="overflow-auto">
           {highlightedIcon && highlightedIcon.parentId ? (
