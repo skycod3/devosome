@@ -5,6 +5,7 @@ import type { Icon } from "@/stores/icons-store";
 import { CSSProperties, useEffect, useState } from "react";
 import { useIcons } from "@/hooks/useIcons";
 import { useRecent } from "@/hooks/useRecent";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 import { motion, useMotionValue, useDragControls } from "motion/react";
 
@@ -237,7 +238,9 @@ function SidebarDetails({
 function TabbedWindow({ window }: { window: WindowType }) {
   const { setWindowActiveTab } = useWindows();
   const { icons, unhighlightAllIcons } = useIcons();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const isLargeDesktop = useIsMobile(1600);
+  const [sidebarOpen, setSidebarOpen] = useState(!isLargeDesktop);
+
   const activeTab = window.activeTab || window.iconId;
   const highlightedIcon = icons.find((icon) => icon.isHighlighted);
 
