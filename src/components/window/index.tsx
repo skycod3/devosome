@@ -44,29 +44,75 @@ interface WindowProps {
   desktopRect: { width: number; height: number; top: number; left: number };
 }
 
-function resolveFileDetails(icon: Icon | undefined): FileDetails | undefined {
+type SidebarData = {
+  details: FileDetails | undefined;
+  icon: React.ReactNode;
+  text: string;
+};
+
+function getSidebarData(
+  icon: Icon | undefined,
+  totalRecentFiles: number,
+): SidebarData | undefined {
   if (!icon) return undefined;
+
   switch (icon.parentId) {
     case "pictures":
-      return IMAGE_FILES[icon.id]?.details;
+      return {
+        details: IMAGE_FILES[icon.id]?.details,
+        icon: <PiImage className="size-6 shrink-0" />,
+        text: getCategoryText("pictures", totalRecentFiles),
+      };
     case "documents":
-      return DOCUMENTS_FILES[icon.id]?.details;
+      return {
+        details: DOCUMENTS_FILES[icon.id]?.details,
+        icon: <PiNote className="size-6 shrink-0" />,
+        text: getCategoryText("documents", totalRecentFiles),
+      };
     case "music":
-      return AUDIO_FILES[icon.id]?.details;
+      return {
+        details: AUDIO_FILES[icon.id]?.details,
+        icon: <PiMusicNote className="size-6 shrink-0" />,
+        text: getCategoryText("music", totalRecentFiles),
+      };
     case "videos":
-      return VIDEO_FILES[icon.id]?.details;
+      return {
+        details: VIDEO_FILES[icon.id]?.details,
+        icon: <PiVideo className="size-6 shrink-0" />,
+        text: getCategoryText("videos", totalRecentFiles),
+      };
     case "recent": {
       const id = icon.appId;
       if (!id) return undefined;
-      return (
-        IMAGE_FILES[id]?.details ??
-        DOCUMENTS_FILES[id]?.details ??
-        AUDIO_FILES[id]?.details ??
-        VIDEO_FILES[id]?.details
-      );
+      return {
+        details:
+          IMAGE_FILES[id]?.details ??
+          DOCUMENTS_FILES[id]?.details ??
+          AUDIO_FILES[id]?.details ??
+          VIDEO_FILES[id]?.details,
+        icon: <PiClockCounterClockwise className="size-6 shrink-0" />,
+        text: getCategoryText("recent", totalRecentFiles),
+      };
     }
     default:
       return undefined;
+  }
+}
+
+function getCategoryText(tab: string, totalRecentFiles: number): string {
+  switch (tab) {
+    case "pictures":
+      return `Images (${totalImageFiles} item${totalImageFiles === 1 ? "" : "s"})`;
+    case "documents":
+      return `Documents (${totalDocumentFiles} item${totalDocumentFiles === 1 ? "" : "s"})`;
+    case "music":
+      return `Music (${totalAudioFiles} item${totalAudioFiles === 1 ? "" : "s"})`;
+    case "videos":
+      return `Videos (${totalVideoFiles} item${totalVideoFiles === 1 ? "" : "s"})`;
+    case "recent":
+      return `Recent files (${totalRecentFiles} item${totalRecentFiles === 1 ? "" : "s"})`;
+    default:
+      return "";
   }
 }
 
@@ -99,16 +145,13 @@ function SidebarToggle({
 
 function SidebarDetails({
   highlightedIcon,
-  details,
-  windowActiveTab,
+  activeTab,
 }: {
   highlightedIcon: Icon | undefined;
-  details?: FileDetails;
-  windowActiveTab: string;
+  activeTab: string;
 }) {
   const { items } = useRecent();
-
-  const totalRecentFiles = items.length;
+  const sidebarData = getSidebarData(highlightedIcon, items.length);
 
   return (
     <aside className="flex h-full w-[30%] shrink-0 flex-col bg-sidebar text-sidebar-foreground">
@@ -117,51 +160,49 @@ function SidebarDetails({
           {highlightedIcon && highlightedIcon.parentId ? (
             <>
               <div className="text-sm">
-                <div className="bg-muted">
+                <div className="bg-muted relative aspect-3/2">
                   <Image
-                    width={details?.dimensions?.width}
-                    height={details?.dimensions?.height}
+                    fill
                     alt={highlightedIcon.title}
                     src={highlightedIcon.icon}
-                    className="aspect-3/2 mx-auto object-contain"
+                    className="object-contain"
                   />
                 </div>
 
                 <div className="flow p-4">
                   <h3 className="text-sm flex items-center gap-2">
-                    {details?.type === "JPG" ? (
-                      <PiImage className="size-6 shrink-0" />
-                    ) : details?.type === "MP4" ? (
-                      <PiVideo className="size-6 shrink-0" />
-                    ) : details?.type === "MP3" ? (
-                      <PiMusicNote className="size-6 shrink-0" />
-                    ) : (
-                      <PiNote className="size-6 shrink-0" />
-                    )}
-                    {highlightedIcon.title}
+                    {sidebarData?.icon} {highlightedIcon.title}
                   </h3>
 
                   <p className="font-semibold">Details:</p>
 
                   <ul className="space-y-2 text-accent-foreground/70">
                     <li className="flex justify-between">
-                      Type: <span>{details?.type ?? "—"} File</span>
+                      Type:{" "}
+                      <span>{sidebarData?.details?.type ?? "—"} File</span>
                     </li>
                     <li className="flex justify-between">
                       Size:{" "}
-                      <span>{details ? formatSize(details.size) : "—"}</span>
+                      <span>
+                        {sidebarData?.details
+                          ? formatSize(sidebarData.details.size)
+                          : "—"}
+                      </span>
                     </li>
-                    {details?.createdAt && (
+                    {sidebarData?.details?.createdAt && (
                       <li className="flex justify-between">
                         Created:{" "}
-                        <span>{details.createdAt.toLocaleDateString()}</span>
+                        <span>
+                          {sidebarData.details.createdAt.toLocaleDateString()}
+                        </span>
                       </li>
                     )}
-                    {details?.dimensions && (
+                    {sidebarData?.details?.dimensions && (
                       <li className="flex justify-between">
                         Dimensions:{" "}
                         <span>
-                          {details.dimensions.width}x{details.dimensions.height}
+                          {sidebarData.details.dimensions.width}x
+                          {sidebarData.details.dimensions.height}
                         </span>
                       </li>
                     )}
@@ -175,17 +216,9 @@ function SidebarDetails({
 
               <div className="flow p-4">
                 <h3 className="text-sm">
-                  {windowActiveTab === "recent"
-                    ? `Recent files (${totalRecentFiles} ${totalRecentFiles === 1 ? "item" : "items"})`
-                    : windowActiveTab === "pictures"
-                      ? `Images (${totalImageFiles} ${totalImageFiles === 1 ? "item" : "items"})`
-                      : windowActiveTab === "videos"
-                        ? `Videos (${totalVideoFiles} ${totalVideoFiles === 1 ? "item" : "items"})`
-                        : windowActiveTab === "music"
-                          ? `Music (${totalAudioFiles} ${totalAudioFiles === 1 ? "item" : "items"})`
-                          : windowActiveTab === "documents"
-                            ? `Documents (${totalDocumentFiles} ${totalDocumentFiles === 1 ? "item" : "items"})`
-                            : ""}
+                  {sidebarData
+                    ? sidebarData.text
+                    : getCategoryText(activeTab, items.length)}
                 </h3>
 
                 <div className="border border-accent-foreground/15 p-3 flex gap-4 items-center">
@@ -207,7 +240,6 @@ function TabbedWindow({ window }: { window: WindowType }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const activeTab = window.activeTab || window.iconId;
   const highlightedIcon = icons.find((icon) => icon.isHighlighted);
-  const fileDetails = resolveFileDetails(highlightedIcon);
 
   function handleTabChange(tab: string) {
     setWindowActiveTab(window.id, tab);
@@ -272,8 +304,7 @@ function TabbedWindow({ window }: { window: WindowType }) {
         {sidebarOpen && (
           <SidebarDetails
             highlightedIcon={highlightedIcon}
-            details={fileDetails}
-            windowActiveTab={activeTab}
+            activeTab={activeTab}
           />
         )}
       </div>
