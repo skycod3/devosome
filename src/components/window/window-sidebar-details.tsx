@@ -121,7 +121,7 @@ export function SidebarToggle({
     <button
       aria-label="Toggle sidebar"
       title="Toggle sidebar"
-      className="hidden md:flex shrink-0 w-5 cursor-pointer items-center justify-center border-l bg-sidebar-accent/50 transition-colors hover:bg-sidebar-accent"
+      className="hidden md:flex shrink-0 w-5 items-center justify-center border-l bg-sidebar-accent/50 transition-colors hover:bg-sidebar-accent"
       onClick={onToggle}
     >
       <PiCaretLeft

@@ -51,7 +51,7 @@ function TabbedWindow({ window }: { window: WindowType }) {
       className="flex flex-row flex-1 overflow-hidden gap-0"
     >
       <aside
-        className={`sticky top-0 sm:flex-[0.6] ${supportsRelativeColors ? "bg-[rgb(from_var(--foreground)_r_g_b/0.1)]" : "bg-sidebar-accent"} p-4`}
+        className={`sticky top-0 sm:flex-[0.6] ${supportsRelativeColors ? "bg-[rgb(from_var(--foreground)_r_g_b/0.1)]" : "bg-sidebar-accent"} p-4 lg:p-6`}
       >
         <TabsList
           variant="line"
