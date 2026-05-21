@@ -45,8 +45,8 @@ export function Icon({
 
   const isDesktopIcon = !parentId;
 
-  function handleClick() {
-    // Only unhighlight all if this icon isn't already highlighted
+  function handleClick(e: React.MouseEvent) {
+    e.stopPropagation();
     if (!isHighlighted) {
       unhighlightAllIcons();
       highlightIcon(id);

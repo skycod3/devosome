@@ -61,8 +61,7 @@ export function FileBrowser({
     return () => Object.values(files).forEach((file) => removeIcon(file.id));
   }, [files]);
 
-  function handleAreaClick(event: React.MouseEvent) {
-    if (event.target !== event.currentTarget) return;
+  function handleAreaClick() {
     if (icons.some((icon) => icon.isHighlighted)) unhighlightAllIcons();
   }
 
@@ -72,7 +71,7 @@ export function FileBrowser({
   );
 
   return (
-    <div className="flex flex-col h-full w-full overflow-hidden">
+    <div onClick={handleAreaClick} className="flex flex-col h-full w-full overflow-hidden">
       {/* Toolbar */}
       <div className="flex items-center justify-between px-4 py-2 border-b shrink-0">
         <div>{toolbarSlot}</div>
@@ -103,10 +102,7 @@ export function FileBrowser({
 
       {/* File area — grid */}
       {iconsFromStore.length > 0 && viewMode === "grid" && (
-        <div
-          onClick={handleAreaClick}
-          className="grid-cols-fill-6 @min-5xl:grid-cols-fill-7 grid-rows-fill-6 grid h-full gap-4 p-4 overflow-auto"
-        >
+        <div className="grid-cols-fill-6 @min-5xl:grid-cols-fill-7 grid-rows-fill-6 grid h-full gap-4 p-4 overflow-auto">
           {iconsFromStore.map((icon) => (
             <Icon imagePlaceholder="blur" key={icon.id} {...icon} />
           ))}
@@ -115,10 +111,7 @@ export function FileBrowser({
 
       {/* File area — list */}
       {iconsFromStore.length > 0 && viewMode === "list" && (
-        <ul
-          onClick={handleAreaClick}
-          className="flex flex-col gap-1 overflow-auto p-2"
-        >
+        <ul className="flex flex-col gap-1 overflow-auto p-2">
           {iconsFromStore.map((icon) => (
             <ListRow key={icon.id} icon={icon} />
           ))}
@@ -132,7 +125,8 @@ function ListRow({ icon }: { icon: IconType }) {
   const { highlightIcon, unhighlightAllIcons } = useIcons();
   const { openWindowCentered } = useWindows();
 
-  function handleClick() {
+  function handleClick(e: React.MouseEvent) {
+    e.stopPropagation();
     if (!icon.isHighlighted) {
       unhighlightAllIcons();
       highlightIcon(icon.id);
