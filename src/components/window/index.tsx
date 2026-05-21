@@ -1,21 +1,15 @@
-import Image from "next/image";
 import { useWindows } from "@/hooks/useWindows";
 import { Window as WindowType } from "@/stores/windows.store";
-import type { Icon } from "@/stores/icons-store";
 import { CSSProperties, useEffect, useState } from "react";
 import { useIcons } from "@/hooks/useIcons";
-import { useRecent } from "@/hooks/useRecent";
+
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 import { motion, useMotionValue, useDragControls } from "motion/react";
 
-import { SidebarContent } from "@/components/ui/sidebar";
-
 import {
-  PiCaretLeft,
   PiClockCounterClockwise,
   PiImage,
-  PiInfo,
   PiMusicNote,
   PiNote,
   PiVideo,
@@ -28,218 +22,11 @@ import { WindowHeader } from "./window-header";
 import { WindowContent } from "./window-content";
 
 import { supportsRelativeColors } from "@/utils/css-supports";
-
-import type { FileDetails } from "@/types/files";
-import { IMAGE_FILES } from "@/constants/image-files";
-import { VIDEO_FILES } from "@/constants/video-files";
-import { AUDIO_FILES } from "@/constants/audio-files";
-import { DOCUMENTS_FILES } from "@/constants/documents-files";
-
-const totalImageFiles = Object.keys(IMAGE_FILES).length;
-const totalVideoFiles = Object.keys(VIDEO_FILES).length;
-const totalAudioFiles = Object.keys(AUDIO_FILES).length;
-const totalDocumentFiles = Object.keys(DOCUMENTS_FILES).length;
+import { SidebarDetails, SidebarToggle } from "./window-sidebar-details";
 
 interface WindowProps {
   window: WindowType;
   desktopRect: { width: number; height: number; top: number; left: number };
-}
-
-type SidebarData = {
-  details: FileDetails | undefined;
-  icon: React.ReactNode;
-  text: string;
-};
-
-function getSidebarData(
-  icon: Icon | undefined,
-  totalRecentFiles: number,
-): SidebarData | undefined {
-  if (!icon) return undefined;
-
-  switch (icon.parentId) {
-    case "pictures":
-      return {
-        details: IMAGE_FILES[icon.id]?.details,
-        icon: getCategoryIcon(icon.id),
-        text: getCategoryText("pictures", totalRecentFiles),
-      };
-    case "documents":
-      return {
-        details: DOCUMENTS_FILES[icon.id]?.details,
-        icon: getCategoryIcon(icon.id),
-        text: getCategoryText("documents", totalRecentFiles),
-      };
-    case "music":
-      return {
-        details: AUDIO_FILES[icon.id]?.details,
-        icon: getCategoryIcon(icon.id),
-        text: getCategoryText("music", totalRecentFiles),
-      };
-    case "videos":
-      return {
-        details: VIDEO_FILES[icon.id]?.details,
-        icon: getCategoryIcon(icon.id),
-        text: getCategoryText("videos", totalRecentFiles),
-      };
-    case "recent": {
-      const id = icon.appId;
-      if (!id) return undefined;
-      return {
-        details:
-          IMAGE_FILES[id]?.details ??
-          DOCUMENTS_FILES[id]?.details ??
-          AUDIO_FILES[id]?.details ??
-          VIDEO_FILES[id]?.details,
-        icon: getCategoryIcon(id),
-        text: getCategoryText("recent", totalRecentFiles),
-      };
-    }
-    default:
-      return undefined;
-  }
-}
-
-function getCategoryText(tab: string, totalRecentFiles: number): string {
-  switch (tab) {
-    case "pictures":
-      return `Images (${totalImageFiles} item${totalImageFiles === 1 ? "" : "s"})`;
-    case "documents":
-      return `Documents (${totalDocumentFiles} item${totalDocumentFiles === 1 ? "" : "s"})`;
-    case "music":
-      return `Music (${totalAudioFiles} item${totalAudioFiles === 1 ? "" : "s"})`;
-    case "videos":
-      return `Videos (${totalVideoFiles} item${totalVideoFiles === 1 ? "" : "s"})`;
-    case "recent":
-      return `Recent files (${totalRecentFiles} item${totalRecentFiles === 1 ? "" : "s"})`;
-    default:
-      return "";
-  }
-}
-
-function getCategoryIcon(id: string) {
-  if (IMAGE_FILES[id]) return <PiImage className="size-6 shrink-0" />;
-  else if (DOCUMENTS_FILES[id]) return <PiNote className="size-6 shrink-0" />;
-  else if (AUDIO_FILES[id]) return <PiMusicNote className="size-6 shrink-0" />;
-  else if (VIDEO_FILES[id]) return <PiVideo className="size-6 shrink-0" />;
-}
-
-function formatSize(bytes: number): string {
-  if (bytes >= 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-  if (bytes >= 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-  return `${bytes} B`;
-}
-
-function SidebarToggle({
-  open,
-  onToggle,
-}: {
-  open: boolean;
-  onToggle: () => void;
-}) {
-  return (
-    <button
-      aria-label="Toggle sidebar"
-      title="Toggle sidebar"
-      className="flex shrink-0 w-5 cursor-pointer items-center justify-center border-l bg-sidebar-accent/50 transition-colors hover:bg-sidebar-accent"
-      onClick={onToggle}
-    >
-      <PiCaretLeft
-        className={`size-4 transition-transform ${open ? "rotate-180" : ""}`}
-      />
-    </button>
-  );
-}
-
-function SidebarDetails({
-  highlightedIcon,
-  activeTab,
-}: {
-  highlightedIcon: Icon | undefined;
-  activeTab: string;
-}) {
-  const { items } = useRecent();
-  const sidebarData = getSidebarData(highlightedIcon, items.length);
-
-  return (
-    <aside className="flex h-full w-[30%] shrink-0 flex-col bg-sidebar text-sidebar-foreground">
-      <SidebarContent>
-        <div className="overflow-auto">
-          {highlightedIcon && highlightedIcon.parentId ? (
-            <>
-              <div className="text-sm">
-                <div className="bg-muted relative aspect-3/2">
-                  <Image
-                    fill
-                    alt={highlightedIcon.title}
-                    src={highlightedIcon.icon}
-                    className="object-contain"
-                  />
-                </div>
-
-                <div className="flow p-4">
-                  <h3 className="text-sm flex items-center gap-2">
-                    {sidebarData?.icon} {highlightedIcon.title}
-                  </h3>
-
-                  <p className="font-semibold">Details:</p>
-
-                  <ul className="space-y-2 text-accent-foreground/70">
-                    <li className="flex justify-between">
-                      Type:{" "}
-                      <span>{sidebarData?.details?.type ?? "—"} File</span>
-                    </li>
-                    <li className="flex justify-between">
-                      Size:{" "}
-                      <span>
-                        {sidebarData?.details
-                          ? formatSize(sidebarData.details.size)
-                          : "—"}
-                      </span>
-                    </li>
-                    {sidebarData?.details?.createdAt && (
-                      <li className="flex justify-between">
-                        Created:{" "}
-                        <span>
-                          {sidebarData.details.createdAt.toLocaleDateString()}
-                        </span>
-                      </li>
-                    )}
-                    {sidebarData?.details?.dimensions && (
-                      <li className="flex justify-between">
-                        Dimensions:{" "}
-                        <span>
-                          {sidebarData.details.dimensions.width}x
-                          {sidebarData.details.dimensions.height}
-                        </span>
-                      </li>
-                    )}
-                  </ul>
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="text-sm">
-              <div className="bg-muted aspect-3/2"></div>
-
-              <div className="flow p-4">
-                <h3 className="text-sm">
-                  {sidebarData
-                    ? sidebarData.text
-                    : getCategoryText(activeTab, items.length)}
-                </h3>
-
-                <div className="border border-accent-foreground/15 p-3 flex gap-4 items-center">
-                  <PiInfo className="size-4 shrink-0" />
-                  Select an item to see details.
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </SidebarContent>
-    </aside>
-  );
 }
 
 function TabbedWindow({ window }: { window: WindowType }) {
