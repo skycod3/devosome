@@ -118,6 +118,7 @@ export function WindowHeader({
           }}
           onPointerUp={() => setIsGrabbing(false)}
           onPointerOut={() => setIsGrabbing(false)}
+          onDoubleClick={handleMaximize}
           className={`flex select-none ${window.isMaximized ? "rounded-none" : ""}`}
         >
           <div
