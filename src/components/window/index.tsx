@@ -23,6 +23,7 @@ import { WindowContent } from "./window-content";
 
 import { supportsRelativeColors } from "@/utils/css-supports";
 import { SidebarDetails, SidebarToggle } from "./window-sidebar-details";
+import { ResizeHandles } from "./resize-handles";
 
 interface WindowProps {
   window: WindowType;
@@ -112,6 +113,7 @@ function TabbedWindow({ window }: { window: WindowType }) {
 export function Window({ window, desktopRect }: WindowProps) {
   const { bringToFront, activeWindowId, setWindowPosition, isMobile } =
     useWindows();
+  const resizeEnabled = !useIsMobile(1600);
 
   // dragConstraints values are relative to the element's own position as measured
   // by getBoundingClientRect(). Since the window uses position:absolute inside the
@@ -253,6 +255,16 @@ export function Window({ window, desktopRect }: WindowProps) {
           />
         </div>
       )}
+
+      <ResizeHandles
+        x={x}
+        y={y}
+        mvWidth={mvWidth}
+        mvHeight={mvHeight}
+        window={window}
+        isMobile={isMobile}
+        enabled={resizeEnabled}
+      />
     </motion.div>
   );
 }
