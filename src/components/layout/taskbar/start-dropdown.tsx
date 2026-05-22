@@ -28,6 +28,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Kbd } from "@/components/ui/kbd";
 
 import Image from "next/image";
 
@@ -146,19 +147,35 @@ export function StartDropdown() {
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={() => openWindow("about-me")}>
             About Me
-            {!isMobile && <DropdownMenuShortcut>⇧+A</DropdownMenuShortcut>}
+            {!isMobile && (
+              <DropdownMenuShortcut>
+                <Kbd>⇧</Kbd>+<Kbd>A</Kbd>
+              </DropdownMenuShortcut>
+            )}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => openWindow("portfolio")}>
             Portfolio
-            {!isMobile && <DropdownMenuShortcut>⇧+P</DropdownMenuShortcut>}
+            {!isMobile && (
+              <DropdownMenuShortcut>
+                <Kbd>⇧</Kbd>+<Kbd>P</Kbd>
+              </DropdownMenuShortcut>
+            )}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => openWindow("skills")}>
             My Skills
-            {!isMobile && <DropdownMenuShortcut>⇧+S</DropdownMenuShortcut>}
+            {!isMobile && (
+              <DropdownMenuShortcut>
+                <Kbd>⇧</Kbd>+<Kbd>S</Kbd>
+              </DropdownMenuShortcut>
+            )}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => openWindow("contact")}>
             Get in Touch
-            {!isMobile && <DropdownMenuShortcut>⇧+T</DropdownMenuShortcut>}
+            {!isMobile && (
+              <DropdownMenuShortcut>
+                <Kbd>⇧</Kbd>+<Kbd>T</Kbd>
+              </DropdownMenuShortcut>
+            )}
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
@@ -217,7 +234,11 @@ export function StartDropdown() {
 
         <DropdownMenuItem onClick={handleLogOut}>
           Log out
-          {!isMobile && <DropdownMenuShortcut>⇧+Q</DropdownMenuShortcut>}
+          {!isMobile && (
+            <DropdownMenuShortcut>
+              <Kbd>⇧</Kbd>+<Kbd>Q</Kbd>
+            </DropdownMenuShortcut>
+          )}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
