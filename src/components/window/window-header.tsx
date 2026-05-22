@@ -5,6 +5,7 @@ import { Window } from "@/stores/windows.store";
 import { useIcons } from "@/hooks/useIcons";
 import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
+import { Kbd } from "../ui/kbd";
 
 import { animate, DragControls, MotionValue } from "motion/react";
 
@@ -16,7 +17,17 @@ import {
   VscClose,
 } from "react-icons/vsc";
 
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuSeparator,
+  ContextMenuTrigger,
+  ContextMenuShortcut,
+} from "@/components/ui/context-menu";
+
 import { supportsRelativeColors } from "@/utils/css-supports";
+import { useHotkey } from "@tanstack/react-hotkeys";
 
 interface WindowHeaderProps {
   window: Window;
@@ -94,76 +105,119 @@ export function WindowHeader({
     }
   }
 
+  useHotkey("Control+Q", () => closeWindow(window.id));
+
   return (
-    <header
-      onPointerDown={(event) => {
-        if (isMobile) return;
-        setIsGrabbing(true);
-        dragControls.start(event);
-      }}
-      onPointerUp={() => setIsGrabbing(false)}
-      onPointerOut={() => setIsGrabbing(false)}
-      className={`flex select-none ${window.isMaximized ? "rounded-none" : ""}`}
-    >
-      <div
-        style={{
-          background: supportsRelativeColors
-            ? `linear-gradient(to right, rgb(from var(--background) r g b / 0.2), transparent 50%), repeating-linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.05) 8%), repeating-linear-gradient(-45deg, transparent, rgb(from var(--foreground) r g b / 0.05) 8%)`
-            : "var(--secondary)", // Fallback sólido para navegadores sem suporte a cores relativas
-        }}
-        className={`flex basis-full line-clamp-1 items-center gap-x-3 gap-y-1 p-2`}
-      >
-        {/* Breadcrumb dinâmico */}
-        <div className="shrink-0 flex items-center gap-2">
-          <LuHouse className="size-4 shrink-0" />
-
-          <span>Home</span>
-        </div>
-
-        {(parentIcon || window.parentTitle) && (
-          <div className="shrink-0">
-            <span>/</span>{" "}
-            <span>{window.parentTitle ?? parentIcon?.title}</span>
-          </div>
-        )}
-
-        <span>/</span>
-        <p className="line-clamp-1">{windowTitle}</p>
-      </div>
-
-      <div
-        className="shrink-0 bg-popover flex items-center gap-4 sm:gap-3 p-3 text-black"
-        onPointerDown={(e) => e.stopPropagation()}
-      >
-        <button
-          className="flex-center size-5 sm:size-4 rounded-full border border-yellow-300 bg-yellow-200 hover:bg-yellow-400"
-          onClick={() => minimizeWindow(window.id)}
-        >
-          <VscChromeMinimize className="size-3" />
-        </button>
-
-        {!isMobile && (
-          <button
-            className="flex-center size-4 rounded-full border border-green-300 bg-green-200 hover:bg-green-400"
-            onClick={handleMaximize}
-          >
-            {window.isMaximized ? (
-              <VscChromeRestore className="size-3" />
-            ) : (
-              <VscChromeMaximize className="size-3" />
-            )}
-          </button>
-        )}
-
-        <button
-          className="flex-center size-5 sm:size-4 rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
-          onClick={() => {
-            closeWindow(window.id);
+    <ContextMenu>
+      <ContextMenuTrigger>
+        <header
+          onPointerDown={(event) => {
+            if (isMobile) return;
+            setIsGrabbing(true);
+            dragControls.start(event);
           }}
+          onPointerUp={() => setIsGrabbing(false)}
+          onPointerOut={() => setIsGrabbing(false)}
+          className={`flex select-none ${window.isMaximized ? "rounded-none" : ""}`}
         >
-          <VscClose className="size-3" />
-        </button>
-      </div>
-    </header>
+          <div
+            style={{
+              background: supportsRelativeColors
+                ? `linear-gradient(to right, rgb(from var(--background) r g b / 0.2), transparent 50%), repeating-linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.05) 8%), repeating-linear-gradient(-45deg, transparent, rgb(from var(--foreground) r g b / 0.05) 8%)`
+                : "var(--secondary)", // Fallback sólido para navegadores sem suporte a cores relativas
+            }}
+            className={`flex basis-full line-clamp-1 items-center gap-x-3 gap-y-1 p-2`}
+          >
+            {/* Breadcrumb dinâmico */}
+            <div className="shrink-0 flex items-center gap-2">
+              <LuHouse className="size-4 shrink-0" />
+
+              <span>Home</span>
+            </div>
+
+            {(parentIcon || window.parentTitle) && (
+              <div className="shrink-0">
+                <span>/</span>{" "}
+                <span>{window.parentTitle ?? parentIcon?.title}</span>
+              </div>
+            )}
+
+            <span>/</span>
+            <p className="line-clamp-1">{windowTitle}</p>
+          </div>
+
+          <div
+            className="shrink-0 bg-popover flex items-center gap-4 sm:gap-3 p-3 text-black"
+            onPointerDown={(e) => e.stopPropagation()}
+          >
+            <button
+              className="flex-center size-5 sm:size-4 rounded-full border border-yellow-300 bg-yellow-200 hover:bg-yellow-400"
+              onClick={() => minimizeWindow(window.id)}
+            >
+              <VscChromeMinimize className="size-3" />
+            </button>
+
+            {!isMobile && (
+              <button
+                className="flex-center size-4 rounded-full border border-green-300 bg-green-200 hover:bg-green-400"
+                onClick={handleMaximize}
+              >
+                {window.isMaximized ? (
+                  <VscChromeRestore className="size-3" />
+                ) : (
+                  <VscChromeMaximize className="size-3" />
+                )}
+              </button>
+            )}
+
+            <button
+              className="flex-center size-5 sm:size-4 rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
+              onClick={() => {
+                closeWindow(window.id);
+              }}
+            >
+              <VscClose className="size-3" />
+            </button>
+          </div>
+        </header>
+      </ContextMenuTrigger>
+
+      <ContextMenuContent>
+        <ContextMenuItem
+          onClick={handleMaximize}
+          disabled={!window.isMaximized}
+          className="flex gap-3 items-center"
+        >
+          <VscChromeRestore className="size-4 icon-fix" />
+          Restore
+        </ContextMenuItem>
+        <ContextMenuItem
+          onClick={() => minimizeWindow(window.id)}
+          className="flex gap-3 items-center"
+        >
+          <VscChromeMinimize className="size-4 icon-fix" />
+          Minimize
+        </ContextMenuItem>
+        <ContextMenuItem
+          onClick={handleMaximize}
+          disabled={window.isMaximized}
+          className="flex gap-3 items-center"
+        >
+          <VscChromeMaximize className="size-4 icon-fix" />
+          Maximize
+        </ContextMenuItem>
+        <ContextMenuSeparator />
+        <ContextMenuItem
+          onClick={() => closeWindow(window.id)}
+          className="flex gap-3 items-center"
+        >
+          <VscClose className="size-4 icon-fix" />
+          Close
+          <ContextMenuShortcut>
+            <Kbd>Ctrl</Kbd>+<Kbd>Q</Kbd>
+          </ContextMenuShortcut>
+        </ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
   );
 }
