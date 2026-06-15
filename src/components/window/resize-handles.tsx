@@ -3,6 +3,8 @@
 import { useCallback } from "react";
 import { MotionValue } from "motion/react";
 
+import { PiDotsNine } from "react-icons/pi";
+
 import { Window as WindowType } from "@/stores/windows.store";
 import { useWindows } from "@/hooks/useWindows";
 import {
@@ -191,7 +193,9 @@ export function ResizeHandles({
           cursor: "nwse-resize",
           touchAction: "none",
         }}
-      />
+      >
+        <PiDotsNine className="size-4" />
+      </div>
       <div
         onPointerDown={(e) => handlePointerDown(e, { south: true, west: true })}
         className="absolute bottom-0 left-0 pointer-events-auto"
