@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import "./grid-distortion.css";
@@ -25,6 +27,15 @@ void main() {
   gl_FragColor = texture2D(uTexture, uv - 0.002 * offset.rg);
 }`;
 
+interface GridDistortionProps {
+  grid?: number;
+  mouse?: number;
+  strength?: number;
+  relaxation?: number;
+  imageSrc: string;
+  className?: string;
+}
+
 const GridDistortion = ({
   grid = 15,
   mouse = 0.1,
@@ -32,15 +43,15 @@ const GridDistortion = ({
   relaxation = 0.9,
   imageSrc,
   className = "",
-}) => {
-  const containerRef = useRef(null);
-  const sceneRef = useRef(null);
-  const rendererRef = useRef(null);
-  const cameraRef = useRef(null);
-  const planeRef = useRef(null);
+}: GridDistortionProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const sceneRef = useRef<THREE.Scene | null>(null);
+  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const cameraRef = useRef<THREE.OrthographicCamera | null>(null);
+  const planeRef = useRef<THREE.Mesh | null>(null);
   const imageAspectRef = useRef(1);
-  const animationIdRef = useRef(null);
-  const resizeObserverRef = useRef(null);
+  const animationIdRef = useRef<number | null>(null);
+  const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -69,8 +80,8 @@ const GridDistortion = ({
     const uniforms = {
       time: { value: 0 },
       resolution: { value: new THREE.Vector4() },
-      uTexture: { value: null },
-      uDataTexture: { value: null },
+      uTexture: { value: null as THREE.Texture | null },
+      uDataTexture: { value: null as THREE.DataTexture | null },
     };
 
     const textureLoader = new THREE.TextureLoader();
@@ -161,7 +172,7 @@ const GridDistortion = ({
       vY: 0,
     };
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
       const y = 1 - (e.clientY - rect.top) / rect.height;
@@ -184,7 +195,7 @@ const GridDistortion = ({
       });
     };
 
-    const handleMouseEnter = (e) => {
+    const handleMouseEnter = (e: MouseEvent) => {
       const rect = container.getBoundingClientRect();
       const x = (e.clientX - rect.left) / rect.width;
       const y = 1 - (e.clientY - rect.top) / rect.height;
@@ -204,10 +215,10 @@ const GridDistortion = ({
 
       uniforms.time.value += 0.05;
 
-      const data = dataTexture.image.data;
+      const imgData = dataTexture.image.data as Float32Array;
       for (let i = 0; i < size * size; i++) {
-        data[i * 4] *= relaxation;
-        data[i * 4 + 1] *= relaxation;
+        imgData[i * 4] *= relaxation;
+        imgData[i * 4 + 1] *= relaxation;
       }
 
       const gridMouseX = size * mouseState.x;
@@ -221,8 +232,8 @@ const GridDistortion = ({
           if (distSq < maxDist * maxDist) {
             const index = 4 * (i + size * j);
             const power = Math.min(maxDist / Math.sqrt(distSq), 10);
-            data[index] += strength * 100 * mouseState.vX * power;
-            data[index + 1] -= strength * 100 * mouseState.vY * power;
+            imgData[index] += strength * 100 * mouseState.vX * power;
+            imgData[index + 1] -= strength * 100 * mouseState.vY * power;
           }
         }
       }
