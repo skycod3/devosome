@@ -85,10 +85,10 @@ export function Contact() {
         {/* Name + Email row */}
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-1">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <label htmlFor="contact-name" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               Name
             </label>
-            <Input {...register("name")} placeholder="Your name" />
+            <Input id="contact-name" {...register("name")} placeholder="Your name" />
             {errors.name && (
               <span className="text-xs text-red-500">
                 {errors.name.message}
@@ -97,10 +97,11 @@ export function Contact() {
           </div>
 
           <div className="grid gap-1">
-            <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <label htmlFor="contact-email" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
               Email
             </label>
             <Input
+              id="contact-email"
               {...register("email")}
               type="email"
               placeholder="your@email.com"
@@ -115,10 +116,10 @@ export function Contact() {
 
         {/* Subject */}
         <div className="grid gap-1">
-          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          <label htmlFor="contact-subject" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             Subject
           </label>
-          <Input {...register("subject")} placeholder="What's this about?" />
+          <Input id="contact-subject" {...register("subject")} placeholder="What's this about?" />
           {errors.subject && (
             <span className="text-xs text-red-500">
               {errors.subject.message}
@@ -128,10 +129,11 @@ export function Contact() {
 
         {/* Message */}
         <div className="grid gap-1">
-          <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          <label htmlFor="contact-message" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
             Message
           </label>
           <Textarea
+            id="contact-message"
             {...register("message")}
             placeholder="Your message..."
             className="min-h-28"
