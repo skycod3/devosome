@@ -49,6 +49,7 @@ function ProjectLinks({ github, live }: { github?: string; live?: string }) {
         <a
           href={github}
           target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition hover:bg-accent"
         >
           <FaGithub className="size-3.5" />
@@ -59,6 +60,7 @@ function ProjectLinks({ github, live }: { github?: string; live?: string }) {
         <a
           href={live}
           target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-1.5 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition hover:bg-primary/90"
         >
           <PiArrowSquareOut className="size-3.5" />

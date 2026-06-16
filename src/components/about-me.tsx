@@ -129,6 +129,7 @@ export function AboutMe() {
           <a
             href={ABOUT_ME.contact.linkedin}
             target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 text-sm text-foreground transition-colors hover:bg-accent"
           >
             <FaLinkedin className="size-4 text-[#0077b5]" />
@@ -138,6 +139,7 @@ export function AboutMe() {
           <a
             href={ABOUT_ME.contact.github}
             target="_blank"
+            rel="noopener noreferrer"
             className="flex items-center gap-3 rounded-lg border border-border bg-card px-4 py-3 text-sm text-foreground transition-colors hover:bg-accent"
           >
             <FaGithub className="size-4" />

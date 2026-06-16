@@ -190,6 +190,7 @@ export function Contact() {
         <a
           href={ABOUT_ME.contact.linkedin}
           target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-3 rounded-md border px-4 py-3 text-sm transition hover:bg-accent"
         >
           <FaLinkedin className="size-4 text-muted-foreground" />
@@ -201,6 +202,7 @@ export function Contact() {
         <a
           href={ABOUT_ME.contact.github}
           target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-3 rounded-md border px-4 py-3 text-sm transition hover:bg-accent"
         >
           <FaGithub className="size-4 text-muted-foreground" />
