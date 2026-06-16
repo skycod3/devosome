@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 
+import { contactFormSchema, type ContactFormData } from "@/lib/schemas/contact";
 import { useNotify } from "@/hooks/useNotify";
 
 import { ABOUT_ME } from "@/constants/about";
@@ -15,15 +15,6 @@ import { PiEnvelope, PiSpinner } from "react-icons/pi";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
-
-const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.email("Invalid email address"),
-  subject: z.string().min(3, "Subject must be at least 3 characters"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-});
-
-type ContactFormData = z.infer<typeof contactSchema>;
 
 type FormStatus = "idle" | "sending";
 
@@ -38,7 +29,7 @@ export function Contact() {
     reset,
     formState: { errors },
   } = useForm<ContactFormData>({
-    resolver: zodResolver(contactSchema),
+    resolver: zodResolver(contactFormSchema),
   });
 
   async function onSubmit(data: ContactFormData) {

@@ -1,20 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { z } from "zod";
+
+import { contactFormSchema } from "@/lib/schemas/contact";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-
-const contactSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters"),
-  email: z.email("Invalid email address"),
-  subject: z.string().min(3, "Subject must be at least 3 characters"),
-  message: z.string().min(10, "Message must be at least 10 characters"),
-});
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const parsed = contactSchema.safeParse(body);
+    const parsed = contactFormSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
