@@ -4,29 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Search } from "lucide-react";
 
-import { APPLICATIONS } from "@/constants/applications";
-import { DESKTOP_ICONS } from "@/constants/icons";
+import { ALL_APPS } from "@/lib/apps";
 import { useWindows } from "@/hooks/useWindows";
 
 interface SpotlightProps {
   onClose: () => void;
 }
-
-// Exclude tab children (documents, pictures, music, videos) — they open via their parent window
-const TAB_IDS = new Set(
-  Object.values(APPLICATIONS).flatMap((app) => app.availableTabs ?? []),
-);
-
-const ALL_APPS = Object.values(APPLICATIONS)
-  .filter((app) => (!!app.component || !!app.showTabs) && !TAB_IDS.has(app.id))
-  .map((app) => {
-    const iconEntry = DESKTOP_ICONS.find((i) => i.appId === app.id);
-    return {
-      id: app.id,
-      title: app.windowTitle ?? app.id,
-      icon: iconEntry?.icon ?? null,
-    };
-  });
 
 export function Spotlight({ onClose }: SpotlightProps) {
   const [query, setQuery] = useState("");
@@ -77,7 +60,10 @@ export function Spotlight({ onClose }: SpotlightProps) {
       e.preventDefault();
       setSelectedIndex((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter" && results[selectedIndex]) {
-      openApp(results[selectedIndex].id, results[selectedIndex].title);
+      openApp(
+        results[selectedIndex].appId ?? results[selectedIndex].id,
+        results[selectedIndex].title,
+      );
     }
   }
 
@@ -113,7 +99,7 @@ export function Spotlight({ onClose }: SpotlightProps) {
               <li
                 key={app.id}
                 onMouseEnter={() => setSelectedIndex(i)}
-                onMouseDown={() => openApp(app.id, app.title)}
+                onMouseDown={() => openApp(app.appId ?? app.id, app.title)}
                 className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
                   i === selectedIndex
                     ? "bg-accent text-accent-foreground"

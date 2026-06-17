@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useHotkey } from "@tanstack/react-hotkeys";
 
 import { APPLICATIONS } from "@/constants/applications";
-import { DESKTOP_ICONS } from "@/constants/icons";
 
 import { useWindows } from "@/hooks/useWindows";
 import { useIsMobile } from "@/hooks/useIsMobile";
@@ -13,6 +12,7 @@ import { useIsMobile } from "@/hooks/useIsMobile";
 import { useNotify } from "@/hooks/useNotify";
 
 import { ABOUT_ME } from "@/constants/about";
+import { ALL_APPS } from "@/lib/apps";
 
 import {
   DropdownMenu,
@@ -33,21 +33,6 @@ import { Kbd } from "@/components/ui/kbd";
 import Image from "next/image";
 
 const { contact } = ABOUT_ME;
-
-// All searchable apps (same logic as Spotlight)
-const TAB_IDS = new Set(
-  Object.values(APPLICATIONS).flatMap((app) => app.availableTabs ?? []),
-);
-const ALL_APPS = Object.values(APPLICATIONS)
-  .filter((app) => (!!app.component || !!app.showTabs) && !TAB_IDS.has(app.id))
-  .map((app) => {
-    const iconEntry = DESKTOP_ICONS.find((i) => i.appId === app.id);
-    return {
-      id: app.id,
-      title: app.windowTitle ?? app.id,
-      icon: iconEntry?.icon ?? null,
-    };
-  });
 
 export function StartDropdown() {
   const { openWindowCentered } = useWindows();
@@ -122,7 +107,7 @@ export function StartDropdown() {
               {searchResults.map((app) => (
                 <DropdownMenuItem
                   key={app.id}
-                  onClick={() => openApp(app.id, app.title)}
+                  onClick={() => openApp(app.appId ?? app.id, app.title)}
                 >
                   {app.icon && (
                     <Image
