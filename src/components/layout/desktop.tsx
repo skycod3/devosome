@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence } from "motion/react";
 
 import { DESKTOP_ICONS } from "@/constants/icons";
+import { STORAGE_KEYS } from "@/constants/storage-keys";
 
 import { useIcons } from "@/hooks/useIcons";
 import { useWindows } from "@/hooks/useWindows";
@@ -77,9 +78,9 @@ export function Desktop() {
 
   // Show welcome message on first visit
   useEffect(() => {
-    if (localStorage.getItem("welcomeShown")) return;
+    if (localStorage.getItem(STORAGE_KEYS.WELCOME_SHOWN)) return;
 
-    localStorage.setItem("welcomeShown", "true");
+    localStorage.setItem(STORAGE_KEYS.WELCOME_SHOWN, "true");
     notify.info("Welcome to DevOSome! 🖖", {
       description:
         "Explore the projects and portfolio of a passionate developer.",
@@ -94,9 +95,9 @@ export function Desktop() {
   useEffect(() => {
     if (isMobile) return;
 
-    if (localStorage.getItem("spotlightTipShown")) return;
+    if (localStorage.getItem(STORAGE_KEYS.SPOTLIGHT_TIP_SHOWN)) return;
 
-    localStorage.setItem("spotlightTipShown", "true");
+    localStorage.setItem(STORAGE_KEYS.SPOTLIGHT_TIP_SHOWN, "true");
     notify.info("Tip: Press Ctrl+K to open Spotlight Search 🔍", {
       duration: 1000 * 8, // 8 seconds
       dedupeId: "spotlight-tip",

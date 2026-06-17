@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { CloudAlert } from "lucide-react";
 import { useNotify } from "@/hooks/useNotify";
+import { SESSION_KEYS } from "@/constants/storage-keys";
 
 import {
   Popover,
@@ -103,8 +104,8 @@ export function Weather() {
       if (err instanceof GeolocationPositionError) {
         switch (err.code) {
           case err.PERMISSION_DENIED:
-            if (!sessionStorage.getItem("weatherErrorShown")) {
-              sessionStorage.setItem("weatherErrorShown", "true");
+            if (!sessionStorage.getItem(SESSION_KEYS.WEATHER_ERROR_SHOWN)) {
+              sessionStorage.setItem(SESSION_KEYS.WEATHER_ERROR_SHOWN, "true");
               notify.error("Location access is blocked", {
                 description:
                   "To enable weather, allow location access in your browser's site settings and reload the page.",
