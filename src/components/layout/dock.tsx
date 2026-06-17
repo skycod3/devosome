@@ -45,6 +45,7 @@ interface DockItemProps {
   distance: number;
   magnification: number;
   baseItemSize: number;
+  label: string;
 }
 
 interface DockLabelProps {
@@ -81,6 +82,7 @@ function DockItem({
   distance,
   magnification,
   baseItemSize,
+  label,
 }: DockItemProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isHovered = useMotionValue(0);
@@ -116,6 +118,7 @@ function DockItem({
       className={`group relative flex-center rounded-lg border border-border bg-card shadow-md outline-none ${className}`}
       tabIndex={0}
       role="button"
+      aria-label={label}
       aria-haspopup="true"
     >
       {Children.map(children, (child) =>
@@ -224,6 +227,7 @@ function DockBase({
             distance={distance}
             magnification={magnification}
             baseItemSize={baseItemSize}
+            label={item.label}
           >
             <DockIcon>{item.icon}</DockIcon>
             <DockLabel>{item.label}</DockLabel>

@@ -152,6 +152,7 @@ export function WindowHeader({
             onPointerDown={(e) => e.stopPropagation()}
           >
             <button
+              aria-label="Minimize window"
               className="flex-center size-5 sm:size-4 rounded-full border border-yellow-300 bg-yellow-200 hover:bg-yellow-400"
               onClick={() => minimizeWindow(window.id)}
             >
@@ -160,6 +161,9 @@ export function WindowHeader({
 
             {!isMobile && (
               <button
+                aria-label={
+                  window.isMaximized ? "Restore window" : "Maximize window"
+                }
                 className="flex-center size-4 rounded-full border border-green-300 bg-green-200 hover:bg-green-400"
                 onClick={handleMaximize}
               >
@@ -172,6 +176,7 @@ export function WindowHeader({
             )}
 
             <button
+              aria-label="Close window"
               className="flex-center size-5 sm:size-4 rounded-full border border-red-300 bg-red-200 hover:bg-red-400"
               onClick={() => {
                 closeWindow(window.id);
