@@ -3,7 +3,7 @@ import { Window as WindowType } from "@/stores/windows.store";
 import { CSSProperties, useEffect, useState } from "react";
 import { useIcons } from "@/hooks/useIcons";
 
-import { useIsMobile } from "@/hooks/useIsMobile";
+import { useViewport } from "@/hooks/useViewport";
 
 import { motion, useMotionValue, useDragControls } from "motion/react";
 
@@ -16,6 +16,7 @@ import {
 } from "react-icons/pi";
 
 import { APPLICATIONS } from "@/constants/applications";
+import { BREAKPOINTS } from "@/constants/breakpoints";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { WindowHeader } from "./window-header";
@@ -33,8 +34,9 @@ interface WindowProps {
 function TabbedWindow({ window }: { window: WindowType }) {
   const { setWindowActiveTab } = useWindows();
   const { icons, unhighlightAllIcons } = useIcons();
-  const isLargeDesktop = useIsMobile(1600);
-  const [sidebarOpen, setSidebarOpen] = useState(!isLargeDesktop);
+  const { width: viewportWidth } = useViewport();
+  const isLargeDesktop = viewportWidth >= BREAKPOINTS.WIDE;
+  const [sidebarOpen, setSidebarOpen] = useState(isLargeDesktop);
 
   const activeTab = window.activeTab || window.iconId;
   const highlightedIcon = icons.find((icon) => icon.isHighlighted);
@@ -113,7 +115,8 @@ function TabbedWindow({ window }: { window: WindowType }) {
 export function Window({ window, desktopRect }: WindowProps) {
   const { bringToFront, activeWindowId, setWindowPosition, isMobile } =
     useWindows();
-  const resizeEnabled = !useIsMobile(1600);
+  const { width: viewportWidth } = useViewport();
+  const resizeEnabled = viewportWidth >= BREAKPOINTS.WIDE;
 
   // dragConstraints values are relative to the element's own position as measured
   // by getBoundingClientRect(). Since the window uses position:absolute inside the

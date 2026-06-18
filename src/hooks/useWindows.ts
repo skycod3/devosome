@@ -9,9 +9,8 @@ import {
   LARGE_DESKTOP_WINDOW_SIZE,
 } from "@/constants/windows";
 import { APPLICATIONS } from "@/constants/applications";
+import { BREAKPOINTS } from "@/constants/breakpoints";
 import { useRecent } from "./useRecent";
-
-const MEDIA_TABS = new Set(["pictures", "documents", "music", "videos"]);
 
 /**
  * Hook for managing windows.
@@ -57,17 +56,17 @@ export const useWindows = () => {
   const { width, height } = useViewport();
 
   // Detect breakpoint for responsive window sizing
-  const isMobile = width > 0 && width < 768;
-  const isTablet = width >= 768 && width < 1024;
-  const isSmallDesktop = width >= 1024 && width < 1600;
+  const isMobile = width > 0 && width < BREAKPOINTS.TABLET;
+  const isTablet = width >= BREAKPOINTS.TABLET && width < BREAKPOINTS.DESKTOP;
+  const isSmallDesktop = width >= BREAKPOINTS.DESKTOP && width < BREAKPOINTS.WIDE;
 
   /**
    * Opens a window centered on the viewport.
    * Calculates position and size based on the current breakpoint:
    * - Mobile (<768px): fullscreen, position (0, 0)
    * - Tablet (768–1023px): TABLET_WINDOW_SIZE, centered, no cascade
-   * - Small desktop (1024–1599px): SMALL_DESKTOP_WINDOW_SIZE, centered, cascading offset
-   * - Large desktop (≥1600px): LARGE_DESKTOP_WINDOW_SIZE, centered, cascading offset
+   * - Desktop (1024–1599px): SMALL_DESKTOP_WINDOW_SIZE, centered, cascading offset
+   * - Wide (≥1600px): LARGE_DESKTOP_WINDOW_SIZE, centered, cascading offset
    */
   const openWindowCentered = (
     iconId: string,
