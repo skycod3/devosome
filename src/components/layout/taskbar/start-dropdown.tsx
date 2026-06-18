@@ -126,7 +126,7 @@ export function StartDropdown() {
           </>
         )}
 
-        <DropdownMenuLabel>Jean Medeiros</DropdownMenuLabel>
+        <DropdownMenuLabel>{ABOUT_ME.name}</DropdownMenuLabel>
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
@@ -185,16 +185,15 @@ export function StartDropdown() {
             <DropdownMenuSubTrigger>Support Me</DropdownMenuSubTrigger>
             <DropdownMenuPortal>
               <DropdownMenuSubContent>
-                <DropdownMenuItem
-                  onClick={() =>
-                    window.open(
-                      "https://buymeacoffee.com/jeanmedeiros.dev",
-                      "_blank",
-                    )
-                  }
-                >
-                  Buy Me a Coffee
-                </DropdownMenuItem>
+                {ABOUT_ME.supportUrl && (
+                  <DropdownMenuItem
+                    onClick={() =>
+                      window.open(ABOUT_ME.supportUrl, "_blank")
+                    }
+                  >
+                    Buy Me a Coffee
+                  </DropdownMenuItem>
+                )}
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>

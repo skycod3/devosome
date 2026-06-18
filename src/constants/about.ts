@@ -19,6 +19,8 @@ export interface AboutMeData {
   description: string;
   highlights: Highlight[];
   contact: AboutMeContact;
+  /** URL to a support/donation page (e.g. Buy Me a Coffee) */
+  supportUrl?: string;
 }
 
 export const ABOUT_ME: AboutMeData = {
@@ -35,8 +37,9 @@ export const ABOUT_ME: AboutMeData = {
   ],
   contact: {
     email: "jeamcrv@hotmail.com",
-    phone: "+555499179-1737",
+    phone: "+55 54 99179-1737",
     linkedin: "https://www.linkedin.com/in/skycod3",
     github: "https://github.com/skycod3",
   },
+  supportUrl: "https://buymeacoffee.com/jeanmedeiros.dev",
 };
