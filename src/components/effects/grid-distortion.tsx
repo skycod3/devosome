@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import * as THREE from "three";
-import "./grid-distortion.css";
+import styles from "./grid-distortion.module.css";
 
 const vertexShader = `
 uniform float time;
@@ -282,7 +282,7 @@ const GridDistortion = ({
   return (
     <div
       ref={containerRef}
-      className={`distortion-container ${className}`}
+      className={`${styles.distortionContainer} ${className}`}
       style={{
         width: "100%",
         height: "100%",
