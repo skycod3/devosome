@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { FaGithub } from "react-icons/fa6";
 import { PiArrowSquareOut } from "react-icons/pi";
 
@@ -22,9 +23,11 @@ function Thumbnail({ src, alt }: { src: string; alt: string }) {
   }
 
   return (
-    <img
+    <Image
       src={src}
       alt={alt}
+      fill
+      sizes="(max-width: 768px) 100vw, 200px"
       className="size-full object-cover"
       onError={() => setImgError(true)}
     />
