@@ -25,9 +25,11 @@ export function Spotlight({ onClose }: SpotlightProps) {
       )
     : ALL_APPS;
 
-  useEffect(() => {
+  const [lastQuery, setLastQuery] = useState(query);
+  if (query !== lastQuery) {
+    setLastQuery(query);
     setSelectedIndex(0);
-  }, [query]);
+  }
 
   useEffect(() => {
     inputRef.current?.focus();
