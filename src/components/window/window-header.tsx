@@ -55,8 +55,13 @@ export function WindowHeader({
   dragControls,
   isMobile = false,
 }: WindowHeaderProps) {
-  const { closeWindow, toggleMaximize, setWindowSize, minimizeWindow } =
-    useWindows();
+  const {
+    closeWindow,
+    toggleMaximize,
+    setWindowSize,
+    minimizeWindow,
+    activeWindowId,
+  } = useWindows();
 
   const [isGrabbing, setIsGrabbing] = useState(false);
 
@@ -106,7 +111,10 @@ export function WindowHeader({
     }
   }
 
-  useHotkey("Control+Q", () => closeWindow(window.id));
+  useHotkey("Control+Q", () => closeWindow(window.id), {
+    conflictBehavior: "allow",
+    enabled: activeWindowId === window.id,
+  });
 
   return (
     <ContextMenu>
