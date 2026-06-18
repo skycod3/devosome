@@ -118,8 +118,9 @@ export function WindowContent({
 
   return (
     <section className="flex-2">
-      <div className="flex h-full items-center justify-center text-gray-500">
-        <p>Application not found for: {iconId}</p>
+      <div className="flex h-full w-full flex-col items-center justify-center gap-2 text-center text-muted-foreground">
+        <p className="text-sm font-medium">App not found</p>
+        <p className="font-mono text-xs opacity-60">{iconId}</p>
       </div>
     </section>
   );
