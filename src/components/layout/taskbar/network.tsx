@@ -10,12 +10,10 @@ import {
 import { useTheme } from "@/hooks/useTheme";
 
 export function Network() {
-  const [online, setOnline] = useState(true);
+  const [online, setOnline] = useState(navigator.onLine);
   const { theme } = useTheme();
 
   useEffect(() => {
-    setOnline(navigator.onLine);
-
     const handleOnline = () => setOnline(true);
     const handleOffline = () => setOnline(false);
 
