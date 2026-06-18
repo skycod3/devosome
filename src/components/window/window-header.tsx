@@ -26,6 +26,7 @@ import {
   ContextMenuShortcut,
 } from "@/components/ui/context-menu";
 
+import { WINDOW_BREADCRUMB_HOME } from "@/constants/windows";
 import { supportsRelativeColors } from "@/utils/css-supports";
 import { useHotkey } from "@tanstack/react-hotkeys";
 
@@ -133,7 +134,7 @@ export function WindowHeader({
             <div className="shrink-0 flex items-center gap-2">
               <LuHouse className="size-4 shrink-0" />
 
-              <span>Home</span>
+              <span>{WINDOW_BREADCRUMB_HOME}</span>
             </div>
 
             {(parentIcon || window.parentTitle) && (

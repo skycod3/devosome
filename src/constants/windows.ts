@@ -13,3 +13,11 @@ export const WINDOW_MIN_WIDTH = DEFAULT_WINDOW_SIZE.width;
 export const WINDOW_MIN_HEIGHT = DEFAULT_WINDOW_SIZE.height;
 export const RESIZE_HANDLE_SIZE = 6;
 export const RESIZE_CORNER_SIZE = 12;
+
+/** z-index for the Spotlight modal overlay */
+export const Z_SPOTLIGHT = 9997;
+/** z-index for the boot screen overlay */
+export const Z_BOOT_SCREEN = 9999;
+
+/** Label for the Home breadcrumb in window headers */
+export const WINDOW_BREADCRUMB_HOME = "Home";

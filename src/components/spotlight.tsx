@@ -6,6 +6,7 @@ import { Search } from "lucide-react";
 
 import { ALL_APPS } from "@/lib/apps";
 import { useWindows } from "@/hooks/useWindows";
+import { Z_SPOTLIGHT } from "@/constants/windows";
 
 interface SpotlightProps {
   onClose: () => void;
@@ -69,7 +70,8 @@ export function Spotlight({ onClose }: SpotlightProps) {
 
   return (
     <div
-      className="fixed inset-0 z-9997 flex items-start justify-center bg-black/40 pt-[20vh] backdrop-blur-sm"
+      className="fixed inset-0 flex items-start justify-center bg-black/40 pt-[20vh] backdrop-blur-sm"
+      style={{ zIndex: Z_SPOTLIGHT }}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}

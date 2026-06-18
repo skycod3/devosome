@@ -6,6 +6,7 @@ import { useSettingsStore } from "@/stores/settings-store";
 import { isSafariMobile } from "@/utils/browser";
 // prettier-ignore
 import { BOOT_BIOS_INITIAL_DELAY, BOOT_BIOS_LINE_DELAY, BOOT_BIOS_LINES, BOOT_BIOS_TO_KERNEL_DELAY, BOOT_BEFORE_FADEOUT_DELAY, BOOT_COUNTDOWN_INTERVAL, BOOT_FADEOUT_DURATION, BOOT_KERNEL_LEADING_LINES, BOOT_KERNEL_MIN_LINE_DELAY, BOOT_KERNEL_TRAILING_LINES, BOOT_WALLPAPER_LABEL, BOOT_AUDIO_LABEL } from "@/constants/boot";
+import { Z_BOOT_SCREEN } from "@/constants/windows";
 
 type BootScreenProps = {
   onComplete: () => void;
@@ -215,7 +216,8 @@ export function BootScreen({ onComplete }: BootScreenProps) {
   return (
     <div
       ref={containerRef}
-      className="fixed inset-0 z-9999 bg-black overflow-hidden"
+      className="fixed inset-0 bg-black overflow-hidden"
+      style={{ zIndex: Z_BOOT_SCREEN }}
     >
       <div className="h-full overflow-y-auto p-6 text-xs sm:text-sm leading-relaxed [&::-webkit-scrollbar]:hidden">
         {/* BIOS section */}
