@@ -13,6 +13,9 @@ import ClipboardImage from "@/assets/clipboard.svg";
 import SystemMonitorImage from "@/assets/system-monitor.svg";
 import SettingsImage from "@/assets/settings.svg";
 
+/** Default size for desktop icons */
+export const DEFAULT_ICON_SIZE = { width: 48, height: 48 } as const;
+
 export const DESKTOP_ICONS: Icon[] = [
   {
     id: "icon-documents",
@@ -21,7 +24,7 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: DocumentsImage,
     isHighlighted: false,
     show: true,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
   {
     id: "icon-about-me",
@@ -30,7 +33,7 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: AboutMeImage,
     isHighlighted: false,
     show: false,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
   {
     id: "icon-skills",
@@ -39,7 +42,7 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: SkillsImage,
     isHighlighted: false,
     show: false,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
   {
     id: "icon-portfolio",
@@ -48,7 +51,7 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: PortfolioImage,
     isHighlighted: false,
     show: false,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
   {
     id: "icon-contact",
@@ -57,7 +60,7 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: ContactImage,
     isHighlighted: false,
     show: false,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
   {
     id: "icon-terminal",
@@ -66,7 +69,7 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: TerminalImage,
     isHighlighted: false,
     show: true,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
   {
     id: "icon-pictures",
@@ -75,7 +78,7 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: PicturesImage,
     isHighlighted: false,
     show: false,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
   {
     id: "icon-music",
@@ -84,7 +87,7 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: MusicImage,
     isHighlighted: false,
     show: false,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
   {
     id: "icon-videos",
@@ -93,7 +96,7 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: VideosImage,
     isHighlighted: false,
     show: false,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
   {
     id: "icon-clipboard-history",
@@ -102,7 +105,7 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: ClipboardImage,
     isHighlighted: false,
     show: false,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
   {
     id: "icon-system-monitor",
@@ -111,7 +114,7 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: SystemMonitorImage,
     isHighlighted: false,
     show: false,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
   {
     id: "icon-system-settings",
@@ -120,6 +123,6 @@ export const DESKTOP_ICONS: Icon[] = [
     icon: SettingsImage,
     isHighlighted: false,
     show: true,
-    size: { width: 48, height: 48 },
+    size: DEFAULT_ICON_SIZE,
   },
 ];
