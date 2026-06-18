@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useWindows } from "@/hooks/useWindows";
 import { Progress } from "@/components/ui/progress";
 
@@ -25,11 +25,16 @@ function formatUptime(seconds: number): string {
 }
 
 function detectBrowser(ua: string): string {
-  if (/Edg\/(\S+)/.test(ua)) return `Edge ${ua.match(/Edg\/(\S+)/)![1].split(".")[0]}`;
-  if (/OPR\/(\S+)/.test(ua)) return `Opera ${ua.match(/OPR\/(\S+)/)![1].split(".")[0]}`;
-  if (/Chrome\/(\S+)/.test(ua)) return `Chrome ${ua.match(/Chrome\/(\S+)/)![1].split(".")[0]}`;
-  if (/Firefox\/(\S+)/.test(ua)) return `Firefox ${ua.match(/Firefox\/(\S+)/)![1].split(".")[0]}`;
-  if (/Version\/(\S+).*Safari/.test(ua)) return `Safari ${ua.match(/Version\/(\S+)/)![1].split(".")[0]}`;
+  if (/Edg\/(\S+)/.test(ua))
+    return `Edge ${ua.match(/Edg\/(\S+)/)![1].split(".")[0]}`;
+  if (/OPR\/(\S+)/.test(ua))
+    return `Opera ${ua.match(/OPR\/(\S+)/)![1].split(".")[0]}`;
+  if (/Chrome\/(\S+)/.test(ua))
+    return `Chrome ${ua.match(/Chrome\/(\S+)/)![1].split(".")[0]}`;
+  if (/Firefox\/(\S+)/.test(ua))
+    return `Firefox ${ua.match(/Firefox\/(\S+)/)![1].split(".")[0]}`;
+  if (/Version\/(\S+).*Safari/.test(ua))
+    return `Safari ${ua.match(/Version\/(\S+)/)![1].split(".")[0]}`;
   return "Unknown browser";
 }
 
@@ -95,22 +100,18 @@ function Section({
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+const isMemorySupported =
+  typeof performance !== "undefined" && "memory" in performance;
+
 export function SystemMonitor({ iconId: _ }: { iconId: string }) {
   const [uptime, setUptime] = useState(() =>
     Math.floor(performance.now() / 1000),
   );
-  const [memory, setMemory] = useState<MemoryInfo | null>(null);
-  const memorySupported = useRef<boolean>(typeof performance !== "undefined" && "memory" in performance);
+  const [memory, setMemory] = useState<MemoryInfo | null>(() => getMemory());
 
   const { windows } = useWindows();
   const openCount = windows.length;
   const minimizedCount = windows.filter((w) => w.isMinimized).length;
-
-  // Check memory support once
-  useEffect(() => {
-    memorySupported.current = "memory" in performance;
-    setMemory(getMemory());
-  }, []);
 
   // Uptime — tick every second
   useEffect(() => {
@@ -122,7 +123,7 @@ export function SystemMonitor({ iconId: _ }: { iconId: string }) {
 
   // Memory — refresh every 3s
   useEffect(() => {
-    if (!memorySupported.current) return;
+    if (!isMemorySupported) return;
     const interval = setInterval(() => {
       setMemory(getMemory());
     }, 3000);
@@ -144,7 +145,7 @@ export function SystemMonitor({ iconId: _ }: { iconId: string }) {
       </Section>
 
       {/* Memory — Chromium only */}
-      {memorySupported.current === true && (
+      {isMemorySupported && (
         <Section title="Memory (Chromium only)">
           {memory ? (
             <>
@@ -179,16 +180,14 @@ export function SystemMonitor({ iconId: _ }: { iconId: string }) {
       <Section title="Hardware">
         <Row
           label="CPU cores"
-          value={navigator.hardwareConcurrency ? String(navigator.hardwareConcurrency) : "N/A"}
+          value={
+            navigator.hardwareConcurrency
+              ? String(navigator.hardwareConcurrency)
+              : "N/A"
+          }
         />
-        <Row
-          label="Resolution"
-          value={`${screen.width} × ${screen.height}`}
-        />
-        <Row
-          label="Pixel ratio"
-          value={`${window.devicePixelRatio}x`}
-        />
+        <Row label="Resolution" value={`${screen.width} × ${screen.height}`} />
+        <Row label="Pixel ratio" value={`${window.devicePixelRatio}x`} />
       </Section>
     </div>
   );
