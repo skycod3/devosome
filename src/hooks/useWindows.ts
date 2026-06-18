@@ -18,6 +18,10 @@ const MEDIA_TABS = new Set(["pictures", "documents", "music", "videos"]);
  * Returns all states and actions needed to manage windows.
  */
 export const useWindows = () => {
+  // Derived from APPLICATIONS to stay in sync with tab config
+  const MEDIA_TABS = new Set(
+    Object.values(APPLICATIONS).flatMap((app) => app.availableTabs ?? []),
+  );
   const windows = useWindowsStore((state) => state.windows);
   const activeWindowId = useWindowsStore((state) => state.activeWindowId);
   const highestZIndex = useWindowsStore((state) => state.highestZIndex);
