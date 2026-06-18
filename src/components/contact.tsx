@@ -70,6 +70,9 @@ export function Contact() {
     setTimeout(() => setCopied(false), 2000);
   }
 
+  const githubHandle = ABOUT_ME.contact.github.split("/").pop() ?? "GitHub";
+  const linkedinHandle = ABOUT_ME.contact.linkedin.split("/").pop() ?? "LinkedIn";
+
   return (
     <div className="space-y-6 p-4 md:p-6">
       {/* Header */}
@@ -188,7 +191,7 @@ export function Contact() {
         >
           <FaLinkedin className="size-4 text-muted-foreground" />
           <span className="flex-1">LinkedIn</span>
-          <span className="text-xs text-muted-foreground">skycod3</span>
+          <span className="text-xs text-muted-foreground">{linkedinHandle}</span>
         </a>
 
         {/* GitHub */}
@@ -200,7 +203,7 @@ export function Contact() {
         >
           <FaGithub className="size-4 text-muted-foreground" />
           <span className="flex-1">GitHub</span>
-          <span className="text-xs text-muted-foreground">skycod3</span>
+          <span className="text-xs text-muted-foreground">{githubHandle}</span>
         </a>
       </div>
     </div>
