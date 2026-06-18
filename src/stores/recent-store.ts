@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { devtools, persist } from "zustand/middleware";
 
-const MAX_RECENT_ITEMS = 20;
+export const MAX_RECENT_ITEMS = 20;
 
 export interface RecentItem {
   /** Same id as the icon (e.g. "image-1", "document-resume") */
