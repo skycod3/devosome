@@ -3,6 +3,7 @@ import Image from "next/image";
 import { CloudAlert } from "lucide-react";
 import { useNotify } from "@/hooks/useNotify";
 import { SESSION_KEYS } from "@/constants/storage-keys";
+import { WEATHER_REFRESH_INTERVAL_MS } from "@/constants/weather";
 
 import {
   Popover,
@@ -135,7 +136,10 @@ export function Weather() {
     fetchWeather();
 
     // Update every 10 minutes
-    const updateInterval = setInterval(fetchWeather, 10 * 60 * 1000);
+    const updateInterval = setInterval(
+      fetchWeather,
+      WEATHER_REFRESH_INTERVAL_MS,
+    );
     return () => clearInterval(updateInterval);
   }, [fetchWeather]);
 
