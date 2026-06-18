@@ -43,10 +43,7 @@ export function Battery() {
   const { theme } = useTheme();
 
   useEffect(() => {
-    if (!("getBattery" in navigator)) {
-      setSupported(false);
-      return;
-    }
+    if (!("getBattery" in navigator)) return;
 
     let mounted = true;
     let batteryRef: BatteryManager | null = null;
