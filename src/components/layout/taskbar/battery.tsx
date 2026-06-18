@@ -48,7 +48,9 @@ export function Battery() {
       return;
     }
 
+    let mounted = true;
     let batteryRef: BatteryManager | null = null;
+    let handler: (() => void) | null = null;
 
     const update = (b: BatteryManager) => {
       setBattery({
@@ -61,22 +63,24 @@ export function Battery() {
     (navigator as Navigator & { getBattery: () => Promise<BatteryManager> })
       .getBattery()
       .then((b) => {
+        if (!mounted) return;
         batteryRef = b;
         update(b);
-
-        b.addEventListener("chargingchange", () => update(b));
-        b.addEventListener("levelchange", () => update(b));
-        b.addEventListener("chargingtimechange", () => update(b));
-        b.addEventListener("dischargingtimechange", () => update(b));
+        handler = () => update(b);
+        b.addEventListener("chargingchange", handler);
+        b.addEventListener("levelchange", handler);
+        b.addEventListener("chargingtimechange", handler);
+        b.addEventListener("dischargingtimechange", handler);
       })
       .catch(() => setSupported(false));
 
     return () => {
-      if (batteryRef) {
-        batteryRef.removeEventListener("chargingchange", () => {});
-        batteryRef.removeEventListener("levelchange", () => {});
-        batteryRef.removeEventListener("chargingtimechange", () => {});
-        batteryRef.removeEventListener("dischargingtimechange", () => {});
+      mounted = false;
+      if (batteryRef && handler) {
+        batteryRef.removeEventListener("chargingchange", handler);
+        batteryRef.removeEventListener("levelchange", handler);
+        batteryRef.removeEventListener("chargingtimechange", handler);
+        batteryRef.removeEventListener("dischargingtimechange", handler);
       }
     };
   }, []);
@@ -118,7 +122,7 @@ export function Battery() {
   const timeStr = !battery.charging ? formatTime(battery.dischargingTime) : "";
 
   const tooltipText = battery.charging
-    ? `${pct}% · Carregando`
+    ? `${pct}% · Charging`
     : timeStr
       ? `${pct}% · ${timeStr}`
       : `${pct}%`;
