@@ -7,6 +7,7 @@ export interface Project {
   github?: string;
   live?: string;
   featured?: boolean;
+  isPlaceholder?: true;
 }
 
 export const PROJECTS: Project[] = [
@@ -28,6 +29,7 @@ export const PROJECTS: Project[] = [
     thumbnail: "/projects/project-alpha.png",
     stack: [],
     live: undefined,
+    isPlaceholder: true,
   },
   {
     id: "project-beta",
@@ -36,5 +38,6 @@ export const PROJECTS: Project[] = [
     thumbnail: "/projects/project-beta.png",
     stack: [],
     live: undefined,
+    isPlaceholder: true,
   },
 ];

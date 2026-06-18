@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { FaGithub } from "react-icons/fa6";
 import { PiArrowSquareOut } from "react-icons/pi";
 
@@ -10,22 +11,22 @@ import { Badge } from "./ui/badge";
 import { supportsRelativeColors } from "@/utils/css-supports";
 
 function Thumbnail({ src, alt }: { src: string; alt: string }) {
+  const [imgError, setImgError] = useState(false);
+
+  if (imgError) {
+    return (
+      <div className="flex h-full w-full items-center justify-center bg-muted text-2xl font-bold text-muted-foreground select-none">
+        {alt.charAt(0).toUpperCase()}
+      </div>
+    );
+  }
+
   return (
     <img
       src={src}
       alt={alt}
       className="size-full object-cover"
-      onError={(e) => {
-        const parent = (e.target as HTMLImageElement).parentElement;
-        if (parent) {
-          (e.target as HTMLImageElement).style.display = "none";
-          const fallback = document.createElement("div");
-          fallback.className =
-            "flex size-full items-center justify-center bg-muted text-2xl font-bold text-muted-foreground select-none absolute inset-0";
-          fallback.textContent = alt.charAt(0).toUpperCase();
-          parent.appendChild(fallback);
-        }
-      }}
+      onError={() => setImgError(true)}
     />
   );
 }
@@ -130,8 +131,9 @@ function ProjectCard({ project }: { project: Project }) {
 }
 
 export function Portfolio() {
-  const featured = PROJECTS.find((p) => p.featured);
-  const rest = PROJECTS.filter((p) => !p.featured);
+  const visibleProjects = PROJECTS.filter((p) => !p.isPlaceholder);
+  const featured = visibleProjects.find((p) => p.featured);
+  const rest = visibleProjects.filter((p) => !p.featured);
 
   return (
     <div className="space-y-6 p-4 md:p-6">
