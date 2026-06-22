@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
 import { contactFormSchema } from "@/lib/schemas/contact";
+import { escapeHtml } from "@/lib/escape-html";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -18,6 +19,12 @@ export async function POST(request: NextRequest) {
     }
 
     const { name, email, subject, message } = parsed.data;
+    const safe = {
+      name: escapeHtml(name),
+      email: escapeHtml(email),
+      subject: escapeHtml(subject),
+      message: escapeHtml(message),
+    };
 
     const html = `
       <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
@@ -25,22 +32,22 @@ export async function POST(request: NextRequest) {
         <table style="width: 100%; border-collapse: collapse;">
           <tr>
             <td style="padding: 8px; font-weight: bold; width: 100px;">Name</td>
-            <td style="padding: 8px;">${name}</td>
+            <td style="padding: 8px;">${safe.name}</td>
           </tr>
           <tr style="background: #f5f5f5;">
             <td style="padding: 8px; font-weight: bold;">Email</td>
-            <td style="padding: 8px;"><a href="mailto:${email}">${email}</a></td>
+            <td style="padding: 8px;"><a href="mailto:${safe.email}">${safe.email}</a></td>
           </tr>
           <tr>
             <td style="padding: 8px; font-weight: bold;">Subject</td>
-            <td style="padding: 8px;">${subject}</td>
+            <td style="padding: 8px;">${safe.subject}</td>
           </tr>
         </table>
         <div style="margin-top: 16px; padding: 16px; background: #f9f9f9; border-radius: 4px; white-space: pre-wrap;">
-          ${message.replace(/\n/g, "<br/>")}
+          ${safe.message.replace(/\n/g, "<br/>")}
         </div>
         <p style="color: #999; font-size: 12px; margin-top: 24px;">
-          Sent via portfolio contact form · Reply directly to ${email}
+          Sent via portfolio contact form · Reply directly to ${safe.email}
         </p>
       </div>
     `;
@@ -49,7 +56,7 @@ export async function POST(request: NextRequest) {
       from: "Portfolio <onboarding@resend.dev>",
       to: process.env.RESEND_TO_EMAIL ?? "",
       replyTo: email,
-      subject: `[Portfolio] ${subject}`,
+      subject: `[Portfolio] ${safe.subject}`,
       html,
     });
 
