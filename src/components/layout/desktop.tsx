@@ -134,7 +134,7 @@ export function Desktop() {
         backgroundImage: `url(${wallpaperSrc})`,
         gridTemplateRows: "[taskbar] auto [desktop] 1fr [dock] auto",
       }}
-      className="relative grid h-dvh bg-cover bg-top select-none overflow-hidden"
+      className="desktop-area relative grid h-dvh bg-cover bg-top select-none overflow-hidden"
     >
       {!isMobile && (
         <div className="absolute inset-0" onClick={handleDesktopClick}>
