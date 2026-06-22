@@ -62,6 +62,13 @@ export function Spotlight({ onClose }: SpotlightProps) {
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setSelectedIndex((i) => Math.max(i - 1, 0));
+    } else if (e.key === "Tab") {
+      e.preventDefault();
+      if (e.shiftKey) {
+        setSelectedIndex((i) => (i > 0 ? i - 1 : results.length - 1));
+      } else {
+        setSelectedIndex((i) => (i < results.length - 1 ? i + 1 : 0));
+      }
     } else if (e.key === "Enter" && results[selectedIndex]) {
       openApp(
         results[selectedIndex].appId ?? results[selectedIndex].id,
