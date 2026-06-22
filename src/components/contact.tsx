@@ -64,14 +64,19 @@ export function Contact() {
     }
   }
 
-  function copyEmail() {
-    navigator.clipboard.writeText(ABOUT_ME.contact.email);
-    setCopied(true);
+  async function copyEmail() {
+    try {
+      await navigator.clipboard.writeText(ABOUT_ME.contact.email);
+      setCopied(true);
+    } catch {
+      console.warn("Clipboard write failed");
+    }
     setTimeout(() => setCopied(false), 2000);
   }
 
   const githubHandle = ABOUT_ME.contact.github.split("/").pop() ?? "GitHub";
-  const linkedinHandle = ABOUT_ME.contact.linkedin.split("/").pop() ?? "LinkedIn";
+  const linkedinHandle =
+    ABOUT_ME.contact.linkedin.split("/").pop() ?? "LinkedIn";
 
   return (
     <div className="space-y-6 p-4 md:p-6">
@@ -88,10 +93,17 @@ export function Contact() {
         {/* Name + Email row */}
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-1">
-            <label htmlFor="contact-name" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <label
+              htmlFor="contact-name"
+              className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
+            >
               Name
             </label>
-            <Input id="contact-name" {...register("name")} placeholder="Your name" />
+            <Input
+              id="contact-name"
+              {...register("name")}
+              placeholder="Your name"
+            />
             {errors.name && (
               <span className="text-xs text-red-500">
                 {errors.name.message}
@@ -100,7 +112,10 @@ export function Contact() {
           </div>
 
           <div className="grid gap-1">
-            <label htmlFor="contact-email" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            <label
+              htmlFor="contact-email"
+              className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
+            >
               Email
             </label>
             <Input
@@ -119,10 +134,17 @@ export function Contact() {
 
         {/* Subject */}
         <div className="grid gap-1">
-          <label htmlFor="contact-subject" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          <label
+            htmlFor="contact-subject"
+            className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
+          >
             Subject
           </label>
-          <Input id="contact-subject" {...register("subject")} placeholder="What's this about?" />
+          <Input
+            id="contact-subject"
+            {...register("subject")}
+            placeholder="What's this about?"
+          />
           {errors.subject && (
             <span className="text-xs text-red-500">
               {errors.subject.message}
@@ -132,7 +154,10 @@ export function Contact() {
 
         {/* Message */}
         <div className="grid gap-1">
-          <label htmlFor="contact-message" className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          <label
+            htmlFor="contact-message"
+            className="text-xs font-medium text-muted-foreground uppercase tracking-wide"
+          >
             Message
           </label>
           <Textarea
@@ -191,7 +216,9 @@ export function Contact() {
         >
           <FaLinkedin className="size-4 text-muted-foreground" />
           <span className="flex-1">LinkedIn</span>
-          <span className="text-xs text-muted-foreground">{linkedinHandle}</span>
+          <span className="text-xs text-muted-foreground">
+            {linkedinHandle}
+          </span>
         </a>
 
         {/* GitHub */}

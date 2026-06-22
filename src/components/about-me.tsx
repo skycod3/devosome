@@ -11,9 +11,13 @@ import { ABOUT_ME } from "@/constants/about";
 export function AboutMe() {
   const [copied, setCopied] = useState(false);
 
-  function handleCopyEmail() {
-    navigator.clipboard.writeText(ABOUT_ME.contact.email);
-    setCopied(true);
+  async function handleCopyEmail() {
+    try {
+      await navigator.clipboard.writeText(ABOUT_ME.contact.email);
+      setCopied(true);
+    } catch {
+      console.warn("Clipboard write failed");
+    }
     setTimeout(() => setCopied(false), 2000);
   }
 
