@@ -233,7 +233,7 @@ export const useWindowsStore = create<WindowsState>()(
 
       closeWindow(id) {
         const { windows, activeWindowId } = get();
-        const newWindows = windows.filter((w) => w.id !== id);
+        let newWindows = windows.filter((w) => w.id !== id);
         const windowsNotMinimized = newWindows.filter((w) => !w.isMinimized);
 
         // If closed window was active, activate the last window (not minimized)
@@ -243,7 +243,9 @@ export const useWindowsStore = create<WindowsState>()(
             current.zIndex > prev.zIndex ? current : prev,
           );
           newActiveId = lastWindow.id;
-          lastWindow.isActive = true;
+          newWindows = newWindows.map((w) =>
+            w.id === lastWindow.id ? { ...w, isActive: true } : w,
+          );
         }
 
         set({
