@@ -28,9 +28,9 @@ It's built to be both a playground for recruiters to explore and a real-world sh
 
 **[devosome.vercel.app](https://devosome.vercel.app)**
 
-<video src="docs/demo.mp4" controls muted loop width="100%"></video>
+<video src="https://github.com/user-attachments/assets/c48dd89a-3a1f-48ae-89f7-6372c1069020" controls muted loop width="100%"></video>
 
-> If the video doesn't play inline, [watch the demo clip](docs/demo.mp4) or open the [live demo](https://devosome.vercel.app).
+> If the video doesn't play inline, [watch the demo clip](https://github.com/user-attachments/assets/c48dd89a-3a1f-48ae-89f7-6372c1069020) or open the [live demo](https://devosome.vercel.app).
 
 ## Features
 
