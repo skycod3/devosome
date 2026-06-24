@@ -7,9 +7,14 @@ import {
   SMALL_DESKTOP_WINDOW_SIZE,
   TABLET_WINDOW_SIZE,
   LARGE_DESKTOP_WINDOW_SIZE,
+  CASCADE_STEP,
+  MAX_CASCADE_SLOTS,
+  WORKAREA_TOP_INSET,
+  WORKAREA_BOTTOM_INSET,
 } from "@/constants/windows";
 import { APPLICATIONS } from "@/constants/applications";
 import { BREAKPOINTS } from "@/constants/breakpoints";
+import { computeCascadePosition } from "@/lib/cascade";
 import { useRecent } from "./useRecent";
 
 // Derived from APPLICATIONS to stay in sync with tab config. Computed lazily on
@@ -129,9 +134,19 @@ export const useWindows = () => {
         : LARGE_DESKTOP_WINDOW_SIZE;
       const maxAllowedHeight = height * 0.9;
       const effectiveHeight = Math.min(windowSize.height, maxAllowedHeight);
-      const offset = windows.length > 0 ? windows.length * 50 : 0;
-      const calculatedX = width / 2 - windowSize.width / 2 + offset;
-      const calculatedY = height / 2 - effectiveHeight / 2 + offset;
+      // Cascade down-right with wrap (centered block) so windows never march
+      // off the bottom/right of the work area.
+      const { x: calculatedX, y: calculatedY } = computeCascadePosition({
+        index: windows.length,
+        step: CASCADE_STEP,
+        maxSlots: MAX_CASCADE_SLOTS,
+        windowWidth: windowSize.width,
+        windowHeight: effectiveHeight,
+        viewportWidth: width,
+        viewportHeight: height,
+        topInset: WORKAREA_TOP_INSET,
+        bottomInset: WORKAREA_BOTTOM_INSET,
+      });
       setWindowSize(windowId, windowSize.width, effectiveHeight);
       setWindowPosition(windowId, calculatedX, calculatedY);
     }

@@ -9,6 +9,17 @@ export const TABLET_WINDOW_SIZE = { width: 600, height: 480 };
 export const DEFAULT_WINDOW_POSITION = { x: 100, y: 100 };
 export const BASE_Z_INDEX = 10;
 
+/** Pixels each newly opened window is offset (down-right) before the cascade wraps. */
+export const CASCADE_STEP = 30;
+/** Max cascade slots before wrapping — keeps the centered cascade block from drifting too far. */
+export const MAX_CASCADE_SLOTS = 6;
+/**
+ * Approximate work-area insets used to keep cascading windows on screen.
+ * Top ≈ taskbar height; bottom ≈ dock height + offset (see constants/dock.ts).
+ */
+export const WORKAREA_TOP_INSET = 48;
+export const WORKAREA_BOTTOM_INSET = 96;
+
 export const WINDOW_MIN_WIDTH = DEFAULT_WINDOW_SIZE.width;
 export const WINDOW_MIN_HEIGHT = DEFAULT_WINDOW_SIZE.height;
 export const RESIZE_HANDLE_SIZE = 6;
