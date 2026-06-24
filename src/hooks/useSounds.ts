@@ -1,25 +1,23 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { Howl as HowlType } from "howler";
 import { useSettings } from "@/hooks/useSettings";
 
 // Sprite map: [offsetMs, durationMs] — generated from public/sounds/ui-sounds.json
 // prettier-ignore
 const SPRITE_MAP = {
-  "click-left":  [0,    465] as [number, number],
-  "click-right": [1300, 316] as [number, number],
-  toast:         [2600, 1071] as [number, number],
-  notification:  [4900, 4000] as [number, number],
-};
+  "click-left":  [0,    465],
+  "click-right": [1300, 316],
+  toast:         [2600, 1071],
+  notification:  [4900, 4000],
+} satisfies Record<string, [number, number]>;
 
 type SoundId = keyof typeof SPRITE_MAP;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type HowlInstance = any;
-
 export function useSounds() {
   const { soundEnabled } = useSettings();
-  const howlRef = useRef<HowlInstance>(null);
+  const howlRef = useRef<HowlType | null>(null);
   const unlockedRef = useRef(false);
 
   useEffect(() => {
@@ -28,12 +26,7 @@ export function useSounds() {
     const { Howl, Howler } = require("howler");
     howlRef.current = new Howl({
       src: ["/sounds/ui-sounds.ogg", "/sounds/ui-sounds.mp3"],
-      sprite: Object.fromEntries(
-        Object.entries(SPRITE_MAP).map(([k, [offset, duration]]) => [
-          k,
-          [offset, duration],
-        ]),
-      ),
+      sprite: SPRITE_MAP,
       volume: 0.5,
     });
 
