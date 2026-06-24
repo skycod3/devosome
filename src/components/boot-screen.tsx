@@ -174,6 +174,8 @@ export function BootScreen({ onComplete }: BootScreenProps) {
     return () => {
       cancelled = true;
     };
+    // Boot sequence runs once; preloadAssets is stable for the component's life.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onComplete]);
 
   // Animate each new kernel line in

@@ -63,7 +63,7 @@ export function WindowHeader({
     activeWindowId,
   } = useWindows();
 
-  const [isGrabbing, setIsGrabbing] = useState(false);
+  const [, setIsGrabbing] = useState(false);
 
   const { icons } = useIcons();
   const { width, height } = useViewport();

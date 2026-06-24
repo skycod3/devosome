@@ -130,6 +130,9 @@ export function Weather() {
     } finally {
       setLoading(false);
     }
+    // notify is a stable action used only on the error path; keep fetchWeather
+    // identity stable so the refresh interval isn't torn down on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

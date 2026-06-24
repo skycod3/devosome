@@ -39,7 +39,7 @@ export interface PdfViewerProps {
   iconId: string;
 }
 
-export function PdfViewer({ iconId }: PdfViewerProps) {
+export function PdfViewer({ iconId: _ }: PdfViewerProps) {
   const { theme } = useTheme();
   const [numPages, setNumPages] = useState<number>();
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -117,6 +117,9 @@ export function PdfViewer({ iconId }: PdfViewerProps) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
+    // The page/zoom handlers only use functional setState; the sole captured
+    // value (numPages) is already a dependency, so the listener never goes stale.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDocumentLoaded, numPages]);
 
   return (

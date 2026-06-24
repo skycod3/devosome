@@ -234,7 +234,6 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
         )}
         {/* Hidden audio element for audio mode */}
         {mediaType === "audio" && (
-          // eslint-disable-next-line jsx-a11y/media-has-caption
           <audio ref={mediaRef} src={src} preload="metadata" />
         )}
 

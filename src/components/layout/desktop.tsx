@@ -67,6 +67,7 @@ export function Desktop() {
     };
   }, [playClickLeft, playClickRight]);
 
+  // Seed desktop icons from config + persisted visibility — run once on mount.
   useEffect(() => {
     setIcons(
       DESKTOP_ICONS.map((icon) => ({
@@ -74,9 +75,10 @@ export function Desktop() {
         show: iconVisibility[icon.id] ?? icon.show,
       })),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Show welcome message on first visit
+  // Show welcome message on first visit — run once on mount.
   useEffect(() => {
     if (localStorage.getItem(STORAGE_KEYS.WELCOME_SHOWN)) return;
 
@@ -89,9 +91,10 @@ export function Desktop() {
       expiresIn: 1000 * 60 * 60 * 24 * 3, // 3 days
       delay: 1000 * 2, // Show after 2 seconds
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Show spotlight tip on first visit
+  // Show spotlight tip on first visit — run once on mount.
   useEffect(() => {
     if (isMobile) return;
 
@@ -104,6 +107,7 @@ export function Desktop() {
       expiresIn: 1000 * 60 * 60 * 24 * 3, // 3 days
       delay: 1000 * 10, // Show after 10 seconds
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

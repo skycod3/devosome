@@ -76,7 +76,7 @@ export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
 
   const [rotation, setRotation] = useState(0);
   const [zoomLabel, setZoomLabel] = useState(formatZoom(1));
-  const [isDragging, setIsDragging] = useState(false);
+  const [, setIsDragging] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isAtDefaultZoom, setIsAtDefaultZoom] = useState(true);
@@ -304,7 +304,16 @@ export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
         animate(swipeX, 0, SWIPE_SPRING);
       }
     },
-    [isAtDefaultZoom, swipeX, imageOpacity, hasNext, hasPrev, goNext, goPrev],
+    [
+      isAtDefaultZoom,
+      swipeX,
+      imageOpacity,
+      entryX,
+      hasNext,
+      hasPrev,
+      goNext,
+      goPrev,
+    ],
   );
 
   // ─── Rotation ──────────────────────────────────────────────────────────────
@@ -332,7 +341,7 @@ export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
       if (e.key === "0") fitView();
       if (e.key === "r" || e.key === "R") rotate();
     },
-    [goPrev, goNext, zoomIn, zoomOut, fitView, rotate],
+    [imageList.length, goPrev, goNext, zoomIn, zoomOut, fitView, rotate],
   );
 
   // ─── Render ────────────────────────────────────────────────────────────────

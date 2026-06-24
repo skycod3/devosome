@@ -59,6 +59,9 @@ export function FileBrowser({
   useEffect(() => {
     Object.values(files).forEach((file) => addIcon(toIconPayload(file)));
     return () => Object.values(files).forEach((file) => removeIcon(file.id));
+    // Register icons only when `files` changes; addIcon/removeIcon are stable
+    // store actions and toIconPayload is bound to the fixed iconId.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [files]);
 
   function handleAreaClick() {
