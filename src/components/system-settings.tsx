@@ -148,7 +148,11 @@ function DesktopPanel() {
   const controllable = icons.filter((i) => desktopIconIds.has(i.id));
 
   function handleChange(id: string, show: boolean) {
-    show ? showIcon(id) : hideIcon(id);
+    if (show) {
+      showIcon(id);
+    } else {
+      hideIcon(id);
+    }
     setIconVisibility(id, show);
   }
 
