@@ -16,15 +16,23 @@ export function useIdleTimer(timeout = SCREENSAVER_IDLE_TIMEOUT): {
 } {
   const [isIdle, setIsIdle] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastResetRef = useRef(0);
 
   useEffect(() => {
     function reset() {
+      // Throttle: high-frequency events (e.g. mousemove) would otherwise tear
+      // down and recreate the timeout on every tick.
+      const now = Date.now();
+      if (now - lastResetRef.current < 500) return;
+      lastResetRef.current = now;
+
       if (timerRef.current) clearTimeout(timerRef.current);
       setIsIdle(false);
       timerRef.current = setTimeout(() => setIsIdle(true), timeout);
     }
 
     // Start the timer immediately
+    lastResetRef.current = 0;
     reset();
 
     for (const event of SCREENSAVER_WAKE_EVENTS) {
