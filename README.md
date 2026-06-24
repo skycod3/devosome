@@ -18,6 +18,23 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Environment variables
+
+Copy `.env.example` to `.env.local` and fill in the values:
+
+| Variable | Purpose |
+|---|---|
+| `NEXT_PUBLIC_SITE_URL` | Public site URL (no trailing slash). Used for SEO metadata, `sitemap.xml` and `robots.txt`. Falls back to `http://localhost:3000`. |
+| `WEATHER_API_KEY` | [WeatherAPI.com](https://www.weatherapi.com/) key. Used server-side by `/api/weather` — **not** `NEXT_PUBLIC_`, so it never reaches the client bundle. |
+| `RESEND_API_KEY` | [Resend](https://resend.com/) API key for the contact form. |
+| `RESEND_TO_EMAIL` | Destination address that receives contact-form submissions. |
+
+> **Resend sandbox note:** the contact route sends from `onboarding@resend.dev`,
+> Resend's shared sandbox sender. Without a **verified domain**, Resend only
+> delivers to the email address of the account that owns the API key. For
+> production, verify your own domain and update the `from` address in
+> `src/app/api/contact/route.ts`.
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
