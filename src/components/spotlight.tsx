@@ -21,8 +21,8 @@ export function Spotlight({ onClose }: SpotlightProps) {
 
   const results = query.trim()
     ? ALL_APPS.filter((app) =>
-        app.title.toLowerCase().includes(query.toLowerCase()),
-      )
+      app.title.toLowerCase().includes(query.toLowerCase()),
+    )
     : ALL_APPS;
 
   const [lastQuery, setLastQuery] = useState(query);
@@ -94,6 +94,16 @@ export function Spotlight({ onClose }: SpotlightProps) {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search apps..."
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck={false}
+            // Tell password managers / autofill to skip this field, otherwise
+            // their dropdown swallows the first Escape before it reaches the page.
+            data-1p-ignore
+            data-lpignore="true"
+            data-bwignore
+            data-form-type="other"
             className="text-foreground placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none"
           />
         </div>
@@ -111,11 +121,10 @@ export function Spotlight({ onClose }: SpotlightProps) {
                 key={app.id}
                 onMouseEnter={() => setSelectedIndex(i)}
                 onMouseDown={() => openApp(app.appId ?? app.id, app.title)}
-                className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
-                  i === selectedIndex
-                    ? "bg-accent text-accent-foreground"
-                    : "text-foreground"
-                }`}
+                className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${i === selectedIndex
+                  ? "bg-accent text-accent-foreground"
+                  : "text-foreground"
+                  }`}
               >
                 {app.icon ? (
                   <Image
