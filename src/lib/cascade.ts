@@ -15,13 +15,12 @@ export interface CascadeParams {
 }
 
 /**
- * Windows-style cascade placement, kept on screen.
+ * Windows-style diagonal cascade, kept on screen.
  *
- * Windows are offset down-right by `index * step`, wrapping back to the start
- * once the cascade would leave the work area. The whole cascade **block** is
- * centered within the work area, so the cluster stays visually balanced while
- * each window still lands in a distinct spot (fixes "always the same place"
- * when a tall window leaves no room to cascade from the exact center).
+ * Each window is offset down-right by `index * step`. Once the next window
+ * would leave the work area (vertical room is the binding axis here), the
+ * cascade **wraps back up** to the start and resumes — the classic Windows
+ * "Cascade windows" behavior. The whole block is centered in the work area.
  */
 export function computeCascadePosition(p: CascadeParams): {
   x: number;
@@ -29,13 +28,13 @@ export function computeCascadePosition(p: CascadeParams): {
 } {
   const workHeight = p.viewportHeight - p.topInset - p.bottomInset;
 
-  // Largest square offset that keeps the window inside the work area.
+  // Largest diagonal offset that still keeps the window inside the work area.
   const maxBlock = Math.max(
     0,
     Math.min(p.viewportWidth - p.windowWidth, workHeight - p.windowHeight),
   );
 
-  // Slots that physically fit, capped so the block doesn't drift too far.
+  // Diagonal slots that fit, capped so the centered block doesn't drift far.
   const fit = Math.floor(maxBlock / p.step) + 1;
   const slots = Math.max(1, Math.min(p.maxSlots, fit));
 
