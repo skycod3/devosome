@@ -1,5 +1,5 @@
 import { useWindows } from "@/hooks/useWindows";
-import { Window as WindowType } from "@/stores/windows.store";
+import { Window as WindowType } from "@/stores/windows-store";
 import { CSSProperties, useEffect, useState } from "react";
 import { useIcons } from "@/hooks/useIcons";
 

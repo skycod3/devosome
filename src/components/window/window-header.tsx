@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 
-import { Window } from "@/stores/windows.store";
+import { Window } from "@/stores/windows-store";
 
 import { useIcons } from "@/hooks/useIcons";
 import { useViewport } from "@/hooks/useViewport";

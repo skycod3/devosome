@@ -5,7 +5,7 @@ import { MotionValue } from "motion/react";
 
 import { PiDotsNine } from "react-icons/pi";
 
-import { Window as WindowType } from "@/stores/windows.store";
+import { Window as WindowType } from "@/stores/windows-store";
 import { useWindows } from "@/hooks/useWindows";
 import {
   WINDOW_MIN_WIDTH,

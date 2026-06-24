@@ -1,7 +1,7 @@
 "use client";
 
 import { StaticImageData } from "next/image";
-import { useWindowsStore } from "@/stores/windows.store";
+import { useWindowsStore } from "@/stores/windows-store";
 import { useViewport } from "./useViewport";
 import {
   SMALL_DESKTOP_WINDOW_SIZE,

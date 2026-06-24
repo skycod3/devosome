@@ -149,7 +149,9 @@ export const useWindowsStore = create<WindowsState>()(
             const windowTitle = useParentInfo
               ? title
               : tabParentApp.windowTitle || "Window";
-            const windowIcon = useParentInfo ? icon : icon; // We don't have icon in Application, use provided
+            // Application config has no icon field, so the icon passed by the
+            // caller is the only source regardless of which tab was clicked.
+            const windowIcon = icon;
 
             const newWindowId = `window-${parentIconId}-${Date.now()}`;
             const newZIndex = BASE_Z_INDEX + windows.length + 1;
