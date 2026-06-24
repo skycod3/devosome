@@ -45,19 +45,19 @@ export function BootScreen({ onComplete }: BootScreenProps) {
     label: string;
     preload?: (url: string) => Promise<void>;
   }[] = [
-    { url: `/wallpapers/${wallpaper}`, label: BOOT_WALLPAPER_LABEL },
-    // Safari Mobile never fires canplaythrough without prior user interaction,
-    // so audio preload would hang the boot indefinitely on iOS Safari.
-    ...(!isSafariMobile()
-      ? [
+      { url: `/wallpapers/${wallpaper}`, label: BOOT_WALLPAPER_LABEL },
+      // Safari Mobile never fires canplaythrough without prior user interaction,
+      // so audio preload would hang the boot indefinitely on iOS Safari.
+      ...(!isSafariMobile()
+        ? [
           {
             url: "/sounds/ui-sounds.mp3",
             label: BOOT_AUDIO_LABEL,
             preload: preloadAudio,
           },
         ]
-      : []),
-  ];
+        : []),
+    ];
 
   const containerRef = useRef<HTMLDivElement>(null);
   const kernelListRef = useRef<HTMLDivElement>(null);
@@ -66,6 +66,11 @@ export function BootScreen({ onComplete }: BootScreenProps) {
   const [countdown, setCountdown] = useState<number | null>(null);
   const countdownRef = useRef<HTMLSpanElement>(null);
   const startTimeRef = useRef<number>(0);
+
+  // Keep onComplete in a ref so the boot effect can run exactly once ([] deps)
+  // without re-running when the parent passes a new inline callback identity.
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   // Append a kernel line and animate it in
   const appendKernelLine = (line: string) => {
@@ -81,6 +86,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
       for (let i = 0; i < BIOS_LINES.length; i++) {
         if (cancelled) return;
         await delay(i === 0 ? BOOT_BIOS_INITIAL_DELAY : BOOT_BIOS_LINE_DELAY);
+        if (cancelled) return;
         setBiosLines((prev) => [...prev, BIOS_LINES[i]]);
       }
 
@@ -104,6 +110,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
       for (const line of fixedLeading) {
         if (cancelled) return;
         await delay(BOOT_KERNEL_MIN_LINE_DELAY);
+        if (cancelled) return;
         appendKernelLine(
           `${formatKernelTime(elapsed())}  ${line.label.padEnd(42)} [  OK  ]`,
         );
@@ -132,6 +139,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
         const spent = performance.now() - lineStart;
         if (spent < BOOT_KERNEL_MIN_LINE_DELAY)
           await delay(BOOT_KERNEL_MIN_LINE_DELAY - spent);
+        if (cancelled) return;
         appendKernelLine(
           `${formatKernelTime(elapsed())}  ${asset.label.padEnd(42)} [  OK  ]`,
         );
@@ -145,6 +153,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
       for (const line of fixedTrailing) {
         if (cancelled) return;
         await delay(BOOT_KERNEL_MIN_LINE_DELAY);
+        if (cancelled) return;
         appendKernelLine(
           `${formatKernelTime(elapsed())}  ${line.label.padEnd(42)} [  OK  ]`,
         );
@@ -166,7 +175,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
         opacity: 0,
         duration: BOOT_FADEOUT_DURATION,
         ease: "power2.inOut",
-        onComplete,
+        onComplete: () => onCompleteRef.current(),
       });
     }
 
@@ -174,9 +183,10 @@ export function BootScreen({ onComplete }: BootScreenProps) {
     return () => {
       cancelled = true;
     };
-    // Boot sequence runs once; preloadAssets is stable for the component's life.
+    // Boot sequence runs exactly once on mount; onComplete is read via a ref so
+    // a new callback identity from the parent never restarts the sequence.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onComplete]);
+  }, []);
 
   // Animate each new kernel line in
   useEffect(() => {
