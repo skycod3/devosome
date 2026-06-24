@@ -12,15 +12,25 @@ import { APPLICATIONS } from "@/constants/applications";
 import { BREAKPOINTS } from "@/constants/breakpoints";
 import { useRecent } from "./useRecent";
 
+// Derived from APPLICATIONS to stay in sync with tab config. Computed lazily on
+// first use (not at module load) to avoid touching APPLICATIONS during the
+// circular import chain (applications → components → useWindows → applications),
+// and cached so it isn't rebuilt on every render.
+let mediaTabsCache: Set<string> | null = null;
+function getMediaTabs(): Set<string> {
+  if (!mediaTabsCache) {
+    mediaTabsCache = new Set(
+      Object.values(APPLICATIONS).flatMap((app) => app.availableTabs ?? []),
+    );
+  }
+  return mediaTabsCache;
+}
+
 /**
  * Hook for managing windows.
  * Returns all states and actions needed to manage windows.
  */
 export const useWindows = () => {
-  // Derived from APPLICATIONS to stay in sync with tab config
-  const MEDIA_TABS = new Set(
-    Object.values(APPLICATIONS).flatMap((app) => app.availableTabs ?? []),
-  );
   const windows = useWindowsStore((state) => state.windows);
   const activeWindowId = useWindowsStore((state) => state.activeWindowId);
   const highestZIndex = useWindowsStore((state) => state.highestZIndex);
@@ -84,7 +94,7 @@ export const useWindows = () => {
     const parentTitle = parentApp?.tabTitle ?? parentApp?.windowTitle;
 
     // Record in recent history if opened from a media tab
-    if (parentId && MEDIA_TABS.has(parentId)) {
+    if (parentId && getMediaTabs().has(parentId)) {
       const iconSrc = typeof icon === "string" ? icon : icon.src;
       addRecentItem({ id: iconId, title, icon: iconSrc, sourceTab: parentId });
     }
