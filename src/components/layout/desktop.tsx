@@ -10,7 +10,7 @@ import { useWindows } from "@/hooks/useWindows";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSettings } from "@/hooks/useSettings";
 
-import GridDistortion from "@/components/effects/grid-distortion";
+import { GridDistortion } from "@/components/effects/grid-distortion";
 
 import { Taskbar } from "./taskbar";
 import { Icon } from "../icon";

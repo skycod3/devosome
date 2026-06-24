@@ -36,7 +36,7 @@ interface GridDistortionProps {
   className?: string;
 }
 
-const GridDistortion = ({
+export const GridDistortion = ({
   grid = 15,
   mouse = 0.1,
   strength = 0.15,
@@ -292,5 +292,3 @@ const GridDistortion = ({
     />
   );
 };
-
-export default GridDistortion;
