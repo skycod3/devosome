@@ -1,24 +1,18 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import { PiCopy, PiCheck, PiMapPin, PiBriefcase, PiUser } from "react-icons/pi";
 
 import { ABOUT_ME } from "@/constants/about";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 
 export function AboutMe() {
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopyToClipboard();
 
-  async function handleCopyEmail() {
-    try {
-      await navigator.clipboard.writeText(ABOUT_ME.contact.email);
-      setCopied(true);
-    } catch {
-      console.warn("Clipboard write failed");
-    }
-    setTimeout(() => setCopied(false), 2000);
+  function handleCopyEmail() {
+    copy(ABOUT_ME.contact.email);
   }
 
   return (

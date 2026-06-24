@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { contactFormSchema, type ContactFormData } from "@/lib/schemas/contact";
 import { useNotify } from "@/hooks/useNotify";
+import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 
 import { ABOUT_ME } from "@/constants/about";
 
@@ -20,7 +21,7 @@ type FormStatus = "idle" | "sending";
 
 export function Contact() {
   const [status, setStatus] = useState<FormStatus>("idle");
-  const [copied, setCopied] = useState(false);
+  const { copied, copy } = useCopyToClipboard();
   const { notify } = useNotify();
 
   const {
@@ -64,14 +65,8 @@ export function Contact() {
     }
   }
 
-  async function copyEmail() {
-    try {
-      await navigator.clipboard.writeText(ABOUT_ME.contact.email);
-      setCopied(true);
-    } catch {
-      console.warn("Clipboard write failed");
-    }
-    setTimeout(() => setCopied(false), 2000);
+  function copyEmail() {
+    copy(ABOUT_ME.contact.email);
   }
 
   const githubHandle = ABOUT_ME.contact.github.split("/").pop() ?? "GitHub";
