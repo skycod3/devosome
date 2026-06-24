@@ -21,19 +21,6 @@ interface WeatherData {
   location: string;
 }
 
-interface WeatherApiResponse {
-  current: {
-    temp_c: number;
-    condition: {
-      text: string;
-      icon: string;
-    };
-  };
-  location: {
-    name: string;
-  };
-}
-
 export function Weather() {
   const [weather, setWeather] = useState<WeatherData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -84,21 +71,16 @@ export function Weather() {
       const { latitude, longitude } = coords;
 
       const response = await fetch(
-        `https://api.weatherapi.com/v1/current.json?key=${process.env.NEXT_PUBLIC_WEATHER_API_KEY}&q=${latitude},${longitude}&aqi=no`,
+        `/api/weather?lat=${latitude}&lon=${longitude}`,
       );
 
       if (!response.ok) {
         throw new Error("Failed to fetch weather data");
       }
 
-      const data: WeatherApiResponse = await response.json();
+      const data: WeatherData = await response.json();
 
-      setWeather({
-        temp: Math.round(data.current.temp_c),
-        condition: data.current.condition.text,
-        icon: `https:${data.current.condition.icon}`,
-        location: data.location.name,
-      });
+      setWeather(data);
     } catch (err) {
       console.error("Weather fetch error:", err);
 
