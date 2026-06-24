@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { executeCommand } from "@/constants/terminal";
 import { useWindows } from "@/hooks/useWindows";
-import { useTheme } from "@/hooks/useTheme";
 
 const PROMPT = "visitor@devosome:~$";
 
@@ -30,8 +29,6 @@ export function Terminal({ iconId }: { iconId: string }) {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { openWindowCentered, windows, closeWindow } = useWindows();
-
-  const { theme } = useTheme();
 
   // Auto-scroll to bottom on new history entry
   useEffect(() => {
@@ -125,9 +122,7 @@ export function Terminal({ iconId }: { iconId: string }) {
           >
             {entry.type === "input" ? (
               <span>
-                <span
-                  className={`${theme === "dark" ? "text-green-300" : "text-green-700"}`}
-                >
+                <span className="text-green-700 dark:text-green-300">
                   {PROMPT}
                 </span>{" "}
                 {entry.text}
