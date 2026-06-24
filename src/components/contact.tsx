@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -24,6 +24,10 @@ export function Contact() {
   const { copied, copy } = useCopyToClipboard();
   const { notify } = useNotify();
 
+  // Anti-bot: timestamp when the form mounted + hidden honeypot field.
+  const renderedAtRef = useRef(Date.now());
+  const honeypotRef = useRef<HTMLInputElement>(null);
+
   const {
     register,
     handleSubmit,
@@ -40,7 +44,11 @@ export function Contact() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          ...data,
+          company: honeypotRef.current?.value ?? "",
+          renderedAt: renderedAtRef.current,
+        }),
       });
 
       const json = await res.json();
@@ -85,6 +93,17 @@ export function Contact() {
 
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+        {/* Honeypot — hidden from real users, bots tend to fill it */}
+        <input
+          ref={honeypotRef}
+          type="text"
+          name="company"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="absolute -left-[9999px] h-0 w-0 opacity-0"
+        />
+
         {/* Name + Email row */}
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-1">

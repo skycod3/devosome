@@ -8,3 +8,16 @@ export const contactFormSchema = z.object({
 });
 
 export type ContactFormData = z.infer<typeof contactFormSchema>;
+
+/**
+ * Server-side schema: extends the form fields with anti-bot metadata.
+ * - `company` is a honeypot field that must stay empty (real users never see it).
+ * - `renderedAt` is the epoch ms when the form mounted, used to reject submits
+ *   that happen suspiciously fast.
+ */
+export const contactRequestSchema = contactFormSchema.extend({
+  company: z.string().optional(),
+  renderedAt: z.number().optional(),
+});
+
+export type ContactRequestData = z.infer<typeof contactRequestSchema>;

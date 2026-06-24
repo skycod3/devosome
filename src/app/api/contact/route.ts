@@ -1,15 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 
-import { contactFormSchema } from "@/lib/schemas/contact";
+import { contactRequestSchema } from "@/lib/schemas/contact";
 import { escapeHtml } from "@/lib/escape-html";
+import { rateLimit } from "@/lib/rate-limit";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Anti-bot thresholds
+const MIN_FILL_TIME_MS = 2000; // submits faster than this are almost certainly bots
+const RATE_LIMIT = { limit: 5, windowMs: 60 * 60 * 1000 }; // 5 / hour per IP
+
+function getClientIp(request: NextRequest): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  if (forwarded) return forwarded.split(",")[0].trim();
+  return request.headers.get("x-real-ip") ?? "unknown";
+}
 
 export async function POST(request: NextRequest) {
   try {
+    // Fail fast (and clearly) if the email service is misconfigured.
+    const apiKey = process.env.RESEND_API_KEY;
+    const toEmail = process.env.RESEND_TO_EMAIL;
+    if (!apiKey || !toEmail) {
+      console.error(
+        "Contact route misconfigured: RESEND_API_KEY and/or RESEND_TO_EMAIL are missing.",
+      );
+      return NextResponse.json(
+        { error: "Email service is not configured." },
+        { status: 500 },
+      );
+    }
+
+    // Per-IP rate limit.
+    const ip = getClientIp(request);
+    const limit = rateLimit(`contact:${ip}`, RATE_LIMIT);
+    if (!limit.allowed) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(Math.ceil(limit.retryAfterMs / 1000)),
+          },
+        },
+      );
+    }
+
     const body = await request.json();
-    const parsed = contactFormSchema.safeParse(body);
+    const parsed = contactRequestSchema.safeParse(body);
 
     if (!parsed.success) {
       return NextResponse.json(
@@ -18,7 +55,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, email, subject, message } = parsed.data;
+    const { name, email, subject, message, company, renderedAt } = parsed.data;
+
+    // Honeypot: real users never fill the hidden `company` field.
+    // Timestamp: reject submits that happened implausibly fast.
+    // In both cases return a fake success so bots get no useful signal.
+    const tooFast =
+      typeof renderedAt === "number" &&
+      Date.now() - renderedAt < MIN_FILL_TIME_MS;
+    if ((company && company.trim() !== "") || tooFast) {
+      return NextResponse.json({ success: true });
+    }
+
+    const resend = new Resend(apiKey);
     const safe = {
       name: escapeHtml(name),
       email: escapeHtml(email),
@@ -54,7 +103,7 @@ export async function POST(request: NextRequest) {
 
     const { error } = await resend.emails.send({
       from: "Portfolio <onboarding@resend.dev>",
-      to: process.env.RESEND_TO_EMAIL ?? "",
+      to: toEmail,
       replyTo: email,
       subject: `[Portfolio] ${safe.subject}`,
       html,
