@@ -2,5 +2,6 @@
 
 ## Git
 
-- Never perform git commits, pushes, or any destructive git operations (reset, rebase, force-push, branch deletion).
-- Code changes are allowed, but version control actions must always be performed manually by the developer.
+- You may run **local** Git operations (commit, rebase, squash, branch) when I ask.
+- **Never** `push` or `force-push` — pushing to remotes is always done manually by me.
+- Before rewriting history (rebase/reset), warn me; never rewrite commits that have already been pushed without my explicit confirmation.
