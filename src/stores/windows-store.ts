@@ -8,6 +8,7 @@ import {
   DEFAULT_WINDOW_SIZE,
 } from "@/constants/windows";
 import { APPLICATIONS } from "@/constants/applications";
+import type { SnapTarget } from "@/lib/snap";
 
 /**
  * Helper function to find the parent application that contains tabs
@@ -63,6 +64,7 @@ export interface Window {
   restorePosition?: { x: number; y: number };
   restoreSize?: { width: number; height: number };
   tab?: { title: string };
+  isSnapped?: boolean; // True when half-snapped to a screen edge (fills the work area; bypasses the normal max-height cap)
   showTabs?: boolean; // Whether to show sidebar tabs
   parentTitle?: string; // Parent app title for breadcrumb (resolved from APPLICATIONS)
   activeTab?: string; // Active tab app ID (e.g., "pictures") for windows with tabs
@@ -97,6 +99,10 @@ interface WindowsState {
   // Window properties
   setWindowPosition: (id: string, x: number, y: number) => void;
   setWindowSize: (id: string, width: number, height: number) => void;
+  snapWindow: (
+    id: string,
+    rect: { x: number; y: number; width: number; height: number },
+  ) => void;
   bringToFront: (id: string) => void;
   setWindowActiveTab: (id: string, activeTabIconId: string) => void;
   updateWindowTitle: (id: string, title: string) => void;
@@ -341,6 +347,7 @@ export const useWindowsStore = create<WindowsState>()(
                 ...window,
                 isMaximized: true,
                 isMinimized: false,
+                isSnapped: false,
                 lastState: "normal", // When maximizing, we're coming from normal state
                 // Save current position/size before maximizing
                 restorePosition: shouldSaveRestore
@@ -437,17 +444,42 @@ export const useWindowsStore = create<WindowsState>()(
       },
 
       setWindowPosition(id, x, y) {
+        // Manually moving a window breaks its snapped state.
         set((state) => ({
           windows: state.windows.map((window) =>
-            window.id === id ? { ...window, position: { x, y } } : window,
+            window.id === id
+              ? { ...window, position: { x, y }, isSnapped: false }
+              : window,
           ),
         }));
       },
 
       setWindowSize(id, width, height) {
+        // Manually resizing a window breaks its snapped state.
         set((state) => ({
           windows: state.windows.map((window) =>
-            window.id === id ? { ...window, size: { width, height } } : window,
+            window.id === id
+              ? { ...window, size: { width, height }, isSnapped: false }
+              : window,
+          ),
+        }));
+      },
+
+      snapWindow(id, rect) {
+        set((state) => ({
+          windows: state.windows.map((window) =>
+            window.id === id
+              ? {
+                ...window,
+                // Remember the pre-snap geometry so dragging can restore it.
+                restorePosition: window.position,
+                restoreSize: window.size,
+                position: { x: rect.x, y: rect.y },
+                size: { width: rect.width, height: rect.height },
+                isSnapped: true,
+                isMaximized: false,
+              }
+              : window,
           ),
         }));
       },
