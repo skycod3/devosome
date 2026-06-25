@@ -111,9 +111,23 @@ export function WindowHeader({
     }
   }
 
+  const isActive = activeWindowId === window.id;
+
   useHotkey("Control+Q", () => closeWindow(window.id), {
     conflictBehavior: "allow",
-    enabled: activeWindowId === window.id,
+    enabled: isActive,
+  });
+
+  // Minimize the active window.
+  useHotkey("Control+M", () => minimizeWindow(window.id), {
+    conflictBehavior: "allow",
+    enabled: isActive,
+  });
+
+  // Toggle maximize/restore on the active window (animated via handleMaximize).
+  useHotkey("Control+Alt+M", () => handleMaximize(), {
+    conflictBehavior: "allow",
+    enabled: isActive && !isMobile,
   });
 
   return (
@@ -205,6 +219,9 @@ export function WindowHeader({
         >
           <VscChromeRestore className="size-4 icon-fix" />
           Restore
+          <ContextMenuShortcut>
+            <Kbd>Ctrl</Kbd>+<Kbd>Alt</Kbd>+<Kbd>M</Kbd>
+          </ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem
           onClick={() => minimizeWindow(window.id)}
@@ -212,6 +229,9 @@ export function WindowHeader({
         >
           <VscChromeMinimize className="size-4 icon-fix" />
           Minimize
+          <ContextMenuShortcut>
+            <Kbd>Ctrl</Kbd>+<Kbd>M</Kbd>
+          </ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem
           onClick={handleMaximize}
@@ -220,6 +240,9 @@ export function WindowHeader({
         >
           <VscChromeMaximize className="size-4 icon-fix" />
           Maximize
+          <ContextMenuShortcut>
+            <Kbd>Ctrl</Kbd>+<Kbd>Alt</Kbd>+<Kbd>M</Kbd>
+          </ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuSeparator />
         <ContextMenuItem
