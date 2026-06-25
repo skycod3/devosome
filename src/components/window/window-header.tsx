@@ -130,15 +130,67 @@ export function WindowHeader({
     enabled: isActive && !isMobile,
   });
 
+  // Start dragging the window from the title bar.
+  function handleHeaderPointerDown(event: React.PointerEvent) {
+    // A maximized window isn't draggable (restore it via double-click/shortcut).
+    if (isMobile || window.isMaximized) return;
+
+    // Normal (non-snapped) window: begin the drag immediately.
+    if (!window.isSnapped) {
+      setIsGrabbing(true);
+      dragControls.start(event);
+      return;
+    }
+
+    // Snapped window (Windows behavior): a plain click keeps it snapped; only a
+    // real drag un-snaps it. Wait for movement, then restore the pre-snap size,
+    // reposition under the cursor, and start the drag from the new geometry.
+    const startX = event.clientX;
+    const startY = event.clientY;
+    const pointerId = event.pointerId;
+
+    const cleanup = () => {
+      document.removeEventListener("pointermove", onMove);
+      document.removeEventListener("pointerup", cleanup);
+      document.removeEventListener("pointercancel", cleanup);
+    };
+
+    const onMove = (moveEvent: PointerEvent) => {
+      if (moveEvent.pointerId !== pointerId) return;
+      if (Math.hypot(moveEvent.clientX - startX, moveEvent.clientY - startY) < 4)
+        return;
+      cleanup();
+
+      const restoreWidth = window.restoreSize?.width ?? window.size.width;
+      const restoreHeight = window.restoreSize?.height ?? window.size.height;
+      const currentWidth = window.size.width;
+      const relativeX =
+        currentWidth > 0 ? (moveEvent.clientX - x.get()) / currentWidth : 0.5;
+      // Clamp inside the drag bounds so the restored (wider) window never starts
+      // past the viewport edge — otherwise dragElastic pulls it back and the
+      // window feels "stuck" to the edge while detaching.
+      const maxX = Math.max(0, width - restoreWidth);
+      const newX = Math.min(Math.max(0, moveEvent.clientX - relativeX * restoreWidth), maxX);
+
+      mvWidth.set(restoreWidth);
+      mvHeight.set(restoreHeight);
+      x.set(newX);
+      // y is left at the current top so the title bar stays under the cursor.
+      setWindowSize(window.id, restoreWidth, restoreHeight); // also clears isSnapped
+      setIsGrabbing(true);
+      dragControls.start(moveEvent);
+    };
+
+    document.addEventListener("pointermove", onMove);
+    document.addEventListener("pointerup", cleanup);
+    document.addEventListener("pointercancel", cleanup);
+  }
+
   return (
     <ContextMenu>
       <ContextMenuTrigger>
         <header
-          onPointerDown={(event) => {
-            if (isMobile) return;
-            setIsGrabbing(true);
-            dragControls.start(event);
-          }}
+          onPointerDown={handleHeaderPointerDown}
           onPointerUp={() => setIsGrabbing(false)}
           onPointerOut={() => setIsGrabbing(false)}
           onDoubleClick={handleMaximize}
