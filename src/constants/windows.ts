@@ -17,12 +17,17 @@ export const CASCADE_STEP = 30;
 export const MAX_CASCADE_SLOTS = 6;
 /**
  * Work-area insets used to keep cascading windows on screen.
- * Top = taskbar height (windows must stay below it). Bottom is intentionally
- * small (just the dock's bottom offset): windows are allowed to overlap the
- * dock, which keeps enough vertical room to cascade on short laptop viewports.
+ * Top = measured taskbar height (windows sit flush below it). Bottom is the
+ * cascade's small reserve; windows may overlap the dock. Edge-snapping fills
+ * all the way to the viewport bottom (uses a 0 bottom inset).
  */
-export const WORKAREA_TOP_INSET = 48;
+export const WORKAREA_TOP_INSET = 44;
 export const WORKAREA_BOTTOM_INSET = 20;
+
+/** Cursor distance (px) from the top edge that triggers maximize. */
+export const SNAP_EDGE_THRESHOLD = 12;
+/** How close a window's own edge must get to a side (px) to trigger a half snap. */
+export const SNAP_SIDE_TRIGGER = 24;
 
 export const WINDOW_MIN_WIDTH = DEFAULT_WINDOW_SIZE.width;
 export const WINDOW_MIN_HEIGHT = DEFAULT_WINDOW_SIZE.height;
