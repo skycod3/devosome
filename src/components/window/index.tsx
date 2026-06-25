@@ -373,8 +373,8 @@ export function Window({ window, desktopRect }: WindowProps) {
       }}
       exit={{ opacity: 0, scale: 0.95 }}
       animate={getWindowAnimations()}
-      className={`absolute bg-popover text-popover-foreground grid grid-rows-[auto_1fr] overflow-hidden border shadow-lg ${
-        window.isMaximized ? "shadow-2xl" : ""
+      className={`absolute bg-popover text-popover-foreground grid grid-rows-[auto_1fr] overflow-hidden border shadow-lg ${window.isMaximized ? "shadow-2xl" : ""
+        } ${snapSide === "left" ? "rounded-l-none!" : ""} ${snapSide === "right" ? "rounded-r-none!" : ""
       }`}
     >
       <WindowHeader
