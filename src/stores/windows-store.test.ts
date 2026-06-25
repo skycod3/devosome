@@ -133,6 +133,45 @@ describe("maximize / restore", () => {
   });
 });
 
+describe("snapWindow", () => {
+  const snapRect = { x: 0, y: 48, width: 720, height: 832 };
+
+  it("applies the rect, flags the window as snapped, and saves pre-snap geometry", () => {
+    const id = open("about");
+    const store = useWindowsStore.getState();
+    store.setWindowPosition(id, 120, 90);
+    store.setWindowSize(id, 640, 500);
+
+    store.snapWindow(id, snapRect);
+
+    const win = useWindowsStore.getState().windows.find((w) => w.id === id)!;
+    expect(win.position).toEqual({ x: 0, y: 48 });
+    expect(win.size).toEqual({ width: 720, height: 832 });
+    expect(win.isSnapped).toBe(true);
+    expect(win.isMaximized).toBe(false);
+    // Pre-snap geometry preserved so a drag can restore it.
+    expect(win.restorePosition).toEqual({ x: 120, y: 90 });
+    expect(win.restoreSize).toEqual({ width: 640, height: 500 });
+  });
+
+  it("clears the snapped flag on manual move, resize, or maximize", () => {
+    const id = open("about");
+    const get = useWindowsStore.getState;
+
+    get().snapWindow(id, snapRect);
+    get().setWindowPosition(id, 200, 200);
+    expect(get().windows.find((w) => w.id === id)!.isSnapped).toBe(false);
+
+    get().snapWindow(id, snapRect);
+    get().setWindowSize(id, 500, 400);
+    expect(get().windows.find((w) => w.id === id)!.isSnapped).toBe(false);
+
+    get().snapWindow(id, snapRect);
+    get().maximizeWindow(id);
+    expect(get().windows.find((w) => w.id === id)!.isSnapped).toBe(false);
+  });
+});
+
 describe("closeWindow", () => {
   it("activates the highest non-minimized window after closing the active one", () => {
     const aboutId = open("about");
