@@ -60,6 +60,7 @@ export const useWindows = () => {
   const setWindowPosition = useWindowsStore((state) => state.setWindowPosition);
   const setWindowSize = useWindowsStore((state) => state.setWindowSize);
   const snapWindow = useWindowsStore((state) => state.snapWindow);
+  const setSnapPreview = useWindowsStore((state) => state.setSnapPreview);
   const bringToFront = useWindowsStore((state) => state.bringToFront);
   const setWindowActiveTab = useWindowsStore(
     (state) => state.setWindowActiveTab,
@@ -184,6 +185,7 @@ export const useWindows = () => {
     setWindowPosition,
     setWindowSize,
     snapWindow,
+    setSnapPreview,
     bringToFront,
     setWindowActiveTab,
     updateWindowTitle,

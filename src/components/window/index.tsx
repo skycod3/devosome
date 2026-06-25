@@ -132,6 +132,7 @@ export function Window({ window, desktopRect }: WindowProps) {
     setWindowPosition,
     setWindowSize,
     snapWindow,
+    setSnapPreview,
     maximizeWindow,
     isMobile,
   } = useWindows();
@@ -205,6 +206,8 @@ export function Window({ window, desktopRect }: WindowProps) {
   // during a drag before it can (re)snap — kills the "sticky edge" feel when
   // dragging a snapped window away from the edge.
   const canSideSnapRef = useRef(true);
+  // Tracks the preview's current kind so the store is only updated on change.
+  const previewKindRef = useRef<string | null>(null);
 
   function isOutsideSideZones() {
     const left = x.get();
@@ -232,17 +235,28 @@ export function Window({ window, desktopRect }: WindowProps) {
     return snap && (!isSide || canSideSnapRef.current) ? snap : null;
   }
 
+  function updatePreview(target: ReturnType<typeof currentSnapTarget>) {
+    const kind = target?.kind ?? null;
+    if (kind !== previewKindRef.current) {
+      previewKindRef.current = kind;
+      setSnapPreview(target);
+    }
+  }
+
   function handleDragStart() {
     // Lock side-snap until the window clears the zones (set in handleDrag).
     canSideSnapRef.current = isOutsideSideZones();
+    updatePreview(null);
   }
 
   function handleDrag(_event: PointerEvent, info: PanInfo) {
     if (isOutsideSideZones()) canSideSnapRef.current = true;
+    updatePreview(currentSnapTarget(info.point.y));
   }
 
   // Aero-style edge snapping evaluated at drag release.
   function handleDragEnd(_event: PointerEvent, info: PanInfo) {
+    updatePreview(null);
 
     // A maximized window isn't a snap candidate (its left edge sits at 0).
     if (window.isMaximized) return;

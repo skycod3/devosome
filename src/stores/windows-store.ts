@@ -74,6 +74,9 @@ interface WindowsState {
   windows: Window[];
   activeWindowId: string | null;
   highestZIndex: number;
+  /** Pending Aero-snap target shown as a preview while dragging (null = none). */
+  snapPreview: SnapTarget | null;
+  setSnapPreview: (target: SnapTarget | null) => void;
 
   // Window lifecycle
   openWindow: (
@@ -114,6 +117,11 @@ export const useWindowsStore = create<WindowsState>()(
       windows: [],
       activeWindowId: null,
       highestZIndex: BASE_Z_INDEX,
+      snapPreview: null,
+
+      setSnapPreview(target) {
+        set({ snapPreview: target });
+      },
 
       // Open or focus existing window for an icon
       openWindow(iconId, parentId, title, icon, showTabs, parentTitle) {

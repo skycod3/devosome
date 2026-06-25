@@ -15,6 +15,7 @@ import { GridDistortion } from "@/components/effects/grid-distortion";
 import { Taskbar } from "./taskbar";
 import { Icon } from "../icon";
 import { Window } from "../window";
+import { SnapPreview } from "../window/snap-preview";
 import { Dock } from "./dock";
 
 import { useNotify } from "@/hooks/useNotify";
@@ -167,6 +168,8 @@ export function Desktop() {
       <div style={{ gridRow: "dock" }}>
         <Dock />
       </div>
+
+      <SnapPreview />
 
       <AnimatePresence>
         {windows.map((window) => (
