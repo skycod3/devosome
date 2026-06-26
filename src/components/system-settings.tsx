@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useTheme } from "@/hooks/useTheme";
 import { useIcons } from "@/hooks/useIcons";
 import { useSettings } from "@/hooks/useSettings";
@@ -124,12 +125,15 @@ function WallpaperPanel() {
                 : "border-transparent hover:border-muted-foreground",
             )}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`/wallpapers/${w.filename}`}
-              alt={w.label}
-              className="aspect-video w-full object-cover"
-            />
+            <div className="relative aspect-video w-full overflow-hidden">
+              <Image
+                src={`/wallpapers/${w.filename}`}
+                alt={w.label}
+                fill
+                sizes="(max-width: 768px) 30vw, 120px"
+                className="object-cover"
+              />
+            </div>
             <p className="py-1 text-center text-xs text-muted-foreground">
               {w.label}
             </p>
