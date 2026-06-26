@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, useReducedMotion } from "motion/react";
 
 import { DESKTOP_ICONS } from "@/constants/icons";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
@@ -29,6 +29,9 @@ export function Desktop() {
   const { wallpaper, iconVisibility } = useSettings();
   const { notify } = useNotify();
   const { playClickLeft, playClickRight } = useSounds();
+  // a11y: the wallpaper distortion shader animates continuously — drop it for
+  // users who prefer reduced motion (the static wallpaper stays as background).
+  const prefersReducedMotion = useReducedMotion();
   const [spotlightOpen, setSpotlightOpen] = useState(false);
   const wallpaperSrc = `/wallpapers/${wallpaper}`;
   const desktopRef = useRef<HTMLDivElement>(null);
@@ -143,6 +146,9 @@ export function Desktop() {
     >
       {!isMobile && (
         <div className="absolute inset-0" onClick={handleDesktopClick}>
+          {/* Distortion shader animates continuously — skip it under reduced
+              motion, keeping the overlay (and its deselect-on-click) intact. */}
+          {!prefersReducedMotion && (
           <GridDistortion
             imageSrc={wallpaperSrc}
             grid={100}
@@ -150,6 +156,7 @@ export function Desktop() {
             strength={0.15}
             relaxation={0.9}
           />
+          )}
         </div>
       )}
 

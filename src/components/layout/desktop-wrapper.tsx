@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useReducedMotion } from "motion/react";
 import { useTheme } from "@/hooks/useTheme";
 import { useSettings } from "@/hooks/useSettings";
 import { useIdleTimer } from "@/hooks/useIdleTimer";
@@ -47,6 +48,9 @@ export function DesktopWrapper() {
   const { screenSaverEnabled, setScreenSaverEnabled, soundEnabled, setSoundEnabled } = useSettings();
   const { isIdle } = useIdleTimer();
   const { openWindowCentered } = useWindows();
+  // a11y: don't auto-launch the animated 3D screensaver for users who prefer
+  // reduced motion (the toggle still reflects their saved preference).
+  const prefersReducedMotion = useReducedMotion();
 
   function handleValueChange(value: string) {
     if (value === "system") {
@@ -56,7 +60,8 @@ export function DesktopWrapper() {
     }
   }
 
-  const showScreenSaver = !booting && screenSaverEnabled && isIdle;
+  const showScreenSaver =
+    !booting && screenSaverEnabled && isIdle && !prefersReducedMotion;
 
   const settingsApp = APPLICATIONS["system-settings"];
 

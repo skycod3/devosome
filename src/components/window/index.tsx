@@ -9,6 +9,7 @@ import {
   motion,
   useMotionValue,
   useDragControls,
+  useReducedMotion,
   animate,
   type PanInfo,
 } from "motion/react";
@@ -137,6 +138,9 @@ export function Window({ window, desktopRect }: WindowProps) {
     isMobile,
   } = useWindows();
   const { width: viewportWidth, height: viewportHeight } = useViewport();
+  // a11y: collapse window enter/exit/snap motion when the user prefers reduced
+  // motion (direct-manipulation drag feedback is left intact).
+  const prefersReducedMotion = useReducedMotion();
   // Resize is a pointer interaction — enable on any desktop-class viewport,
   // not just ultra-wide. Still disabled on mobile/tablet (touch) below.
   const resizeEnabled = viewportWidth >= BREAKPOINTS.DESKTOP;
@@ -268,7 +272,10 @@ export function Window({ window, desktopRect }: WindowProps) {
       return;
     }
 
-    const transition = { duration: 0.18, ease: "easeOut" as const };
+    const transition = {
+      duration: prefersReducedMotion ? 0 : 0.18,
+      ease: "easeOut" as const,
+    };
     setIsAnimating(true);
 
     if (snap.kind === "maximize") {
@@ -323,11 +330,10 @@ export function Window({ window, desktopRect }: WindowProps) {
 
   const getWindowAnimations = () => {
     if (window.isMinimized) {
-      return {
-        y: -100,
-        opacity: 0,
-        scale: 0.5,
-      };
+      // Reduced motion: fade out in place instead of flying up and shrinking.
+      return prefersReducedMotion
+        ? { opacity: 0 }
+        : { y: -100, opacity: 0, scale: 0.5 };
     }
 
     return {
@@ -365,13 +371,12 @@ export function Window({ window, desktopRect }: WindowProps) {
         scale: window.isMaximized ? 1 : 1.02,
         boxShadow: "0px 10px 20px rgba(0,0,0,0.2)",
       }}
-      initial={{
-        opacity: 0,
-        scale: 0.95,
-        x: window.position.x,
-        y: window.position.y,
-      }}
-      exit={{ opacity: 0, scale: 0.95 }}
+      initial={
+        prefersReducedMotion
+          ? { opacity: 0, x: window.position.x, y: window.position.y }
+          : { opacity: 0, scale: 0.95, x: window.position.x, y: window.position.y }
+      }
+      exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
       animate={getWindowAnimations()}
       className={`absolute bg-popover text-popover-foreground grid grid-rows-[auto_1fr] overflow-hidden border shadow-lg ${window.isMaximized ? "shadow-2xl" : ""
         } ${snapSide === "left" ? "rounded-l-none!" : ""} ${snapSide === "right" ? "rounded-r-none!" : ""
