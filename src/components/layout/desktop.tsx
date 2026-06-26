@@ -138,24 +138,27 @@ export function Desktop() {
   return (
     <div
       ref={desktopRef}
+      // tabIndex makes the desktop a programmatic focus target: when a window
+      // closes and its opener is gone, focus returns here instead of <body>.
+      tabIndex={-1}
       style={{
         backgroundImage: `url(${wallpaperSrc})`,
         gridTemplateRows: "[taskbar] auto [desktop] 1fr [dock] auto",
       }}
-      className="desktop-area relative grid h-dvh bg-cover bg-top select-none overflow-hidden"
+      className="desktop-area relative grid h-dvh bg-cover bg-top select-none overflow-hidden outline-none"
     >
       {!isMobile && (
         <div className="absolute inset-0" onClick={handleDesktopClick}>
           {/* Distortion shader animates continuously — skip it under reduced
               motion, keeping the overlay (and its deselect-on-click) intact. */}
           {!prefersReducedMotion && (
-          <GridDistortion
-            imageSrc={wallpaperSrc}
-            grid={100}
-            mouse={0.1}
-            strength={0.15}
-            relaxation={0.9}
-          />
+            <GridDistortion
+              imageSrc={wallpaperSrc}
+              grid={100}
+              mouse={0.1}
+              strength={0.15}
+              relaxation={0.9}
+            />
           )}
         </div>
       )}
