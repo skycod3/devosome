@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
 import { useSettingsStore } from "@/stores/settings-store";
 import { isSafariMobile } from "@/utils/browser";
 // prettier-ignore
@@ -59,12 +58,11 @@ export function BootScreen({ onComplete }: BootScreenProps) {
         : []),
     ];
 
-  const containerRef = useRef<HTMLDivElement>(null);
   const kernelListRef = useRef<HTMLDivElement>(null);
   const [biosLines, setBiosLines] = useState<string[]>([]);
   const [kernelLines, setKernelLines] = useState<string[]>([]);
   const [countdown, setCountdown] = useState<number | null>(null);
-  const countdownRef = useRef<HTMLSpanElement>(null);
+  const [fadingOut, setFadingOut] = useState(false);
   const startTimeRef = useRef<number>(0);
 
   // Keep onComplete in a ref so the boot effect can run exactly once ([] deps)
@@ -171,12 +169,12 @@ export function BootScreen({ onComplete }: BootScreenProps) {
       if (cancelled) return;
 
       // ── Phase 4: Fade out ─────────────────────────────────────────────────
-      gsap.to(containerRef.current, {
-        opacity: 0,
-        duration: BOOT_FADEOUT_DURATION,
-        ease: "power2.inOut",
-        onComplete: () => onCompleteRef.current(),
-      });
+      // CSS handles the visual fade (opacity transition on the container); the
+      // timeout guarantees completion even if no transitionend fires.
+      setFadingOut(true);
+      await delay(BOOT_FADEOUT_DURATION * 1000);
+      if (cancelled) return;
+      onCompleteRef.current();
     }
 
     run();
@@ -188,58 +186,28 @@ export function BootScreen({ onComplete }: BootScreenProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Animate each new kernel line in
+  // Auto-scroll to the newest kernel line (entrance animation is CSS-driven).
   useEffect(() => {
-    if (!kernelListRef.current) return;
-    const children = kernelListRef.current.children;
-    const last = children[children.length - 1] as HTMLElement | undefined;
-    if (!last) return;
-    gsap.fromTo(
-      last,
-      { opacity: 0, x: -6 },
-      { opacity: 1, x: 0, duration: 0.18, ease: "power1.out" },
-    );
-    // Auto-scroll
-    last.scrollIntoView({ block: "end", behavior: "smooth" });
+    const children = kernelListRef.current?.children;
+    const last = children?.[children.length - 1] as HTMLElement | undefined;
+    last?.scrollIntoView({ block: "end", behavior: "smooth" });
   }, [kernelLines]);
-
-  // Animate countdown number on each tick
-  useEffect(() => {
-    if (countdown === null || !countdownRef.current) return;
-    gsap.fromTo(
-      countdownRef.current,
-      { opacity: 0, scale: 1.6 },
-      { opacity: 1, scale: 1, duration: 0.25, ease: "power2.out" },
-    );
-  }, [countdown]);
-
-  // Animate each BIOS line in
-  const biosRefs = useRef<(HTMLDivElement | null)[]>([]);
-  useEffect(() => {
-    const el = biosRefs.current[biosLines.length - 1];
-    if (!el) return;
-    gsap.fromTo(
-      el,
-      { opacity: 0 },
-      { opacity: 1, duration: 0.12, ease: "none" },
-    );
-  }, [biosLines]);
 
   return (
     <div
-      ref={containerRef}
       className="fixed inset-0 bg-black overflow-hidden"
-      style={{ zIndex: Z_BOOT_SCREEN }}
+      style={{
+        zIndex: Z_BOOT_SCREEN,
+        opacity: fadingOut ? 0 : 1,
+        transition: `opacity ${BOOT_FADEOUT_DURATION}s ease-in-out`,
+      }}
     >
       <div className="h-full overflow-y-auto p-6 text-xs sm:text-sm leading-relaxed [&::-webkit-scrollbar]:hidden">
         {/* BIOS section */}
         {biosLines.map((line, i) => (
           <div
             key={`bios-${i}`}
-            ref={(el) => {
-              biosRefs.current[i] = el;
-            }}
-            className="whitespace-pre text-gray-300 opacity-0"
+            className="whitespace-pre text-gray-300 boot-bios-line"
           >
             {line}
           </div>
@@ -251,7 +219,7 @@ export function BootScreen({ onComplete }: BootScreenProps) {
             {kernelLines.map((line, i) => (
               <div
                 key={`kernel-${i}`}
-                className="whitespace-pre text-green-400 opacity-0"
+                className="whitespace-pre text-green-400 boot-kernel-line"
               >
                 {line}
               </div>
@@ -263,7 +231,10 @@ export function BootScreen({ onComplete }: BootScreenProps) {
         {countdown !== null && (
           <div className="mt-4 text-yellow-400 whitespace-pre">
             Compiling excuses... done. Launching in{" "}
-            <span ref={countdownRef} className="inline-block font-bold">
+            <span
+              key={countdown}
+              className="inline-block font-bold boot-countdown"
+            >
               {countdown}
             </span>
             ...
