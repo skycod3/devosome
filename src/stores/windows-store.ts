@@ -9,6 +9,7 @@ import {
 } from "@/constants/windows";
 import { APPLICATIONS } from "@/constants/applications";
 import type { SnapTarget } from "@/lib/snap";
+import { useRecentStore } from "./recent-store";
 
 /**
  * Helper function to find the parent application that contains tabs
@@ -45,6 +46,18 @@ function findTabParentApplication(iconId: string) {
   }
 
   return null;
+}
+
+/**
+ * Fallback tab when a tabbed window is opened without targeting a specific tab.
+ * For the Files window, default to "pictures" unless the Recent tab has items
+ * (then land on "recent"). Other tabbed windows fall back to their first tab.
+ */
+function resolveDefaultTab(availableTabs?: string[]): string | undefined {
+  if (availableTabs?.includes("pictures") && availableTabs.includes("recent")) {
+    return useRecentStore.getState().items.length > 0 ? "recent" : "pictures";
+  }
+  return availableTabs?.[0];
 }
 
 export interface Window {
@@ -151,7 +164,7 @@ export const useWindowsStore = create<WindowsState>()(
               // Parent window exists: set the active tab and restore/focus
               const activeTabId = tabParentApp.availableTabs?.includes(iconId)
                 ? iconId
-                : (tabParentApp.availableTabs?.[0] ?? iconId);
+                : (resolveDefaultTab(tabParentApp.availableTabs) ?? iconId);
               get().setWindowActiveTab(existingParentWindow.id, activeTabId);
               get().restoreWindow(existingParentWindow.id);
               return existingParentWindow.id;
@@ -188,7 +201,7 @@ export const useWindowsStore = create<WindowsState>()(
               parentTitle,
               activeTab: tabParentApp.availableTabs?.includes(iconId)
                 ? iconId
-                : (tabParentApp.availableTabs?.[0] ?? iconId), // Set the requested tab as active; fallback to first available tab
+                : (resolveDefaultTab(tabParentApp.availableTabs) ?? iconId), // Requested tab, else Pictures/Recent default
             };
 
             set((state) => ({
