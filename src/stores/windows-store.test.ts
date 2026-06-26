@@ -202,6 +202,43 @@ describe("snapWindow", () => {
   });
 });
 
+describe("snap → maximize → restore", () => {
+  it("restores the snapped state (full work-area height, not a clamped float)", () => {
+    const id = open("about");
+    const get = useWindowsStore.getState;
+    // pre-snap floating geometry
+    get().setWindowPosition(id, 120, 90);
+    get().setWindowSize(id, 640, 500);
+    // snap to the left (fills the work area)
+    get().snapWindow(id, { x: 0, y: 48, width: 720, height: 832 });
+
+    get().maximizeWindow(id);
+    get().restoreWindow(id);
+
+    const win = get().windows.find((w) => w.id === id)!;
+    expect(win.isMaximized).toBe(false);
+    // Must come back as a proper snap — not an unflagged float that the 90dvh
+    // max-height clamp would then clip below the work-area height.
+    expect(win.isSnapped).toBe(true);
+    expect(win.position).toEqual({ x: 0, y: 48 });
+    expect(win.size).toEqual({ width: 720, height: 832 });
+  });
+
+  it("a plain (non-snapped) window stays unsnapped after maximize/restore", () => {
+    const id = open("about");
+    const get = useWindowsStore.getState;
+    get().setWindowPosition(id, 120, 90);
+    get().setWindowSize(id, 640, 500);
+
+    get().maximizeWindow(id);
+    get().restoreWindow(id);
+
+    const win = get().windows.find((w) => w.id === id)!;
+    expect(win.isSnapped).toBeFalsy();
+    expect(win.size).toEqual({ width: 640, height: 500 });
+  });
+});
+
 describe("closeWindow", () => {
   it("activates the highest non-minimized window after closing the active one", () => {
     const aboutId = open("about");

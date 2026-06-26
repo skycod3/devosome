@@ -76,6 +76,9 @@ export interface Window {
   // Store previous position/size before maximizing to restore later
   restorePosition?: { x: number; y: number };
   restoreSize?: { width: number; height: number };
+  // Whether the window was snapped before maximizing, so restore can re-snap it
+  // (otherwise the restored work-area height gets clipped by the 90dvh cap).
+  restoreSnapped?: boolean;
   tab?: { title: string };
   isSnapped?: boolean; // True when half-snapped to a screen edge (fills the work area; bypasses the normal max-height cap)
   showTabs?: boolean; // Whether to show sidebar tabs
@@ -377,6 +380,11 @@ export const useWindowsStore = create<WindowsState>()(
                 restoreSize: shouldSaveRestore
                   ? window.size
                   : window.restoreSize,
+                // Remember if it was snapped, so restore re-snaps (and the
+                // work-area height isn't clipped by the 90dvh cap).
+                restoreSnapped: shouldSaveRestore
+                  ? window.isSnapped
+                  : window.restoreSnapped,
                 // Set position to (0, 0) when maximizing
                 position: { x: 0, y: 0 },
               };
@@ -423,12 +431,17 @@ export const useWindowsStore = create<WindowsState>()(
                 ...window,
                 isMinimized: false,
                 isMaximized: false,
+                // Re-apply the pre-maximize snap state so a window that was
+                // snapped before maximizing comes back at full work-area height
+                // (unsnapped restore would be clipped by the 90dvh max-height).
+                isSnapped: window.restoreSnapped ?? false,
                 isActive: true,
                 lastState: "maximized", // Track that previous state was maximized
                 position: window.restorePosition,
                 size: window.restoreSize,
                 restorePosition: undefined,
                 restoreSize: undefined,
+                restoreSnapped: undefined,
               };
             }
 
