@@ -174,6 +174,11 @@ export function Window({ window, desktopRect }: WindowProps) {
 
   const dragControls = useDragControls();
 
+  // a11y: root element so we can move keyboard focus into the window when it
+  // opens or is brought to the front, and return focus to the opener on close.
+  const windowRef = useRef<HTMLDivElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+
   const activeTabApp = APPLICATIONS[activeTab];
   const windowTitle =
     activeTabApp?.tabTitle ?? activeTabApp?.windowTitle ?? window.title;
@@ -200,6 +205,37 @@ export function Window({ window, desktopRect }: WindowProps) {
     mvRadius,
     isAnimating,
   ]);
+
+  // a11y: remember whoever opened the window (a desktop icon, dock button, or
+  // Spotlight) so focus can return there when it closes. Captured on mount,
+  // before the activate effect below steals focus into the window.
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    openerRef.current =
+      opener && opener !== document.body ? opener : null;
+    return () => {
+      const target = openerRef.current;
+      if (target && document.contains(target)) {
+        target.focus({ preventScroll: true });
+      } else {
+        // Opener is gone (e.g. Spotlight closed) — land on the desktop.
+        document
+          .querySelector<HTMLElement>(".desktop-area")
+          ?.focus({ preventScroll: true });
+      }
+    };
+    // Mount/unmount only — focus return on close.
+  }, []);
+
+  // a11y: move focus into the window when it opens or is brought to the front,
+  // unless focus is already inside it (don't yank focus from a clicked input).
+  useEffect(() => {
+    if (activeWindowId !== window.id || window.isMinimized) return;
+    const el = windowRef.current;
+    if (el && !el.contains(document.activeElement)) {
+      el.focus({ preventScroll: true });
+    }
+  }, [activeWindowId, window.id, window.isMinimized]);
 
   function handleWindowClick() {
     if (activeWindowId === window.id) return;
@@ -344,6 +380,10 @@ export function Window({ window, desktopRect }: WindowProps) {
 
   return (
     <motion.div
+      ref={windowRef}
+      role="dialog"
+      aria-label={windowTitle}
+      tabIndex={-1}
       style={{
         ...windowStyles,
         x,
