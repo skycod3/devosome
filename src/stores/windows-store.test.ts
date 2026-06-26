@@ -9,7 +9,7 @@ vi.mock("@/constants/applications", () => ({
       id: "files",
       windowTitle: "Files",
       showTabs: true,
-      availableTabs: ["pictures", "documents"],
+      availableTabs: ["recent", "pictures", "documents"],
     },
     pictures: { id: "pictures", windowTitle: "Pictures", showTabs: false },
     documents: { id: "documents", windowTitle: "Documents", showTabs: false },
@@ -19,14 +19,17 @@ vi.mock("@/constants/applications", () => ({
 }));
 
 import { useWindowsStore } from "./windows-store";
+import { useRecentStore } from "./recent-store";
 import { BASE_Z_INDEX } from "@/constants/windows";
 
-const reset = () =>
+const reset = () => {
   useWindowsStore.setState({
     windows: [],
     activeWindowId: null,
     highestZIndex: BASE_Z_INDEX,
   });
+  useRecentStore.setState({ items: [] });
+};
 
 const open = (iconId: string, title = iconId) =>
   useWindowsStore.getState().openWindow(iconId, "", title, "");
@@ -83,6 +86,33 @@ describe("tabbed windows", () => {
 
     expect(windows).toHaveLength(1);
     expect(windows[0].activeTab).toBe("documents");
+  });
+
+  it("opening Files defaults to the Pictures tab when Recent is empty", () => {
+    open("files", "Files");
+    const { windows } = useWindowsStore.getState();
+
+    expect(windows[0].iconId).toBe("files");
+    expect(windows[0].activeTab).toBe("pictures");
+  });
+
+  it("opening Files defaults to the Recent tab when Recent has items", () => {
+    useRecentStore.setState({
+      items: [
+        {
+          id: "image-1",
+          title: "Photo",
+          icon: "",
+          sourceTab: "pictures",
+          openedAt: 1,
+        },
+      ],
+    });
+
+    open("files", "Files");
+    const { windows } = useWindowsStore.getState();
+
+    expect(windows[0].activeTab).toBe("recent");
   });
 });
 
