@@ -57,12 +57,23 @@ export function Icon({
     openWindowCentered(appId ?? id, parentId ?? "", title, icon);
   }
 
+  // a11y: open the window when Enter is pressed on the focused icon (keyboard
+  // equivalent of double-click). preventDefault stops the button's synthetic
+  // click, which would only highlight the icon.
+  function handleKeyDown(e: React.KeyboardEvent) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleDoubleClick();
+    }
+  }
+
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
         <button
           onClick={handleClick}
           onDoubleClick={handleDoubleClick}
+          onKeyDown={handleKeyDown}
           title={title}
           style={
             {
