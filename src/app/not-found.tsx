@@ -32,7 +32,7 @@ export default function NotFound() {
 
       <div className="max-w-2xl space-y-3">
         <h1 className="text-xl text-white font-normal leading-relaxed sm:text-2xl">
-          This page ran into a problem and couldn't be found. You can head
+          This page ran into a problem and couldn&apos;t be found. You can head
           back to the desktop and try again.
         </h1>
         <p className="text-sm text-white/80 sm:text-base">
