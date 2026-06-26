@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import { Search } from "lucide-react";
 
@@ -18,6 +18,11 @@ export function Spotlight({ onClose }: SpotlightProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
   const { openWindowCentered } = useWindows();
+
+  // Stable ids for the combobox/listbox wiring (aria-controls, aria-activedescendant).
+  const baseId = useId();
+  const listId = `${baseId}-listbox`;
+  const optionId = (i: number) => `${baseId}-option-${i}`;
 
   const results = query.trim()
     ? ALL_APPS.filter((app) =>
@@ -94,6 +99,14 @@ export function Spotlight({ onClose }: SpotlightProps) {
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder="Search apps..."
+            role="combobox"
+            aria-label="Search apps"
+            aria-expanded={results.length > 0}
+            aria-controls={listId}
+            aria-autocomplete="list"
+            aria-activedescendant={
+              results[selectedIndex] ? optionId(selectedIndex) : undefined
+            }
             autoComplete="off"
             autoCorrect="off"
             autoCapitalize="off"
@@ -110,15 +123,27 @@ export function Spotlight({ onClose }: SpotlightProps) {
 
         <div className="border-border border-t" />
 
-        <ul ref={listRef} className="max-h-72 overflow-y-auto py-1">
+        <ul
+          ref={listRef}
+          id={listId}
+          role="listbox"
+          aria-label="Apps"
+          className="max-h-72 overflow-y-auto py-1"
+        >
           {results.length === 0 ? (
-            <li className="text-muted-foreground px-4 py-3 text-sm">
+            <li
+              role="presentation"
+              className="text-muted-foreground px-4 py-3 text-sm"
+            >
               No apps found.
             </li>
           ) : (
             results.map((app, i) => (
               <li
                 key={app.id}
+                id={optionId(i)}
+                role="option"
+                aria-selected={i === selectedIndex}
                 onMouseEnter={() => setSelectedIndex(i)}
                 onMouseDown={() => openApp(app.appId ?? app.id, app.title)}
                 className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${i === selectedIndex
