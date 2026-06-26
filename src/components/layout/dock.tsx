@@ -7,7 +7,7 @@ import { APPLICATIONS } from "@/constants/applications";
 // prettier-ignore
 import { Children, cloneElement, ReactElement, ReactNode, useEffect, useRef, useState } from "react";
 // prettier-ignore
-import { AnimatePresence, motion, MotionValue, useMotionValue, useSpring, useTransform } from "motion/react";
+import { AnimatePresence, motion, MotionValue, useMotionValue, useReducedMotion, useSpring, useTransform, type Variants } from "motion/react";
 import {
   PiUserDuotone,
   PiBookOpenDuotone,
@@ -20,6 +20,32 @@ import { DOCK_HEIGHT, DOCK_OFFSET_BOTTOM, DOCK_BASE_ITEM_SIZE, DOCK_MAGNIFICATIO
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 import { supportsRelativeColors } from "@/utils/css-supports";
+
+// ─── Entrance animation ─────────────────────────────────────────────────────
+// The Dock only mounts once the Desktop renders (after boot), so this mount-time
+// entrance plays at the right moment: the panel background fades in first
+// (when: "beforeChildren"), then the icons stagger up — mirroring the Files
+// window items. The panel animates opacity only: it relies on a Tailwind
+// `-translate-x-1/2` for centering, so a motion transform would break it.
+const dockPanelVariants: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      duration: 0.25,
+      ease: "easeOut",
+      delay: 0.1,
+      when: "beforeChildren",
+      delayChildren: 0.05,
+      staggerChildren: 0.06,
+    },
+  },
+};
+
+const dockItemVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.2, ease: "easeOut" } },
+};
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -46,6 +72,8 @@ interface DockItemProps {
   magnification: number;
   baseItemSize: number;
   label: string;
+  /** Entrance variants; inherits show/hidden state from the dock panel. */
+  variants?: Variants;
 }
 
 interface DockLabelProps {
@@ -83,6 +111,7 @@ function DockItem({
   magnification,
   baseItemSize,
   label,
+  variants,
 }: DockItemProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isHovered = useMotionValue(0);
@@ -106,6 +135,7 @@ function DockItem({
   return (
     <motion.div
       ref={ref}
+      variants={variants}
       style={{
         width: !isMobile ? size : baseItemSize,
         height: !isMobile ? size : baseItemSize,
@@ -203,6 +233,10 @@ function DockBase({
 }: DockBaseProps) {
   const mouseX = useMotionValue(Infinity);
   const isHovered = useMotionValue(0);
+  // a11y: skip the entrance for users who prefer reduced motion — the dock
+  // simply appears at its final state.
+  const prefersReducedMotion = useReducedMotion();
+  const animateEntrance = !prefersReducedMotion;
 
   return (
     <div
@@ -210,6 +244,9 @@ function DockBase({
       style={{ height: panelHeight, marginBottom: DOCK_OFFSET_BOTTOM }}
     >
       <motion.div
+        initial={animateEntrance ? "hidden" : false}
+        animate={animateEntrance ? "show" : false}
+        variants={animateEntrance ? dockPanelVariants : undefined}
         onMouseMove={({ pageX }) => {
           isHovered.set(1);
           mouseX.set(pageX);
@@ -234,6 +271,7 @@ function DockBase({
             magnification={magnification}
             baseItemSize={baseItemSize}
             label={item.label}
+            variants={animateEntrance ? dockItemVariants : undefined}
           >
             <DockIcon>{item.icon}</DockIcon>
             <DockLabel>{item.label}</DockLabel>
