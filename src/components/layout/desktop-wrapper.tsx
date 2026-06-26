@@ -6,7 +6,6 @@ import { useTheme } from "@/hooks/useTheme";
 import { useSettings } from "@/hooks/useSettings";
 import { useIdleTimer } from "@/hooks/useIdleTimer";
 import { BootScreen } from "@/components/boot-screen";
-import { ScreenSaver } from "@/components/screen-saver";
 
 import { APPLICATIONS } from "@/constants/applications";
 import { useWindows } from "@/hooks/useWindows";
@@ -39,6 +38,16 @@ const Desktop = dynamic(
       </div>
     ),
   },
+);
+
+// Lazy-loaded: the screensaver pulls in three.js (~1MB) but only ever renders
+// after the user goes idle. Keeping it out of the initial bundle.
+const ScreenSaver = dynamic(
+  () =>
+    import("@/components/screen-saver").then((mod) => ({
+      default: mod.ScreenSaver,
+    })),
+  { ssr: false },
 );
 
 export function DesktopWrapper() {

@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import dynamic from "next/dynamic";
+
 import { AnimatePresence, useReducedMotion } from "motion/react";
 
 import { DESKTOP_ICONS } from "@/constants/icons";
@@ -10,7 +12,16 @@ import { useWindows } from "@/hooks/useWindows";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSettings } from "@/hooks/useSettings";
 
-import { GridDistortion } from "@/components/effects/grid-distortion";
+// Lazy-loaded: the wallpaper distortion shader pulls in three.js (~1MB). It
+// only renders on desktop with motion enabled, and mounting it via next/dynamic
+// keeps three.js out of the initial bundle (loaded after first paint).
+const GridDistortion = dynamic(
+  () =>
+    import("@/components/effects/grid-distortion").then((mod) => ({
+      default: mod.GridDistortion,
+    })),
+  { ssr: false },
+);
 
 import { Taskbar } from "./taskbar";
 import { Icon } from "../icon";
