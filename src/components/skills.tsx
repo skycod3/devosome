@@ -8,6 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { RevealGroup, RevealItem } from "@/components/ui/reveal";
 
 const PROFICIENCY_COLORS: Record<Proficiency, string> = {
   Beginner: "bg-violet-100 text-violet-700 border-violet-200",
@@ -18,7 +19,7 @@ const PROFICIENCY_COLORS: Record<Proficiency, string> = {
 
 export function Skills() {
   return (
-    <div className="p-4 md:p-6">
+    <RevealGroup className="p-4 md:p-6">
       {SKILLS.map(({ category, skills }) => (
         <div key={category} className="mt-6 first:mt-0">
           <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
@@ -29,8 +30,8 @@ export function Skills() {
             className="grid grid-cols-fill-14 gap-4 items-start"
           >
             {skills.map((skill) => (
+              <RevealItem key={skill.name}>
               <AccordionItem
-                key={skill.name}
                 value={skill.name}
                 className="rounded-lg border border-border bg-card"
               >
@@ -90,10 +91,11 @@ export function Skills() {
                   )}
                 </AccordionContent>
               </AccordionItem>
+              </RevealItem>
             ))}
           </Accordion>
         </div>
       ))}
-    </div>
+    </RevealGroup>
   );
 }

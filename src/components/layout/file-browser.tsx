@@ -8,6 +8,7 @@ import { useIcons } from "@/hooks/useIcons";
 import { useWindows } from "@/hooks/useWindows";
 import { useSettings } from "@/hooks/useSettings";
 import { Icon } from "@/components/icon";
+import { RevealGroup, RevealItem } from "@/components/ui/reveal";
 import { Icon as IconType } from "@/stores/icons-store";
 import { StaticImageData } from "next/image";
 import { formatDistanceToNow } from "date-fns";
@@ -105,20 +106,29 @@ export function FileBrowser({
 
       {/* File area — grid */}
       {iconsFromStore.length > 0 && viewMode === "grid" && (
-        <div className="grid-cols-fill-6 @min-5xl:grid-cols-fill-7 grid-rows-fill-6 grid h-full gap-4 p-4 overflow-auto">
+        <RevealGroup
+          replayOnView
+          className="grid-cols-fill-6 @min-5xl:grid-cols-fill-7 grid-rows-fill-6 grid h-full gap-4 p-4 overflow-auto"
+        >
           {iconsFromStore.map((icon) => (
-            <Icon imagePlaceholder="blur" key={icon.id} {...icon} />
+            <RevealItem key={icon.id}>
+              <Icon imagePlaceholder="blur" {...icon} />
+            </RevealItem>
           ))}
-        </div>
+        </RevealGroup>
       )}
 
       {/* File area — list */}
       {iconsFromStore.length > 0 && viewMode === "list" && (
-        <ul className="flex flex-col gap-1 overflow-auto p-2">
+        <RevealGroup
+          as="ul"
+          replayOnView
+          className="flex flex-col gap-1 overflow-auto p-2"
+        >
           {iconsFromStore.map((icon) => (
             <ListRow key={icon.id} icon={icon} />
           ))}
-        </ul>
+        </RevealGroup>
       )}
     </div>
   );
@@ -146,7 +156,8 @@ function ListRow({ icon }: { icon: IconType }) {
   }
 
   return (
-    <li
+    <RevealItem
+      as="li"
       onClick={handleClick}
       onDoubleClick={handleDoubleClick}
       className={`flex items-center gap-2 rounded px-2 py-1 select-none ${icon.isHighlighted ? "bg-accent text-accent-foreground" : "hover:bg-accent/50"}`}
@@ -164,6 +175,6 @@ function ListRow({ icon }: { icon: IconType }) {
           {formatDistanceToNow(icon.openedAt, { addSuffix: true })}
         </span>
       )}
-    </li>
+    </RevealItem>
   );
 }

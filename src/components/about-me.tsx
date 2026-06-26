@@ -7,6 +7,7 @@ import { PiCopy, PiCheck, PiMapPin, PiBriefcase, PiUser } from "react-icons/pi";
 
 import { ABOUT_ME } from "@/constants/about";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
+import { RevealGroup, RevealItem } from "./ui/reveal";
 
 export function AboutMe() {
   const { copied, copy } = useCopyToClipboard();
@@ -16,9 +17,9 @@ export function AboutMe() {
   }
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <RevealGroup className="space-y-6 p-4 md:p-6">
       {/* Hero */}
-      <div className="grid justify-items-center gap-4">
+      <RevealItem className="grid justify-items-center gap-4">
         <div className="relative size-24 overflow-hidden rounded-full border-2 border-border bg-accent">
           {ABOUT_ME.photo ? (
             <Image
@@ -52,10 +53,10 @@ export function AboutMe() {
             )}
           </div>
         </div>
-      </div>
+      </RevealItem>
 
       {/* Bio */}
-      <div
+      <RevealItem
         style={{ "--flow-space": "0.25em" } as React.CSSProperties}
         className="flow"
       >
@@ -65,10 +66,10 @@ export function AboutMe() {
         <p className="text-sm leading-relaxed text-foreground">
           {ABOUT_ME.description}
         </p>
-      </div>
+      </RevealItem>
 
       {/* Highlights */}
-      <div
+      <RevealItem
         style={{ "--flow-space": "0.25em" } as React.CSSProperties}
         className="flow"
       >
@@ -88,10 +89,10 @@ export function AboutMe() {
             </div>
           ))}
         </div>
-      </div>
+      </RevealItem>
 
       {/* Contact */}
-      <div
+      <RevealItem
         style={{ "--flow-space": "0.25em" } as React.CSSProperties}
         className="flow"
       >
@@ -144,7 +145,7 @@ export function AboutMe() {
             GitHub
           </a>
         </div>
-      </div>
-    </div>
+      </RevealItem>
+    </RevealGroup>
   );
 }

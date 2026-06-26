@@ -16,6 +16,7 @@ import { PiEnvelope, PiSpinner } from "react-icons/pi";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
+import { RevealGroup, RevealItem } from "./ui/reveal";
 
 type FormStatus = "idle" | "sending";
 
@@ -82,17 +83,21 @@ export function Contact() {
     ABOUT_ME.contact.linkedin.split("/").pop() ?? "LinkedIn";
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <RevealGroup className="space-y-6 p-4 md:p-6">
       {/* Header */}
-      <div>
+      <RevealItem>
         <h2 className="text-lg font-semibold">Get in Touch</h2>
         <p className="text-sm text-muted-foreground mt-1">
           Send me a message and I&apos;ll get back to you as soon as possible.
         </p>
-      </div>
+      </RevealItem>
 
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <RevealItem
+        as="form"
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-4"
+      >
         {/* Honeypot — hidden from real users, bots tend to fill it */}
         <input
           ref={honeypotRef}
@@ -198,17 +203,17 @@ export function Contact() {
             "Send Message"
           )}
         </Button>
-      </form>
+      </RevealItem>
 
       {/* Divider */}
-      <div className="flex items-center gap-3 text-xs text-muted-foreground">
+      <RevealItem className="flex items-center gap-3 text-xs text-muted-foreground">
         <div className="h-px flex-1 bg-border" />
         Or reach me directly
         <div className="h-px flex-1 bg-border" />
-      </div>
+      </RevealItem>
 
       {/* Direct contact */}
-      <div className="flex flex-col gap-2">
+      <RevealItem className="flex flex-col gap-2">
         {/* Email copy */}
         <button
           onClick={copyEmail}
@@ -246,7 +251,7 @@ export function Contact() {
           <span className="flex-1">GitHub</span>
           <span className="text-xs text-muted-foreground">{githubHandle}</span>
         </a>
-      </div>
-    </div>
+      </RevealItem>
+    </RevealGroup>
   );
 }

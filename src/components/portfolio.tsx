@@ -8,6 +8,7 @@ import { PiArrowSquareOut } from "react-icons/pi";
 import { PROJECTS, type Project } from "@/constants/projects";
 
 import { Badge } from "./ui/badge";
+import { RevealGroup, RevealItem } from "./ui/reveal";
 
 import { supportsRelativeColors } from "@/utils/css-supports";
 
@@ -77,7 +78,7 @@ function ProjectLinks({ github, live }: { github?: string; live?: string }) {
 
 function FeaturedCard({ project }: { project: Project }) {
   return (
-    <div className="grid sm:grid-cols-[auto_1fr] gap-2 overflow-hidden rounded-lg border bg-card transition hover:shadow">
+    <RevealItem className="grid sm:grid-cols-[auto_1fr] gap-2 overflow-hidden rounded-lg border bg-card transition-shadow hover:shadow">
       {/* Thumbnail */}
       <div className="relative h-36 w-full sm:h-full sm:w-64 shrink-0 overflow-hidden bg-muted">
         <Thumbnail src={project.thumbnail} alt={project.title} />
@@ -103,13 +104,13 @@ function FeaturedCard({ project }: { project: Project }) {
           <ProjectLinks github={project.github} live={project.live} />
         ) : null}
       </div>
-    </div>
+    </RevealItem>
   );
 }
 
 function ProjectCard({ project }: { project: Project }) {
   return (
-    <div className="overflow-hidden rounded-lg border bg-card transition hover:shadow-sm">
+    <RevealItem className="overflow-hidden rounded-lg border bg-card transition-shadow hover:shadow-sm">
       {/* Thumbnail */}
       <div className="relative h-36 w-full overflow-hidden bg-muted">
         <Thumbnail src={project.thumbnail} alt={project.title} />
@@ -129,7 +130,7 @@ function ProjectCard({ project }: { project: Project }) {
           <ProjectLinks github={project.github} live={project.live} />
         ) : null}
       </div>
-    </div>
+    </RevealItem>
   );
 }
 
@@ -139,19 +140,19 @@ export function Portfolio() {
   const rest = visibleProjects.filter((p) => !p.featured);
 
   return (
-    <div className="space-y-6 p-4 md:p-6">
+    <RevealGroup className="space-y-6 p-4 md:p-6">
       {/* Header */}
-      <div>
+      <RevealItem>
         <h2 className="text-lg font-semibold">Portfolio</h2>
         <p className="text-sm text-muted-foreground mt-1">
           A selection of projects I&apos;ve built over the years.
         </p>
-      </div>
+      </RevealItem>
 
       {/* Featured project */}
       {featured && <FeaturedCard project={featured} />}
 
-      {/* Grid */}
+      {/* Grid — cards inherit the stagger from the surrounding RevealGroup */}
       {rest.length > 0 && (
         <div className="grid grid-cols-fit-15 gap-4">
           {rest.map((project) => (
@@ -159,6 +160,6 @@ export function Portfolio() {
           ))}
         </div>
       )}
-    </div>
+    </RevealGroup>
   );
 }
