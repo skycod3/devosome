@@ -16,7 +16,7 @@ export const PROJECTS: Project[] = [
     title: "Devosome",
     description:
       "A desktop OS-style developer portfolio built with Next.js, featuring draggable windows, a taskbar, and file system navigation.",
-    thumbnail: "/projects/devosome.png",
+    thumbnail: "/projects/devosome.jpg",
     stack: ["Next.js", "TypeScript", "Zustand", "Tailwind CSS"],
     github: "https://github.com/skycod3/devosome",
     live: "https://devosome.vercel.app",
