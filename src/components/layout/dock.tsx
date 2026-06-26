@@ -115,6 +115,12 @@ function DockItem({
       onFocus={() => isHovered.set(1)}
       onBlur={() => isHovered.set(0)}
       onClick={onClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onClick?.();
+        }
+      }}
       className={`group relative flex-center rounded-lg border border-border bg-card shadow-md outline-none ${className}`}
       tabIndex={0}
       role="button"
