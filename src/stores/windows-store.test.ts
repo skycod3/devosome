@@ -224,6 +224,27 @@ describe("snap → maximize → restore", () => {
     expect(win.size).toEqual({ width: 720, height: 832 });
   });
 
+  it("keeps the pre-snap floating geometry so the restored snap can be dragged free", () => {
+    const id = open("about");
+    const get = useWindowsStore.getState;
+    // pre-snap floating geometry
+    get().setWindowPosition(id, 120, 90);
+    get().setWindowSize(id, 640, 500);
+    get().snapWindow(id, { x: 0, y: 48, width: 720, height: 832 });
+
+    get().maximizeWindow(id);
+    get().restoreWindow(id);
+
+    const win = get().windows.find((w) => w.id === id)!;
+    expect(win.isSnapped).toBe(true);
+    // Comes back at the snapped geometry...
+    expect(win.size).toEqual({ width: 720, height: 832 });
+    // ...but still remembers the pre-snap floating size, so dragging it un-snaps
+    // back to a normal window (and doesn't stay stuck at work-area height).
+    expect(win.restoreSize).toEqual({ width: 640, height: 500 });
+    expect(win.restorePosition).toEqual({ x: 120, y: 90 });
+  });
+
   it("a plain (non-snapped) window stays unsnapped after maximize/restore", () => {
     const id = open("about");
     const get = useWindowsStore.getState;
