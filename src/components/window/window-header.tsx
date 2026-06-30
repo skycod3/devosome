@@ -91,10 +91,21 @@ export function WindowHeader({
         setIsAnimating(false);
       });
     } else {
-      // Restoring: capture restore values BEFORE toggleMaximize clears them
-      // (React props are snapshots — window still has the old state here)
-      const restorePos = window.restorePosition ?? window.position;
-      const restoreSize = window.restoreSize ?? window.size;
+      // Restoring: capture the target BEFORE toggleMaximize clears it (React
+      // props are snapshots — window still has the old state here). Must mirror
+      // restoreWindow's logic: a window snapped before maximizing restores to its
+      // snap geometry (snapRect), otherwise to the floating restore geometry.
+      // Animating toward a different target than the store sets causes a jump.
+      const snap = window.snapRect;
+      const reSnap = Boolean(window.restoreSnapped && snap);
+      const restorePos =
+        reSnap && snap
+          ? { x: snap.x, y: snap.y }
+          : (window.restorePosition ?? window.position);
+      const restoreSize =
+        reSnap && snap
+          ? { width: snap.width, height: snap.height }
+          : (window.restoreSize ?? window.size);
 
       toggleMaximize(window.id);
 

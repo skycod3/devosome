@@ -79,6 +79,10 @@ export interface Window {
   // Whether the window was snapped before maximizing, so restore can re-snap it
   // (otherwise the restored work-area height gets clipped by the 90dvh cap).
   restoreSnapped?: boolean;
+  // The snap geometry to return to when un-maximizing a snapped window. Kept
+  // separate from restorePosition/restoreSize, which hold the pre-snap *floating*
+  // geometry used to un-snap on drag.
+  snapRect?: { x: number; y: number; width: number; height: number };
   tab?: { title: string };
   isSnapped?: boolean; // True when half-snapped to a screen edge (fills the work area; bypasses the normal max-height cap)
   showTabs?: boolean; // Whether to show sidebar tabs
@@ -373,13 +377,18 @@ export const useWindowsStore = create<WindowsState>()(
                 isMinimized: false,
                 isSnapped: false,
                 lastState: "normal", // When maximizing, we're coming from normal state
-                // Save current position/size before maximizing
-                restorePosition: shouldSaveRestore
-                  ? window.position
-                  : window.restorePosition,
-                restoreSize: shouldSaveRestore
-                  ? window.size
-                  : window.restoreSize,
+                // Save current position/size before maximizing — but NOT for a
+                // snapped window: it already holds the pre-snap floating geometry
+                // in restorePosition/restoreSize (and the snap in snapRect), which
+                // restore needs to un-snap on drag.
+                restorePosition:
+                  shouldSaveRestore && !window.isSnapped
+                    ? window.position
+                    : window.restorePosition,
+                restoreSize:
+                  shouldSaveRestore && !window.isSnapped
+                    ? window.size
+                    : window.restoreSize,
                 // Remember if it was snapped, so restore re-snaps (and the
                 // work-area height isn't clipped by the 90dvh cap).
                 restoreSnapped: shouldSaveRestore
@@ -427,21 +436,33 @@ export const useWindowsStore = create<WindowsState>()(
               window.restorePosition &&
               window.restoreSize
             ) {
+              const snap = window.snapRect;
+              const reSnap = !!(window.restoreSnapped && snap);
+
               return {
                 ...window,
                 isMinimized: false,
                 isMaximized: false,
-                // Re-apply the pre-maximize snap state so a window that was
-                // snapped before maximizing comes back at full work-area height
-                // (unsnapped restore would be clipped by the 90dvh max-height).
-                isSnapped: window.restoreSnapped ?? false,
+                // A window that was snapped before maximizing comes back snapped
+                // at full work-area height (an unsnapped restore would be clipped
+                // by the 90dvh max-height).
+                isSnapped: reSnap,
                 isActive: true,
                 lastState: "maximized", // Track that previous state was maximized
-                position: window.restorePosition,
-                size: window.restoreSize,
-                restorePosition: undefined,
-                restoreSize: undefined,
+                position:
+                  reSnap && snap
+                    ? { x: snap.x, y: snap.y }
+                    : window.restorePosition,
+                size:
+                  reSnap && snap
+                    ? { width: snap.width, height: snap.height }
+                    : window.restoreSize,
+                // Re-snap keeps the pre-snap floating geometry so a later drag can
+                // un-snap to it; a normal restore consumes and clears it.
+                restorePosition: reSnap ? window.restorePosition : undefined,
+                restoreSize: reSnap ? window.restoreSize : undefined,
                 restoreSnapped: undefined,
+                snapRect: reSnap ? window.snapRect : undefined,
               };
             }
 
@@ -505,9 +526,16 @@ export const useWindowsStore = create<WindowsState>()(
             window.id === id
               ? {
                 ...window,
-                // Remember the pre-snap geometry so dragging can restore it.
+                // Remember the pre-snap (floating) geometry so dragging can
+                // restore it, and the snap geometry so un-maximize can re-snap.
                 restorePosition: window.position,
                 restoreSize: window.size,
+                snapRect: {
+                  x: rect.x,
+                  y: rect.y,
+                  width: rect.width,
+                  height: rect.height,
+                },
                 position: { x: rect.x, y: rect.y },
                 size: { width: rect.width, height: rect.height },
                 isSnapped: true,
