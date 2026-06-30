@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Wifi, WifiOff } from "lucide-react";
+import { Signal, Unplug } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -31,9 +31,9 @@ export function Network() {
       <TooltipTrigger asChild>
         <div className="p-1.5 flex items-center">
           {online ? (
-            <Wifi className="size-4" />
+            <Signal className="size-4" />
           ) : (
-            <WifiOff
+            <Unplug
               className={`size-4 ${theme === "dark" ? "text-red-400" : "text-red-800"}`}
             />
           )}
