@@ -1,14 +1,16 @@
 import Image from "next/image";
-import { Icon } from "@/stores/icons-store";
-
+import { type IconType } from "react-icons";
 import {
   PiCaretLeft,
+  PiClockCounterClockwise,
   PiImage,
   PiInfo,
   PiMusicNote,
   PiNote,
   PiVideo,
 } from "react-icons/pi";
+
+import { Icon } from "@/stores/icons-store";
 
 import { useRecent } from "@/hooks/useRecent";
 
@@ -19,6 +21,14 @@ import { DOCUMENTS_FILES } from "@/constants/documents-files";
 import { IMAGE_FILES } from "@/constants/image-files";
 import { VIDEO_FILES } from "@/constants/video-files";
 import { AUDIO_FILES } from "@/constants/audio-files";
+
+const TAB_ICONS: Record<string, IconType> = {
+  recent: PiClockCounterClockwise,
+  pictures: PiImage,
+  documents: PiNote,
+  music: PiMusicNote,
+  videos: PiVideo,
+};
 
 const totalImageFiles = Object.keys(IMAGE_FILES).length;
 const totalVideoFiles = Object.keys(VIDEO_FILES).length;
@@ -140,73 +150,74 @@ export function SidebarDetails({
 }) {
   const { items } = useRecent();
   const sidebarData = getSidebarData(highlightedIcon, items.length);
+  const TabIcon = TAB_ICONS[activeTab];
 
   return (
     <aside className="hidden md:flex h-full w-[30%] shrink-0 flex-col bg-sidebar text-sidebar-foreground">
       <SidebarContent>
         <div className="overflow-auto">
           {highlightedIcon && highlightedIcon.parentId ? (
-            <>
-              <div className="text-sm">
-                <div className="bg-muted relative aspect-3/2">
-                  <Image
-                    fill
-                    alt={highlightedIcon.title}
-                    src={highlightedIcon.icon}
-                    className="object-contain"
-                  />
-                </div>
+            <div className="text-sm">
+              <div className="bg-muted relative aspect-3/2">
+                <Image
+                  fill
+                  alt={highlightedIcon.title}
+                  src={highlightedIcon.icon}
+                  className="object-contain"
+                />
+              </div>
 
-                <div className="flow p-4">
-                  <h3 className="text-sm flex items-center gap-2">
-                    {sidebarData?.icon} {highlightedIcon.title}
-                  </h3>
+              <div className="flow p-4">
+                <h3 className="text-sm flex items-center gap-2">
+                  {sidebarData?.icon} {highlightedIcon.title}
+                </h3>
 
-                  <p className="font-semibold">Details:</p>
+                <p className="font-semibold">Details:</p>
 
-                  <ul className="space-y-2 text-accent-foreground/70">
+                <ul className="space-y-2 text-accent-foreground/70">
+                  <li className="flex justify-between">
+                    Type: <span>{sidebarData?.details?.type ?? "—"} File</span>
+                  </li>
+                  <li className="flex justify-between">
+                    Size:{" "}
+                    <span>
+                      {sidebarData?.details
+                        ? formatSize(sidebarData.details.size)
+                        : "—"}
+                    </span>
+                  </li>
+                  {sidebarData?.details?.createdAt && (
                     <li className="flex justify-between">
-                      Type:{" "}
-                      <span>{sidebarData?.details?.type ?? "—"} File</span>
-                    </li>
-                    <li className="flex justify-between">
-                      Size:{" "}
+                      Created:{" "}
                       <span>
-                        {sidebarData?.details
-                          ? formatSize(sidebarData.details.size)
-                          : "—"}
+                        {sidebarData.details.createdAt.toLocaleDateString()}
                       </span>
                     </li>
-                    {sidebarData?.details?.createdAt && (
-                      <li className="flex justify-between">
-                        Created:{" "}
-                        <span>
-                          {sidebarData.details.createdAt.toLocaleDateString()}
-                        </span>
-                      </li>
-                    )}
-                    {sidebarData?.details?.dimensions && (
-                      <li className="flex justify-between">
-                        Dimensions:{" "}
-                        <span>
-                          {sidebarData.details.dimensions.width}x
-                          {sidebarData.details.dimensions.height}
-                        </span>
-                      </li>
-                    )}
-                  </ul>
-                </div>
+                  )}
+                  {sidebarData?.details?.dimensions && (
+                    <li className="flex justify-between">
+                      Dimensions:{" "}
+                      <span>
+                        {sidebarData.details.dimensions.width}x
+                        {sidebarData.details.dimensions.height}
+                      </span>
+                    </li>
+                  )}
+                </ul>
               </div>
-            </>
+            </div>
           ) : (
             <div className="text-sm">
-              <div className="bg-muted aspect-3/2"></div>
+              <div className="bg-muted flex aspect-3/2 items-center justify-center">
+                {TabIcon && (
+                  <TabIcon className="size-16 text-muted-foreground" />
+                )}
+              </div>
 
               <div className="flow p-4">
                 <h3 className="text-sm">
-                  {sidebarData
-                    ? sidebarData.text
-                    : getCategoryText(activeTab, items.length)}
+                  {sidebarData?.text ??
+                    getCategoryText(activeTab, items.length)}
                 </h3>
 
                 <div className="border border-accent-foreground/15 p-3 flex gap-4 items-center">
