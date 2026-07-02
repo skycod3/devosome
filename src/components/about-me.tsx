@@ -140,6 +140,42 @@ export function AboutMe() {
           </p>
         </RevealItem>
 
+        {/* Timeline */}
+        <RevealItem
+          style={{ "--flow-space": "0.25em" } as React.CSSProperties}
+          className="flow"
+        >
+          <h2 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+            Journey
+          </h2>
+          <ol className="border-l border-border pl-6">
+            {ABOUT_ME.timeline.map((entry) => {
+              const isCurrent = entry.period === "Present";
+              return (
+                <li
+                  key={`${entry.period}-${entry.role}`}
+                  className="relative pb-5 last:pb-0"
+                >
+                  <span
+                    className={`absolute -left-[31px] top-1 size-3 rounded-full ring-4 ring-background ${
+                      isCurrent ? "bg-emerald-500 animate-pulse" : "bg-primary"
+                    }`}
+                  />
+                  <p className="text-xs font-medium text-muted-foreground">
+                    {entry.period}
+                  </p>
+                  <h3 className="text-sm font-semibold text-foreground">
+                    {entry.role}
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    {entry.description}
+                  </p>
+                </li>
+              );
+            })}
+          </ol>
+        </RevealItem>
+
         {/* Highlights */}
         <RevealItem
           style={{ "--flow-space": "0.25em" } as React.CSSProperties}
