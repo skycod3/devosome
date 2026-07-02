@@ -168,7 +168,9 @@ export function WindowHeader({
 
     const onMove = (moveEvent: PointerEvent) => {
       if (moveEvent.pointerId !== pointerId) return;
-      if (Math.hypot(moveEvent.clientX - startX, moveEvent.clientY - startY) < 4)
+      if (
+        Math.hypot(moveEvent.clientX - startX, moveEvent.clientY - startY) < 4
+      )
         return;
       cleanup();
 
@@ -181,7 +183,10 @@ export function WindowHeader({
       // past the viewport edge — otherwise dragElastic pulls it back and the
       // window feels "stuck" to the edge while detaching.
       const maxX = Math.max(0, width - restoreWidth);
-      const newX = Math.min(Math.max(0, moveEvent.clientX - relativeX * restoreWidth), maxX);
+      const newX = Math.min(
+        Math.max(0, moveEvent.clientX - relativeX * restoreWidth),
+        maxX,
+      );
 
       mvWidth.set(restoreWidth);
       mvHeight.set(restoreHeight);
