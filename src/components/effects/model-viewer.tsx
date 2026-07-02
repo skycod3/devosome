@@ -2,15 +2,10 @@
 
 import { Suspense, useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Center, OrbitControls, useGLTF } from "@react-three/drei";
+import { Bounds, Center, OrbitControls, useGLTF } from "@react-three/drei";
 import type { Group, Mesh } from "three";
 
-/**
- * Point this at a real model once it's added to /public/models — e.g.
- * "/models/avatar.glb". While it's null, the viewer renders an animated
- * wireframe primitive so the hero still works without an asset.
- */
-const MODEL_URL: string | null = null;
+const MODEL_URL: string | null = "/models/laptop.glb";
 
 interface ModelViewerProps {
   /** Idle auto-rotation; turn off for reduced-motion users. */
@@ -36,31 +31,33 @@ function GltfModel({ url, spin }: { url: string; spin: boolean }) {
   useFrame((_, delta) => {
     if (spin && ref.current) ref.current.rotation.y += delta * 0.3;
   });
+
   return (
-    <Center>
-      <primitive ref={ref} object={scene} />
-    </Center>
+    <group ref={ref}>
+      <Center>
+        <primitive object={scene} />
+      </Center>
+    </group>
   );
 }
 
 export default function ModelViewer({ spin = true }: ModelViewerProps) {
   return (
     <Canvas camera={{ position: [0, 0, 4], fov: 45 }} dpr={[1, 2]}>
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[3, 3, 3]} intensity={1.2} />
+      <ambientLight intensity={1} />
+      <hemisphereLight args={["#ffffff", "#9a9aae", 1.2]} />
+      <directionalLight position={[3, 4, 3]} intensity={2.5} />
+      <directionalLight position={[-4, 2, -3]} intensity={1} />
       <Suspense fallback={null}>
-        {MODEL_URL ? (
-          <GltfModel url={MODEL_URL} spin={spin} />
-        ) : (
-          <SpinningPlaceholder spin={spin} />
-        )}
+        <Bounds fit margin={1.5}>
+          {MODEL_URL ? (
+            <GltfModel url={MODEL_URL} spin={spin} />
+          ) : (
+            <SpinningPlaceholder spin={spin} />
+          )}
+        </Bounds>
       </Suspense>
-      <OrbitControls
-        enablePan={false}
-        enableZoom={false}
-        autoRotate={spin}
-        autoRotateSpeed={0.6}
-      />
+      <OrbitControls enablePan={false} enableZoom={false} autoRotate={false} />
     </Canvas>
   );
 }
