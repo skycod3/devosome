@@ -100,7 +100,7 @@ export function AboutMe() {
               )}
             </div>
           ) : (
-            <div className="h-48 w-full max-w-xs">
+            <div className="h-56 w-full max-w-xs">
               <ModelViewer spin />
             </div>
           )}
