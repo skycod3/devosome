@@ -61,7 +61,9 @@ export function WindowContent({
   if (application?.component) {
     const AppComponent = application.component;
     return (
-      <section className="flex-2 @container">
+      // `relative` so an app's absolute backdrop (HeroBackdrop) is confined to the
+      // body and doesn't bleed up behind the window header.
+      <section className="relative flex-2 @container">
         <AppComponent iconId={iconId} />
       </section>
     );
