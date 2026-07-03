@@ -75,9 +75,12 @@ export function FileBrowser({
   );
 
   return (
-    <div onClick={handleAreaClick} className="flex flex-col h-full w-full overflow-hidden">
+    <div
+      onClick={handleAreaClick}
+      className="flex flex-col h-full w-full overflow-hidden"
+    >
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-4 py-2 border-b shrink-0">
+      <div className="flex items-center justify-between px-4 py-2 border-b shrink-0 bg-card">
         <div>{toolbarSlot}</div>
         <div className="flex items-center gap-1">
           <button
