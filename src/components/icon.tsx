@@ -67,6 +67,16 @@ export function Icon({
     }
   }
 
+  const customIconColors = !isDesktopIcon
+    ? // window icons
+      !isHighlighted
+      ? `hover:bg-accent`
+      : `bg-accent`
+    : // desktop icons (color-mix)
+      !isHighlighted
+      ? "hover:bg-(--icon-color)/10"
+      : "bg-(--icon-color)/20";
+
   return (
     <ContextMenu>
       <ContextMenuTrigger asChild>
@@ -84,7 +94,7 @@ export function Icon({
                 : "white",
             } as CSSProperties
           }
-          className={`z-1 size-full sm:grid gap-1.5 p-1 rounded text-center text-(--icon-color) ${supportsRelativeColors ? `${!isHighlighted ? `hover:bg-(--icon-color)/10` : "bg-(--icon-color)/20"}` : ""}`}
+          className={`z-1 size-full sm:grid gap-1.5 p-1 rounded text-center text-(--icon-color) ${supportsRelativeColors ? customIconColors : ""}`}
         >
           <div className="flex-center min-h-0 max-h-14">
             <Image
