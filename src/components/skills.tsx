@@ -186,7 +186,7 @@ function SkillCard({
         className="relative h-full w-full rounded-lg transition-transform duration-500 transform-3d"
         style={{ transform: flipped ? "rotateY(180deg)" : undefined }}
       >
-        <span className="absolute inset-0 overflow-hidden rounded-lg border border-border bg-card backface-hidden">
+        <span className="absolute inset-0 overflow-hidden rounded-lg border border-border bg-card backface-hidden transition-transform hover:-translate-y-1">
           {front}
         </span>
         <span className="absolute inset-0 overflow-auto rounded-lg border border-border bg-card backface-hidden transform-[rotateY(180deg)]">
