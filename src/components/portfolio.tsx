@@ -142,7 +142,7 @@ function ProjectCard({ project, tilt }: { project: Project; tilt: boolean }) {
     <RevealItem className="perspective-[1000px]">
       <Tilt
         enabled={tilt}
-        className="h-full overflow-hidden rounded-lg border bg-card transition-shadow hover:shadow-sm"
+        className="h-full overflow-hidden rounded-lg border bg-card transition-shadow shadow-foreground/10 hover:shadow-lg"
       >
         {/* Thumbnail */}
         <div className="relative h-36 w-full overflow-hidden bg-muted">
