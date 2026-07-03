@@ -23,7 +23,11 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
 import { RevealGroup, RevealItem } from "./ui/reveal";
-import { AppToolbar, ToolbarButton, ToolbarSeparator } from "./window/app-toolbar";
+import {
+  AppToolbar,
+  ToolbarButton,
+  ToolbarSeparator,
+} from "./window/app-toolbar";
 import { HeroBackdrop } from "./effects/hero-backdrop";
 
 type FormStatus = "idle" | "sending";
@@ -130,174 +134,185 @@ export function Contact() {
       <HeroBackdrop />
 
       <RevealGroup className="space-y-6 p-4 md:p-6">
-      {/* Header */}
-      <RevealItem>
-        <h2 className="text-lg font-semibold">Get in Touch</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          Send me a message and I&apos;ll get back to you as soon as possible.
-        </p>
-      </RevealItem>
+        {/* Header */}
+        <RevealItem>
+          <h2 className="text-lg font-semibold">Get in Touch</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            Send me a message and I&apos;ll get back to you as soon as possible.
+          </p>
+        </RevealItem>
 
-      {/* Form / success */}
-      <RevealItem>
-        <AnimatePresence mode="wait" initial={false}>
-          {sent ? (
-            <motion.div
-              key="success"
-              initial={reducedMotion ? false : { opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }}
-              transition={{ duration: 0.25, ease: "easeOut" }}
-              className="flex flex-col items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-8 text-center"
-            >
-              <motion.span
-                initial={reducedMotion ? false : { scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.1 }}
+        {/* Form / success */}
+        <RevealItem>
+          <AnimatePresence mode="wait" initial={false}>
+            {sent ? (
+              <motion.div
+                key="success"
+                initial={reducedMotion ? false : { opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={
+                  reducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96 }
+                }
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="flex flex-col items-center gap-3 rounded-lg border border-emerald-200 bg-emerald-50 p-8 text-center"
               >
-                <PiCheckCircle className="size-12 text-emerald-500" />
-              </motion.span>
-              <h3 className="text-base font-semibold text-emerald-800">
-                Message sent!
-              </h3>
-              <p className="text-sm text-emerald-700">
-                Thanks for reaching out — I&apos;ll get back to you soon.
-              </p>
-              <button
-                type="button"
-                onClick={() => setSent(false)}
-                className="mt-2 rounded-md border border-emerald-300 px-3 py-1.5 text-xs font-medium text-emerald-800 transition hover:bg-emerald-100"
+                <motion.span
+                  initial={reducedMotion ? false : { scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 18,
+                    delay: 0.1,
+                  }}
+                >
+                  <PiCheckCircle className="size-12 text-emerald-500" />
+                </motion.span>
+                <h3 className="text-base font-semibold text-emerald-800">
+                  Message sent!
+                </h3>
+                <p className="text-sm text-emerald-700">
+                  Thanks for reaching out — I&apos;ll get back to you soon.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setSent(false)}
+                  className="mt-2 rounded-md border border-emerald-300 px-3 py-1.5 text-xs font-medium text-emerald-800 transition hover:bg-emerald-100"
+                >
+                  Send another message
+                </button>
+              </motion.div>
+            ) : (
+              <motion.form
+                key="form"
+                initial={reducedMotion ? false : { opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                onSubmit={handleSubmit(onSubmit)}
+                className="flex flex-col gap-4"
               >
-                Send another message
-              </button>
-            </motion.div>
-          ) : (
-            <motion.form
-              key="form"
-              initial={reducedMotion ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={reducedMotion ? { opacity: 0 } : { opacity: 0, y: -8 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
-            >
-              {/* Honeypot — hidden from real users, bots tend to fill it */}
-              <input
-                ref={honeypotRef}
-                type="text"
-                name="company"
-                tabIndex={-1}
-                autoComplete="off"
-                aria-hidden="true"
-                className="absolute -left-[9999px] h-0 w-0 opacity-0"
-              />
+                {/* Honeypot — hidden from real users, bots tend to fill it */}
+                <input
+                  ref={honeypotRef}
+                  type="text"
+                  name="company"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute -left-[9999px] h-0 w-0 opacity-0"
+                />
 
-              {/* Name + Email row */}
-              <div className="grid grid-cols-2 gap-4">
+                {/* Name + Email row */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="group grid gap-1">
+                    <label
+                      htmlFor="contact-name"
+                      className="text-xs font-medium text-muted-foreground uppercase tracking-wide transition-colors group-focus-within:text-foreground"
+                    >
+                      Name*
+                    </label>
+                    <Input
+                      id="contact-name"
+                      aria-invalid={!!errors.name}
+                      {...register("name")}
+                      placeholder="Your name"
+                    />
+                    {errors.name && (
+                      <span className="text-xs text-red-500">
+                        {errors.name.message}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="group grid gap-1">
+                    <label
+                      htmlFor="contact-email"
+                      className="text-xs font-medium text-muted-foreground uppercase tracking-wide transition-colors group-focus-within:text-foreground"
+                    >
+                      Email*
+                    </label>
+                    <Input
+                      id="contact-email"
+                      aria-invalid={!!errors.email}
+                      {...register("email")}
+                      type="email"
+                      placeholder="your@email.com"
+                    />
+                    {errors.email && (
+                      <span className="text-xs text-red-500">
+                        {errors.email.message}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Subject */}
                 <div className="group grid gap-1">
                   <label
-                    htmlFor="contact-name"
+                    htmlFor="contact-subject"
                     className="text-xs font-medium text-muted-foreground uppercase tracking-wide transition-colors group-focus-within:text-foreground"
                   >
-                    Name
+                    Subject*
                   </label>
                   <Input
-                    id="contact-name"
-                    aria-invalid={!!errors.name}
-                    {...register("name")}
-                    placeholder="Your name"
+                    id="contact-subject"
+                    aria-invalid={!!errors.subject}
+                    {...register("subject")}
+                    placeholder="What's this about?"
                   />
-                  {errors.name && (
+                  {errors.subject && (
                     <span className="text-xs text-red-500">
-                      {errors.name.message}
+                      {errors.subject.message}
+                    </span>
+                  )}
+                </div>
+
+                {/* Message */}
+                <div className="group grid gap-1">
+                  <label
+                    htmlFor="contact-message"
+                    className="text-xs font-medium text-muted-foreground uppercase tracking-wide transition-colors group-focus-within:text-foreground"
+                  >
+                    Message*
+                  </label>
+                  <Textarea
+                    id="contact-message"
+                    aria-invalid={!!errors.message}
+                    {...register("message")}
+                    placeholder="Your message..."
+                    className="min-h-28"
+                  />
+                  {errors.message && (
+                    <span className="text-xs text-red-500">
+                      {errors.message.message}
                     </span>
                   )}
                 </div>
 
                 <div className="group grid gap-1">
-                  <label
-                    htmlFor="contact-email"
-                    className="text-xs font-medium text-muted-foreground uppercase tracking-wide transition-colors group-focus-within:text-foreground"
-                  >
-                    Email
-                  </label>
-                  <Input
-                    id="contact-email"
-                    aria-invalid={!!errors.email}
-                    {...register("email")}
-                    type="email"
-                    placeholder="your@email.com"
-                  />
-                  {errors.email && (
-                    <span className="text-xs text-red-500">
-                      {errors.email.message}
-                    </span>
-                  )}
+                  <small>(*) Required fields.</small>
                 </div>
-              </div>
 
-              {/* Subject */}
-              <div className="group grid gap-1">
-                <label
-                  htmlFor="contact-subject"
-                  className="text-xs font-medium text-muted-foreground uppercase tracking-wide transition-colors group-focus-within:text-foreground"
+                {/* Submit */}
+                <Button
+                  type="submit"
+                  disabled={status === "sending"}
+                  className="transition-transform active:scale-[0.98]"
                 >
-                  Subject
-                </label>
-                <Input
-                  id="contact-subject"
-                  aria-invalid={!!errors.subject}
-                  {...register("subject")}
-                  placeholder="What's this about?"
-                />
-                {errors.subject && (
-                  <span className="text-xs text-red-500">
-                    {errors.subject.message}
-                  </span>
-                )}
-              </div>
-
-              {/* Message */}
-              <div className="group grid gap-1">
-                <label
-                  htmlFor="contact-message"
-                  className="text-xs font-medium text-muted-foreground uppercase tracking-wide transition-colors group-focus-within:text-foreground"
-                >
-                  Message
-                </label>
-                <Textarea
-                  id="contact-message"
-                  aria-invalid={!!errors.message}
-                  {...register("message")}
-                  placeholder="Your message..."
-                  className="min-h-28"
-                />
-                {errors.message && (
-                  <span className="text-xs text-red-500">
-                    {errors.message.message}
-                  </span>
-                )}
-              </div>
-
-              {/* Submit */}
-              <Button
-                type="submit"
-                disabled={status === "sending"}
-                className="transition-transform active:scale-[0.98]"
-              >
-                {status === "sending" ? (
-                  <>
-                    <PiSpinner className="size-4 animate-spin" />
-                    Sending...
-                  </>
-                ) : (
-                  "Send Message"
-                )}
-              </Button>
-            </motion.form>
-          )}
-        </AnimatePresence>
-      </RevealItem>
+                  {status === "sending" ? (
+                    <>
+                      <PiSpinner className="size-4 animate-spin" />
+                      Sending...
+                    </>
+                  ) : (
+                    "Send Message"
+                  )}
+                </Button>
+              </motion.form>
+            )}
+          </AnimatePresence>
+        </RevealItem>
       </RevealGroup>
     </div>
   );
