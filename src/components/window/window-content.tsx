@@ -15,6 +15,8 @@ import {
   LazyPdfViewer,
 } from "../pdf-viewer";
 
+import { HeroBackdrop } from "../effects/hero-backdrop";
+
 // ---------------------------------------------------------------------------
 // WindowContent
 // ---------------------------------------------------------------------------
@@ -37,7 +39,9 @@ export function WindowContent({
   const availableTabs = application?.availableTabs;
   if (availableTabs) {
     return (
-      <section className="flex-2 @container overflow-auto min-w-0">
+      <section className="flex-2 @container overflow-auto min-w-0 relative isolate bg-card">
+        <HeroBackdrop />
+
         {availableTabs.map((tabId) => {
           const tabApp = APPLICATIONS[tabId];
           const AppComponent = tabApp?.component;
