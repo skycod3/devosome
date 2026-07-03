@@ -30,6 +30,8 @@ import { WINDOW_BREADCRUMB_HOME } from "@/constants/windows";
 import { supportsRelativeColors } from "@/utils/css-supports";
 import { useHotkey } from "@tanstack/react-hotkeys";
 
+import { useTheme } from "@/hooks/useTheme";
+
 interface WindowHeaderProps {
   window: Window;
   windowTitle: string;
@@ -67,6 +69,7 @@ export function WindowHeader({
 
   const { icons } = useIcons();
   const { width, height } = useViewport();
+  const { isDark } = useTheme();
 
   const parentIcon = icons.find((icon) => icon.id === window.parentId);
 
@@ -215,7 +218,7 @@ export function WindowHeader({
           <div
             style={{
               background: supportsRelativeColors
-                ? `linear-gradient(to right, rgb(from var(--background) r g b / 0.2), transparent 50%), repeating-linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.05) 8%), repeating-linear-gradient(-45deg, transparent, rgb(from var(--foreground) r g b / 0.05) 8%)`
+                ? `linear-gradient(to right, rgb(from var(--background) r g b / 0.2), transparent 50%), repeating-linear-gradient(45deg, transparent, rgba(0, 0, 0, ${isDark ? "0.15" : "0.05"}) 8%), repeating-linear-gradient(-45deg, transparent, rgb(from var(--foreground) r g b / 0.05) 8%)`
                 : "var(--secondary)", // Solid fallback for browsers without relative color support
             }}
             className={`flex basis-full line-clamp-1 items-center gap-x-3 gap-y-1 p-2`}
