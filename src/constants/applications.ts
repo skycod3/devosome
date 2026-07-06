@@ -12,6 +12,7 @@ import { Terminal } from "@/components/terminal";
 import { ClipboardHistory } from "@/components/clipboard-history";
 import { SystemMonitor } from "@/components/system-monitor";
 import { SystemSettings } from "@/components/system-settings";
+import { Notes } from "@/components/notes";
 
 type AppComponent = ComponentType<{ iconId: string }>;
 
@@ -138,5 +139,12 @@ export const APPLICATIONS: Record<string, Application> = {
     component: SystemSettings,
     showTabs: false,
     defaultSize: { width: 560, height: 420 },
+  },
+  notes: {
+    id: "notes",
+    windowTitle: "Tips",
+    component: Notes,
+    showTabs: false,
+    defaultSize: { width: 320, height: 420 },
   },
 };
