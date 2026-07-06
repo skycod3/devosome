@@ -7,6 +7,7 @@ import { PiDotsNine } from "react-icons/pi";
 
 import { Window as WindowType } from "@/stores/windows-store";
 import { useWindows } from "@/hooks/useWindows";
+import { APPLICATIONS } from "@/constants/applications";
 import {
   WINDOW_MIN_WIDTH,
   WINDOW_MIN_HEIGHT,
@@ -51,6 +52,11 @@ export function ResizeHandles({
 }: ResizeHandlesProps) {
   const { setWindowPosition, setWindowSize } = useWindows();
 
+  // Per-app resize floor, falling back to the global window minimum.
+  const appMinSize = APPLICATIONS[win.iconId]?.minSize;
+  const minWidth = appMinSize?.width ?? WINDOW_MIN_WIDTH;
+  const minHeight = appMinSize?.height ?? WINDOW_MIN_HEIGHT;
+
   const handlePointerDown = useCallback(
     (e: React.PointerEvent, edges: EdgeFlags) => {
       if (isMobile || win.isMaximized || !enabled) return;
@@ -82,17 +88,17 @@ export function ResizeHandles({
         const dy = ev.clientY - startY;
 
         if (edges.east) {
-          newWidth = Math.max(WINDOW_MIN_WIDTH, startWidth + dx);
+          newWidth = Math.max(minWidth, startWidth + dx);
         }
         if (edges.west) {
-          newWidth = Math.max(WINDOW_MIN_WIDTH, startWidth - dx);
+          newWidth = Math.max(minWidth, startWidth - dx);
           newX = startPosX + (startWidth - newWidth);
         }
         if (edges.south) {
-          newHeight = Math.max(WINDOW_MIN_HEIGHT, startHeight + dy);
+          newHeight = Math.max(minHeight, startHeight + dy);
         }
         if (edges.north) {
-          newHeight = Math.max(WINDOW_MIN_HEIGHT, startHeight - dy);
+          newHeight = Math.max(minHeight, startHeight - dy);
           newY = startPosY + (startHeight - newHeight);
         }
 
@@ -128,6 +134,8 @@ export function ResizeHandles({
       win.isMaximized,
       enabled,
       win.id,
+      minWidth,
+      minHeight,
       x,
       y,
       mvWidth,

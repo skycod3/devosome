@@ -22,6 +22,8 @@ interface Application {
   windowTitle?: string;
   tabTitle?: string; // Tab label shown in breadcrumb (when different from windowTitle)
   defaultSize?: { width: number; height: number };
+  /** Smallest this app may be resized to. Falls back to the global window min. */
+  minSize?: { width: number; height: number };
   showTabs?: boolean;
   availableTabs?: string[]; // List of app IDs available as tabs in this window
 }
@@ -33,6 +35,8 @@ export const APPLICATIONS: Record<string, Application> = {
     windowTitle: "Files",
     showTabs: true,
     availableTabs: ["recent", "documents", "pictures", "music", "videos"],
+    // Sidebar + toolbar + content grid need room to stay usable.
+    minSize: { width: 640, height: 440 },
   },
 
   // Tab views
@@ -116,6 +120,8 @@ export const APPLICATIONS: Record<string, Application> = {
     component: ClipboardHistory,
     showTabs: false,
     defaultSize: { width: 420, height: 480 },
+    // Compact list — stays usable below the global (larger) window minimum.
+    minSize: { width: 320, height: 240 },
   },
   "system-monitor": {
     id: "system-monitor",
@@ -123,6 +129,8 @@ export const APPLICATIONS: Record<string, Application> = {
     component: SystemMonitor,
     showTabs: false,
     defaultSize: { width: 420, height: 500 },
+    // Compact stats panel — stays usable below the global window minimum.
+    minSize: { width: 320, height: 240 },
   },
   "system-settings": {
     id: "system-settings",

@@ -29,8 +29,14 @@ export const SNAP_EDGE_THRESHOLD = 12;
 /** How close a window's own edge must get to a side (px) to trigger a half snap. */
 export const SNAP_SIDE_TRIGGER = 24;
 
-export const WINDOW_MIN_WIDTH = DEFAULT_WINDOW_SIZE.width;
-export const WINDOW_MIN_HEIGHT = DEFAULT_WINDOW_SIZE.height;
+/**
+ * Default minimum a window may be manually resized to — the common floor for
+ * content-heavy windows. Apps override it per-app via `minSize` in APPLICATIONS:
+ * compact apps (Tips, Clipboard, System Monitor) opt into a smaller floor, and
+ * larger ones (Files) into a bigger one. Derived from a 320×240 compact base, ×1.5.
+ */
+export const WINDOW_MIN_WIDTH = 320 * 1.5;
+export const WINDOW_MIN_HEIGHT = 240 * 1.5;
 export const RESIZE_HANDLE_SIZE = 6;
 export const RESIZE_CORNER_SIZE = 12;
 
