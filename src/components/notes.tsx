@@ -26,7 +26,7 @@ export function Notes({ iconId: _ }: { iconId: string }) {
               {section.tips.map((tip, i) => (
                 <li
                   key={i}
-                  className="flex flex-wrap items-center gap-2 text-lg leading-snug"
+                  className="before:content-['-'] flex items-baseline gap-2 text-lg leading-snug"
                 >
                   <span>{tip.text}</span>
                   {tip.keys && (
