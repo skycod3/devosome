@@ -6,6 +6,8 @@ export const LARGE_DESKTOP_WINDOW_SIZE = { width: 1200, height: 720 };
 export const SMALL_DESKTOP_WINDOW_SIZE = { width: 800, height: 480 };
 /** 768–1023px viewports */
 export const TABLET_WINDOW_SIZE = { width: 600, height: 480 };
+/** Opening size for image (Pictures) windows, which aren't in APPLICATIONS. */
+export const IMAGE_WINDOW_SIZE = { width: 800, height: 600 };
 export const DEFAULT_WINDOW_POSITION = { x: 100, y: 100 };
 export const BASE_Z_INDEX = 10;
 

@@ -7,6 +7,7 @@ import {
   SMALL_DESKTOP_WINDOW_SIZE,
   TABLET_WINDOW_SIZE,
   LARGE_DESKTOP_WINDOW_SIZE,
+  IMAGE_WINDOW_SIZE,
   CASCADE_STEP,
   MAX_CASCADE_SLOTS,
   WORKAREA_TOP_INSET,
@@ -95,6 +96,8 @@ export const useWindows = () => {
     // Get application config from registry
     const app = APPLICATIONS[iconId];
     const showTabs = app?.showTabs ?? false;
+    // Image files aren't in APPLICATIONS — they share one opening size.
+    const isImage = iconId.startsWith("image-");
 
     // Resolve parent title from APPLICATIONS for breadcrumb
     // Prefer tabTitle (tab label) over windowTitle (window title) for accuracy
@@ -121,8 +124,9 @@ export const useWindows = () => {
       setWindowSize(windowId, width, height);
       setWindowPosition(windowId, 0, 0);
     } else if (isTablet) {
-      // Tablet: app defaultSize if set, else the tablet size; centered, no cascade.
-      const preferredSize = app?.defaultSize ?? TABLET_WINDOW_SIZE;
+      // Tablet: app defaultSize if set, else image/tablet size; centered, no cascade.
+      const preferredSize =
+        app?.defaultSize ?? (isImage ? IMAGE_WINDOW_SIZE : TABLET_WINDOW_SIZE);
       const tabletWidth = Math.min(preferredSize.width, width * 0.9);
       const tabletHeight = Math.min(preferredSize.height, height * 0.9);
       const tabletX = width / 2 - tabletWidth / 2;
@@ -135,7 +139,8 @@ export const useWindows = () => {
       const breakpointSize = isSmallDesktop
         ? SMALL_DESKTOP_WINDOW_SIZE
         : LARGE_DESKTOP_WINDOW_SIZE;
-      const preferredSize = app?.defaultSize ?? breakpointSize;
+      const preferredSize =
+        app?.defaultSize ?? (isImage ? IMAGE_WINDOW_SIZE : breakpointSize);
       const effectiveWidth = Math.min(preferredSize.width, width * 0.9);
       const effectiveHeight = Math.min(preferredSize.height, height * 0.9);
       // Cascade down-right with wrap (centered block) so windows never march
