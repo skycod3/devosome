@@ -5,7 +5,7 @@ import { Window } from "@/stores/windows-store";
 import { useIcons } from "@/hooks/useIcons";
 import { useViewport } from "@/hooks/useViewport";
 import { useWindows } from "@/hooks/useWindows";
-import { Kbd } from "../ui/kbd";
+import { Kbd, KbdGroup } from "../ui/kbd";
 
 import { animate, DragControls, MotionValue } from "motion/react";
 
@@ -291,7 +291,11 @@ export function WindowHeader({
           <VscChromeRestore className="size-4 icon-fix" />
           Restore
           <ContextMenuShortcut>
-            <Kbd>Ctrl</Kbd>+<Kbd>Alt</Kbd>+<Kbd>M</Kbd>
+            <KbdGroup>
+              <Kbd>Ctrl</Kbd>
+              <Kbd>Alt</Kbd>
+              <Kbd>M</Kbd>
+            </KbdGroup>
           </ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem
@@ -301,7 +305,10 @@ export function WindowHeader({
           <VscChromeMinimize className="size-4 icon-fix" />
           Minimize
           <ContextMenuShortcut>
-            <Kbd>Ctrl</Kbd>+<Kbd>M</Kbd>
+            <KbdGroup>
+              <Kbd>Ctrl</Kbd>
+              <Kbd>M</Kbd>
+            </KbdGroup>
           </ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuItem
@@ -312,7 +319,11 @@ export function WindowHeader({
           <VscChromeMaximize className="size-4 icon-fix" />
           Maximize
           <ContextMenuShortcut>
-            <Kbd>Ctrl</Kbd>+<Kbd>Alt</Kbd>+<Kbd>M</Kbd>
+            <KbdGroup>
+              <Kbd>Ctrl</Kbd>
+              <Kbd>Alt</Kbd>
+              <Kbd>M</Kbd>
+            </KbdGroup>
           </ContextMenuShortcut>
         </ContextMenuItem>
         <ContextMenuSeparator />
@@ -323,7 +334,10 @@ export function WindowHeader({
           <VscClose className="size-4 icon-fix" />
           Close
           <ContextMenuShortcut>
-            <Kbd>Ctrl</Kbd>+<Kbd>Q</Kbd>
+            <KbdGroup>
+              <Kbd>Ctrl</Kbd>
+              <Kbd>Q</Kbd>
+            </KbdGroup>
           </ContextMenuShortcut>
         </ContextMenuItem>
       </ContextMenuContent>
