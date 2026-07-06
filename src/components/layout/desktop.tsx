@@ -109,16 +109,17 @@ export function Desktop() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Show spotlight tip on first visit — run once on mount.
+  // Point first-time visitors at the Tips note — run once on mount.
   useEffect(() => {
     if (isMobile) return;
 
-    if (localStorage.getItem(STORAGE_KEYS.SPOTLIGHT_TIP_SHOWN)) return;
+    if (localStorage.getItem(STORAGE_KEYS.TIPS_HINT_SHOWN)) return;
 
-    localStorage.setItem(STORAGE_KEYS.SPOTLIGHT_TIP_SHOWN, "true");
-    notify.info("Tip: Press Ctrl+K to open Spotlight Search 🔍", {
+    localStorage.setItem(STORAGE_KEYS.TIPS_HINT_SHOWN, "true");
+    notify.info("Tip: open the Tips note on your desktop 📝", {
+      description: "It lists handy shortcuts and things you can do here.",
       duration: 1000 * 8, // 8 seconds
-      dedupeId: "spotlight-tip",
+      dedupeId: "tips-hint",
       expiresIn: 1000 * 60 * 60 * 24 * 3, // 3 days
       delay: 1000 * 10, // Show after 10 seconds
     });

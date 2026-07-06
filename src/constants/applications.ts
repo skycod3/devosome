@@ -12,6 +12,7 @@ import { Terminal } from "@/components/terminal";
 import { ClipboardHistory } from "@/components/clipboard-history";
 import { SystemMonitor } from "@/components/system-monitor";
 import { SystemSettings } from "@/components/system-settings";
+import { Notes } from "@/components/notes";
 
 type AppComponent = ComponentType<{ iconId: string }>;
 
@@ -35,6 +36,7 @@ export const APPLICATIONS: Record<string, Application> = {
     windowTitle: "Files",
     showTabs: true,
     availableTabs: ["recent", "documents", "pictures", "music", "videos"],
+    defaultSize: { width: 1000, height: 600 },
     // Sidebar + toolbar + content grid need room to stay usable.
     minSize: { width: 640, height: 440 },
   },
@@ -80,6 +82,7 @@ export const APPLICATIONS: Record<string, Application> = {
     id: "document-resume",
     windowTitle: "Jean's Resume.pdf",
     showTabs: false,
+    defaultSize: { width: 1000, height: 600 },
   },
 
   // Standalone windows
@@ -88,31 +91,35 @@ export const APPLICATIONS: Record<string, Application> = {
     windowTitle: "Skills",
     component: Skills,
     showTabs: false,
+    defaultSize: { width: 1000, height: 600 },
   },
   "about-me": {
     id: "about-me",
     windowTitle: "About Me",
     component: AboutMe,
     showTabs: false,
+    defaultSize: { width: 1000, height: 600 },
   },
   contact: {
     id: "contact",
     windowTitle: "Get in Touch",
     component: Contact,
     showTabs: false,
+    defaultSize: { width: 1000, height: 600 },
   },
   portfolio: {
     id: "portfolio",
     windowTitle: "Portfolio",
     component: Portfolio,
     showTabs: false,
+    defaultSize: { width: 1000, height: 600 },
   },
   terminal: {
     id: "terminal",
     windowTitle: "Terminal",
     component: Terminal,
     showTabs: false,
-    defaultSize: { width: 620, height: 420 },
+    defaultSize: { width: 720, height: 480 },
   },
   "clipboard-history": {
     id: "clipboard-history",
@@ -137,6 +144,16 @@ export const APPLICATIONS: Record<string, Application> = {
     windowTitle: "System Settings",
     component: SystemSettings,
     showTabs: false,
-    defaultSize: { width: 560, height: 420 },
+    defaultSize: { width: 800, height: 600 },
+    minSize: { width: 400, height: 320 },
+  },
+  notes: {
+    id: "notes",
+    windowTitle: "Tips",
+    component: Notes,
+    showTabs: false,
+    defaultSize: { width: 380, height: 420 },
+    // Compact sticky note — stays small below the global window minimum.
+    minSize: { width: 320, height: 240 },
   },
 };

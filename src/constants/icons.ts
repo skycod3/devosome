@@ -12,6 +12,7 @@ import VideosImage from "@/assets/videos.svg";
 import ClipboardImage from "@/assets/clipboard.svg";
 import SystemMonitorImage from "@/assets/system-monitor.svg";
 import SettingsImage from "@/assets/settings.svg";
+import NotesImage from "@/assets/notes.svg";
 
 /** Default size for desktop icons */
 export const DEFAULT_ICON_SIZE = { width: 48, height: 48 } as const;
@@ -121,6 +122,15 @@ export const DESKTOP_ICONS: Icon[] = [
     appId: "system-settings",
     title: "System Settings",
     icon: SettingsImage,
+    isHighlighted: false,
+    show: true,
+    size: DEFAULT_ICON_SIZE,
+  },
+  {
+    id: "icon-notes",
+    appId: "notes",
+    title: "Tips",
+    icon: NotesImage,
     isHighlighted: false,
     show: true,
     size: DEFAULT_ICON_SIZE,
