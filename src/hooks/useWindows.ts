@@ -75,7 +75,8 @@ export const useWindows = () => {
   // Detect breakpoint for responsive window sizing
   const isMobile = width > 0 && width < BREAKPOINTS.TABLET;
   const isTablet = width >= BREAKPOINTS.TABLET && width < BREAKPOINTS.DESKTOP;
-  const isSmallDesktop = width >= BREAKPOINTS.DESKTOP && width < BREAKPOINTS.WIDE;
+  const isSmallDesktop =
+    width >= BREAKPOINTS.DESKTOP && width < BREAKPOINTS.WIDE;
 
   /**
    * Opens a window centered on the viewport.
@@ -120,36 +121,37 @@ export const useWindows = () => {
       setWindowSize(windowId, width, height);
       setWindowPosition(windowId, 0, 0);
     } else if (isTablet) {
-      // Tablet: fixed smaller size, centered, no cascade
-      const tabletX = width / 2 - TABLET_WINDOW_SIZE.width / 2;
-      const tabletY = height / 2 - TABLET_WINDOW_SIZE.height / 2;
-      setWindowSize(
-        windowId,
-        TABLET_WINDOW_SIZE.width,
-        TABLET_WINDOW_SIZE.height,
-      );
+      // Tablet: app defaultSize if set, else the tablet size; centered, no cascade.
+      const preferredSize = app?.defaultSize ?? TABLET_WINDOW_SIZE;
+      const tabletWidth = Math.min(preferredSize.width, width * 0.9);
+      const tabletHeight = Math.min(preferredSize.height, height * 0.9);
+      const tabletX = width / 2 - tabletWidth / 2;
+      const tabletY = height / 2 - tabletHeight / 2;
+      setWindowSize(windowId, tabletWidth, tabletHeight);
       setWindowPosition(windowId, tabletX, tabletY);
     } else {
-      // Desktop: size based on viewport width, centered, cascading offset
-      const windowSize = isSmallDesktop
+      // Desktop: app defaultSize wins; fall back to the breakpoint size. Clamp
+      // to the viewport so a large defaultSize can't overflow small screens.
+      const breakpointSize = isSmallDesktop
         ? SMALL_DESKTOP_WINDOW_SIZE
         : LARGE_DESKTOP_WINDOW_SIZE;
-      const maxAllowedHeight = height * 0.9;
-      const effectiveHeight = Math.min(windowSize.height, maxAllowedHeight);
+      const preferredSize = app?.defaultSize ?? breakpointSize;
+      const effectiveWidth = Math.min(preferredSize.width, width * 0.9);
+      const effectiveHeight = Math.min(preferredSize.height, height * 0.9);
       // Cascade down-right with wrap (centered block) so windows never march
       // off the bottom/right of the work area.
       const { x: calculatedX, y: calculatedY } = computeCascadePosition({
         index: windows.length,
         step: CASCADE_STEP,
         maxSlots: MAX_CASCADE_SLOTS,
-        windowWidth: windowSize.width,
+        windowWidth: effectiveWidth,
         windowHeight: effectiveHeight,
         viewportWidth: width,
         viewportHeight: height,
         topInset: WORKAREA_TOP_INSET,
         bottomInset: WORKAREA_BOTTOM_INSET,
       });
-      setWindowSize(windowId, windowSize.width, effectiveHeight);
+      setWindowSize(windowId, effectiveWidth, effectiveHeight);
       setWindowPosition(windowId, calculatedX, calculatedY);
     }
 
