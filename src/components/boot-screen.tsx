@@ -3,8 +3,20 @@
 import { useEffect, useRef, useState } from "react";
 import { useSettingsStore } from "@/stores/settings-store";
 import { isSafariMobile } from "@/utils/browser";
-// prettier-ignore
-import { BOOT_BIOS_INITIAL_DELAY, BOOT_BIOS_LINE_DELAY, BOOT_BIOS_LINES, BOOT_BIOS_TO_KERNEL_DELAY, BOOT_BEFORE_FADEOUT_DELAY, BOOT_COUNTDOWN_INTERVAL, BOOT_FADEOUT_DURATION, BOOT_KERNEL_LEADING_LINES, BOOT_KERNEL_MIN_LINE_DELAY, BOOT_KERNEL_TRAILING_LINES, BOOT_WALLPAPER_LABEL, BOOT_AUDIO_LABEL } from "@/constants/boot";
+import {
+  BOOT_BIOS_INITIAL_DELAY,
+  BOOT_BIOS_LINE_DELAY,
+  BOOT_BIOS_LINES,
+  BOOT_BIOS_TO_KERNEL_DELAY,
+  BOOT_BEFORE_FADEOUT_DELAY,
+  BOOT_COUNTDOWN_INTERVAL,
+  BOOT_FADEOUT_DURATION,
+  BOOT_KERNEL_LEADING_LINES,
+  BOOT_KERNEL_MIN_LINE_DELAY,
+  BOOT_KERNEL_TRAILING_LINES,
+  BOOT_WALLPAPER_LABEL,
+  BOOT_AUDIO_LABEL,
+} from "@/constants/boot";
 import { Z_BOOT_SCREEN } from "@/constants/windows";
 
 type BootScreenProps = {
@@ -44,19 +56,19 @@ export function BootScreen({ onComplete }: BootScreenProps) {
     label: string;
     preload?: (url: string) => Promise<void>;
   }[] = [
-      { url: `/wallpapers/${wallpaper}`, label: BOOT_WALLPAPER_LABEL },
-      // Safari Mobile never fires canplaythrough without prior user interaction,
-      // so audio preload would hang the boot indefinitely on iOS Safari.
-      ...(!isSafariMobile()
-        ? [
+    { url: `/wallpapers/${wallpaper}`, label: BOOT_WALLPAPER_LABEL },
+    // Safari Mobile never fires canplaythrough without prior user interaction,
+    // so audio preload would hang the boot indefinitely on iOS Safari.
+    ...(!isSafariMobile()
+      ? [
           {
             url: "/sounds/ui-sounds.mp3",
             label: BOOT_AUDIO_LABEL,
             preload: preloadAudio,
           },
         ]
-        : []),
-    ];
+      : []),
+  ];
 
   const kernelListRef = useRef<HTMLDivElement>(null);
   const [biosLines, setBiosLines] = useState<string[]>([]);

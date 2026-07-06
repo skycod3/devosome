@@ -4,10 +4,25 @@ import { useWindows } from "@/hooks/useWindows";
 
 import { APPLICATIONS } from "@/constants/applications";
 
-// prettier-ignore
-import { Children, cloneElement, ReactElement, ReactNode, useEffect, useRef, useState } from "react";
-// prettier-ignore
-import { AnimatePresence, motion, MotionValue, useMotionValue, useReducedMotion, useSpring, useTransform, type Variants } from "motion/react";
+import {
+  Children,
+  cloneElement,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import {
+  AnimatePresence,
+  motion,
+  MotionValue,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  type Variants,
+} from "motion/react";
 import {
   PiUserDuotone,
   PiBookOpenDuotone,
@@ -15,8 +30,18 @@ import {
   PiEnvelopeDuotone,
 } from "react-icons/pi";
 
-// prettier-ignore
-import { DOCK_HEIGHT, DOCK_OFFSET_BOTTOM, DOCK_BASE_ITEM_SIZE, DOCK_MAGNIFICATION, DOCK_DISTANCE, DOCK_SPRING_MASS, DOCK_SPRING_STIFFNESS, DOCK_SPRING_DAMPING, DOCK_LABEL_ANIMATION_DURATION, DOCK_ICON_SIZE } from "@/constants/dock";
+import {
+  DOCK_HEIGHT,
+  DOCK_OFFSET_BOTTOM,
+  DOCK_BASE_ITEM_SIZE,
+  DOCK_MAGNIFICATION,
+  DOCK_DISTANCE,
+  DOCK_SPRING_MASS,
+  DOCK_SPRING_STIFFNESS,
+  DOCK_SPRING_DAMPING,
+  DOCK_LABEL_ANIMATION_DURATION,
+  DOCK_ICON_SIZE,
+} from "@/constants/dock";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 import { supportsRelativeColors } from "@/utils/css-supports";

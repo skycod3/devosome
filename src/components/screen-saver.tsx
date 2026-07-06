@@ -4,8 +4,20 @@ import { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { ColladaLoader } from "three/addons/loaders/ColladaLoader.js";
 import gsap from "gsap";
-// prettier-ignore
-import { SCREENSAVER_AMBIENT_INTENSITY, SCREENSAVER_ANIMATION_INDEX, SCREENSAVER_BG_COLOR, SCREENSAVER_CAMERA_FAR, SCREENSAVER_CAMERA_FOV, SCREENSAVER_CAMERA_NEAR, SCREENSAVER_CAMERA_POSITION, SCREENSAVER_CAMERA_TARGET, SCREENSAVER_DIR_LIGHT_INTENSITY, SCREENSAVER_DIR_LIGHT_POSITION, SCREENSAVER_FADEIN_DURATION, SCREENSAVER_MODEL_URL } from "@/constants/screen-saver";
+import {
+  SCREENSAVER_AMBIENT_INTENSITY,
+  SCREENSAVER_ANIMATION_INDEX,
+  SCREENSAVER_BG_COLOR,
+  SCREENSAVER_CAMERA_FAR,
+  SCREENSAVER_CAMERA_FOV,
+  SCREENSAVER_CAMERA_NEAR,
+  SCREENSAVER_CAMERA_POSITION,
+  SCREENSAVER_CAMERA_TARGET,
+  SCREENSAVER_DIR_LIGHT_INTENSITY,
+  SCREENSAVER_DIR_LIGHT_POSITION,
+  SCREENSAVER_FADEIN_DURATION,
+  SCREENSAVER_MODEL_URL,
+} from "@/constants/screen-saver";
 
 export function ScreenSaver() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -69,7 +81,11 @@ export function ScreenSaver() {
         gsap.fromTo(
           container,
           { opacity: 0 },
-          { opacity: 1, duration: SCREENSAVER_FADEIN_DURATION, ease: "power2.out" },
+          {
+            opacity: 1,
+            duration: SCREENSAVER_FADEIN_DURATION,
+            ease: "power2.out",
+          },
         );
       },
       undefined,

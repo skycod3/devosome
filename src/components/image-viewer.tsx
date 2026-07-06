@@ -10,15 +10,29 @@ import {
   type PanInfo,
 } from "motion/react";
 
-// prettier-ignore
-import { PiArrowLeft, PiArrowRight, PiArrowCounterClockwise, PiMagnifyingGlassMinus, PiMagnifyingGlassPlus, PiArrowsOut, PiSpinnerLight } from "react-icons/pi";
+import {
+  PiArrowLeft,
+  PiArrowRight,
+  PiArrowCounterClockwise,
+  PiMagnifyingGlassMinus,
+  PiMagnifyingGlassPlus,
+  PiArrowsOut,
+  PiSpinnerLight,
+} from "react-icons/pi";
 
 import { useIcons } from "@/hooks/useIcons";
 import { useWindows } from "@/hooks/useWindows";
 
 import { IMAGE_FILES } from "@/constants/image-files";
-// prettier-ignore
-import { ZOOM_MIN, ZOOM_MAX, ZOOM_STEP, ZOOM_WHEEL_FACTOR, SWIPE_THRESHOLD, SWIPE_OUT_DISTANCE, SWIPE_SPRING } from "@/constants/image-viewer";
+import {
+  ZOOM_MIN,
+  ZOOM_MAX,
+  ZOOM_STEP,
+  ZOOM_WHEEL_FACTOR,
+  SWIPE_THRESHOLD,
+  SWIPE_OUT_DISTANCE,
+  SWIPE_SPRING,
+} from "@/constants/image-viewer";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 

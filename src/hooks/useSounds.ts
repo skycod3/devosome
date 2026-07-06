@@ -5,12 +5,11 @@ import type { Howl as HowlType } from "howler";
 import { useSettings } from "@/hooks/useSettings";
 
 // Sprite map: [offsetMs, durationMs] — generated from public/sounds/ui-sounds.json
-// prettier-ignore
 const SPRITE_MAP = {
-  "click-left":  [0,    465],
+  "click-left": [0, 465],
   "click-right": [1300, 316],
-  toast:         [2600, 1071],
-  notification:  [4900, 4000],
+  toast: [2600, 1071],
+  notification: [4900, 4000],
 } satisfies Record<string, [number, number]>;
 
 type SoundId = keyof typeof SPRITE_MAP;
