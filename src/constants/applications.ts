@@ -146,5 +146,7 @@ export const APPLICATIONS: Record<string, Application> = {
     component: Notes,
     showTabs: false,
     defaultSize: { width: 320, height: 420 },
+    // Compact sticky note — stays small below the global window minimum.
+    minSize: { width: 320, height: 240 },
   },
 };
