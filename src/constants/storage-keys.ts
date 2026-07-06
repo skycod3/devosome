@@ -1,7 +1,7 @@
 /** localStorage keys used across the application */
 export const STORAGE_KEYS = {
   WELCOME_SHOWN: "welcomeShown",
-  SPOTLIGHT_TIP_SHOWN: "spotlightTipShown",
+  TIPS_HINT_SHOWN: "tipsHintShown",
 } as const;
 
 /** sessionStorage keys used across the application */
