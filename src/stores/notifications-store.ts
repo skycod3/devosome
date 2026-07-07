@@ -16,7 +16,10 @@ export type Notification = {
   read: boolean;
 };
 
-type AddNotificationPayload = Omit<Notification, "id" | "timestamp" | "read"> & {
+type AddNotificationPayload = Omit<
+  Notification,
+  "id" | "timestamp" | "read"
+> & {
   expiresIn?: number; // ms from now
 };
 
@@ -31,7 +34,10 @@ type NotificationsStore = {
 };
 
 function generateId(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+  if (
+    typeof crypto !== "undefined" &&
+    typeof crypto.randomUUID === "function"
+  ) {
     return crypto.randomUUID();
   }
   // Fallback for Safari on non-HTTPS (e.g. local network IP testing)
@@ -94,7 +100,10 @@ export const useNotificationsStore = create<NotificationsStore>()(
 
         markAllAsRead: () =>
           set((state) => ({
-            notifications: state.notifications.map((n) => ({ ...n, read: true })),
+            notifications: state.notifications.map((n) => ({
+              ...n,
+              read: true,
+            })),
             unreadCount: 0,
           })),
 

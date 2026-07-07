@@ -6,7 +6,5 @@ interface DocumentsProps {
 }
 
 export function Documents({ iconId }: DocumentsProps) {
-  return (
-    <FileBrowser iconId={iconId} files={DOCUMENTS_FILES} />
-  );
+  return <FileBrowser iconId={iconId} files={DOCUMENTS_FILES} />;
 }

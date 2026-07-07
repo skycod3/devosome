@@ -26,8 +26,8 @@ export function Spotlight({ onClose }: SpotlightProps) {
 
   const results = query.trim()
     ? ALL_APPS.filter((app) =>
-      app.title.toLowerCase().includes(query.toLowerCase()),
-    )
+        app.title.toLowerCase().includes(query.toLowerCase()),
+      )
     : ALL_APPS;
 
   const [lastQuery, setLastQuery] = useState(query);
@@ -50,8 +50,7 @@ export function Spotlight({ onClose }: SpotlightProps) {
 
   useEffect(() => {
     const item = listRef.current?.children[selectedIndex] as
-      | HTMLElement
-      | undefined;
+      HTMLElement | undefined;
     item?.scrollIntoView({ block: "nearest" });
   }, [selectedIndex]);
 
@@ -146,10 +145,11 @@ export function Spotlight({ onClose }: SpotlightProps) {
                 aria-selected={i === selectedIndex}
                 onMouseEnter={() => setSelectedIndex(i)}
                 onMouseDown={() => openApp(app.appId ?? app.id, app.title)}
-                className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${i === selectedIndex
-                  ? "bg-accent text-accent-foreground"
-                  : "text-foreground"
-                  }`}
+                className={`flex items-center gap-3 px-4 py-2 text-sm transition-colors ${
+                  i === selectedIndex
+                    ? "bg-accent text-accent-foreground"
+                    : "text-foreground"
+                }`}
               >
                 {app.icon ? (
                   <Image

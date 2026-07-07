@@ -37,7 +37,9 @@ describe("Spotlight", () => {
     render(<Spotlight onClose={vi.fn()} />);
 
     const listbox = screen.getByRole("listbox");
-    expect(within(listbox).getAllByRole("option")).toHaveLength(ALL_APPS.length);
+    expect(within(listbox).getAllByRole("option")).toHaveLength(
+      ALL_APPS.length,
+    );
 
     await userEvent.type(screen.getByRole("combobox"), "terminal");
 

@@ -54,7 +54,12 @@ export function DesktopWrapper() {
   const [booting, setBooting] = useState(true);
   const { theme, setTheme, systemThemeEnabled, setSystemThemeEnabled } =
     useTheme();
-  const { screenSaverEnabled, setScreenSaverEnabled, soundEnabled, setSoundEnabled } = useSettings();
+  const {
+    screenSaverEnabled,
+    setScreenSaverEnabled,
+    soundEnabled,
+    setSoundEnabled,
+  } = useSettings();
   const { isIdle } = useIdleTimer();
   const { openWindowCentered } = useWindows();
   // a11y: don't auto-launch the animated 3D screensaver for users who prefer

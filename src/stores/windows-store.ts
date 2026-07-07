@@ -525,22 +525,22 @@ export const useWindowsStore = create<WindowsState>()(
           windows: state.windows.map((window) =>
             window.id === id
               ? {
-                ...window,
-                // Remember the pre-snap (floating) geometry so dragging can
-                // restore it, and the snap geometry so un-maximize can re-snap.
-                restorePosition: window.position,
-                restoreSize: window.size,
-                snapRect: {
-                  x: rect.x,
-                  y: rect.y,
-                  width: rect.width,
-                  height: rect.height,
-                },
-                position: { x: rect.x, y: rect.y },
-                size: { width: rect.width, height: rect.height },
-                isSnapped: true,
-                isMaximized: false,
-              }
+                  ...window,
+                  // Remember the pre-snap (floating) geometry so dragging can
+                  // restore it, and the snap geometry so un-maximize can re-snap.
+                  restorePosition: window.position,
+                  restoreSize: window.size,
+                  snapRect: {
+                    x: rect.x,
+                    y: rect.y,
+                    width: rect.width,
+                    height: rect.height,
+                  },
+                  position: { x: rect.x, y: rect.y },
+                  size: { width: rect.width, height: rect.height },
+                  isSnapped: true,
+                  isMaximized: false,
+                }
               : window,
           ),
         }));

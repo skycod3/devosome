@@ -199,9 +199,7 @@ export function StartDropdown() {
               <DropdownMenuSubContent>
                 {ABOUT_ME.supportUrl && (
                   <DropdownMenuItem
-                    onClick={() =>
-                      window.open(ABOUT_ME.supportUrl, "_blank")
-                    }
+                    onClick={() => window.open(ABOUT_ME.supportUrl, "_blank")}
                   >
                     Buy Me a Coffee
                   </DropdownMenuItem>

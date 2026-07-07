@@ -6,7 +6,5 @@ interface PicturesProps {
 }
 
 export function Pictures({ iconId }: PicturesProps) {
-  return (
-    <FileBrowser iconId={iconId} files={IMAGE_FILES} />
-  );
+  return <FileBrowser iconId={iconId} files={IMAGE_FILES} />;
 }

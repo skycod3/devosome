@@ -21,7 +21,9 @@ describe("computeSnap", () => {
   });
 
   it("maximizes when the cursor reaches the top edge", () => {
-    expect(computeSnap({ ...base, pointerY: 50 })).toEqual({ kind: "maximize" });
+    expect(computeSnap({ ...base, pointerY: 50 })).toEqual({
+      kind: "maximize",
+    });
   });
 
   it("snaps left when the window's left edge reaches the side", () => {

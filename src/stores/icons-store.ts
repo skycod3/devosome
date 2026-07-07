@@ -36,83 +36,83 @@ export const useIconsStore = create<IconsState>()(
     (set, get) => ({
       icons: [],
 
-        // Initialize icons
-        setIcons(icons: Icon[]) {
-          set({ icons });
-        },
+      // Initialize icons
+      setIcons(icons: Icon[]) {
+        set({ icons });
+      },
 
-        // Add icon with duplicate check
-        addIcon(icon: Icon) {
-          const { icons } = get();
-          const existingIndex = icons.findIndex((i) => i.id === icon.id);
+      // Add icon with duplicate check
+      addIcon(icon: Icon) {
+        const { icons } = get();
+        const existingIndex = icons.findIndex((i) => i.id === icon.id);
 
-          if (existingIndex !== -1) {
-            set({
-              icons: icons.map((i, index) =>
-                index === existingIndex ? icon : i
-              ),
-            });
-            return;
-          }
-
-          set({ icons: [...icons, icon] });
-        },
-
-        // Remove icon
-        removeIcon(id: string) {
-          set((state) => ({
-            icons: state.icons.filter((icon) => icon.id !== id),
-          }));
-        },
-
-        // Generic update function to reduce code duplication
-        updateIcon(id: string, property: keyof Icon, value: boolean) {
-          set((state) => ({
-            icons: state.icons.map((icon) =>
-              icon.id === id ? { ...icon, [property]: value } : icon,
+        if (existingIndex !== -1) {
+          set({
+            icons: icons.map((i, index) =>
+              index === existingIndex ? icon : i,
             ),
-          }));
-        },
+          });
+          return;
+        }
 
-        // Generic bulk update function
-        updateAllIcons(property: keyof Icon, value: boolean) {
-          set((state) => ({
-            icons: state.icons.map((icon) => ({ ...icon, [property]: value })),
-          }));
-        },
+        set({ icons: [...icons, icon] });
+      },
 
-        // Convenience methods (delegate to generic functions)
-        showIcon(id: string) {
-          get().updateIcon(id, "show", true);
-        },
+      // Remove icon
+      removeIcon(id: string) {
+        set((state) => ({
+          icons: state.icons.filter((icon) => icon.id !== id),
+        }));
+      },
 
-        hideIcon(id: string) {
-          get().updateIcon(id, "show", false);
-        },
+      // Generic update function to reduce code duplication
+      updateIcon(id: string, property: keyof Icon, value: boolean) {
+        set((state) => ({
+          icons: state.icons.map((icon) =>
+            icon.id === id ? { ...icon, [property]: value } : icon,
+          ),
+        }));
+      },
 
-        showAllIcons() {
-          get().updateAllIcons("show", true);
-        },
+      // Generic bulk update function
+      updateAllIcons(property: keyof Icon, value: boolean) {
+        set((state) => ({
+          icons: state.icons.map((icon) => ({ ...icon, [property]: value })),
+        }));
+      },
 
-        hideAllIcons() {
-          get().updateAllIcons("show", false);
-        },
+      // Convenience methods (delegate to generic functions)
+      showIcon(id: string) {
+        get().updateIcon(id, "show", true);
+      },
 
-        highlightIcon(id: string) {
-          get().updateIcon(id, "isHighlighted", true);
-        },
+      hideIcon(id: string) {
+        get().updateIcon(id, "show", false);
+      },
 
-        unhighlightIcon(id: string) {
-          get().updateIcon(id, "isHighlighted", false);
-        },
+      showAllIcons() {
+        get().updateAllIcons("show", true);
+      },
 
-        highlightAllIcons() {
-          get().updateAllIcons("isHighlighted", true);
-        },
+      hideAllIcons() {
+        get().updateAllIcons("show", false);
+      },
 
-        unhighlightAllIcons() {
-          get().updateAllIcons("isHighlighted", false);
-        },
+      highlightIcon(id: string) {
+        get().updateIcon(id, "isHighlighted", true);
+      },
+
+      unhighlightIcon(id: string) {
+        get().updateIcon(id, "isHighlighted", false);
+      },
+
+      highlightAllIcons() {
+        get().updateAllIcons("isHighlighted", true);
+      },
+
+      unhighlightAllIcons() {
+        get().updateAllIcons("isHighlighted", false);
+      },
     }),
     { name: "icons-store" },
   ),

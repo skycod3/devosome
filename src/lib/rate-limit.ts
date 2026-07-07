@@ -39,5 +39,9 @@ export function rateLimit(
     }
   }
 
-  return { allowed: true, remaining: limit - timestamps.length, retryAfterMs: 0 };
+  return {
+    allowed: true,
+    remaining: limit - timestamps.length,
+    retryAfterMs: 0,
+  };
 }

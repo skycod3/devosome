@@ -223,7 +223,8 @@ export function Window({ window, desktopRect }: WindowProps) {
       // Collapse toward the top-left corner so the window shrinks into the
       // dropdown. Set imperatively (not via style) so opening/dragging keep the
       // default centered origin. Safe to set here: scale is still 1 this frame.
-      if (windowRef.current) windowRef.current.style.transformOrigin = "top left";
+      if (windowRef.current)
+        windowRef.current.style.transformOrigin = "top left";
     }
 
     const cx = animate(x, targetX, options);

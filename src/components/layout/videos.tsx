@@ -6,7 +6,5 @@ interface VideosProps {
 }
 
 export function Videos({ iconId }: VideosProps) {
-  return (
-    <FileBrowser iconId={iconId} files={VIDEO_FILES} />
-  );
+  return <FileBrowser iconId={iconId} files={VIDEO_FILES} />;
 }

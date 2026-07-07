@@ -66,12 +66,7 @@ export const SKILLS: SkillCategory[] = [
         name: "Next.js",
         proficiency: "Advanced",
         experience: "4+ years",
-        stack: [
-          "App Router",
-          "Server Components",
-          "SSG/SSR",
-          "API Routes",
-        ],
+        stack: ["App Router", "Server Components", "SSG/SSR", "API Routes"],
         projects: ["Portfolios", "E-commerce", "SEO-focused sites", "DevOSome"],
       },
     ],

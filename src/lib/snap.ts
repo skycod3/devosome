@@ -19,12 +19,12 @@ export interface SnapInput {
 export type SnapTarget =
   | { kind: "maximize" }
   | {
-    kind: "left" | "right";
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-  };
+      kind: "left" | "right";
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+    };
 
 /**
  * Windows Aero-style edge snapping.
@@ -47,7 +47,13 @@ export function computeSnap(p: SnapInput): SnapTarget | null {
 
   // Window's left edge reached (or nearly reached) the viewport's left.
   if (p.windowX <= p.sideInset) {
-    return { kind: "left", x: 0, y: workTop, width: halfWidth, height: workHeight };
+    return {
+      kind: "left",
+      x: 0,
+      y: workTop,
+      width: halfWidth,
+      height: workHeight,
+    };
   }
 
   // Window's right edge reached (or nearly reached) the viewport's right.

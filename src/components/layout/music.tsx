@@ -6,7 +6,5 @@ interface MusicProps {
 }
 
 export function Music({ iconId }: MusicProps) {
-  return (
-    <FileBrowser iconId={iconId} files={AUDIO_FILES} />
-  );
+  return <FileBrowser iconId={iconId} files={AUDIO_FILES} />;
 }

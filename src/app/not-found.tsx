@@ -16,10 +16,16 @@ export default function NotFound() {
       }}
       className="flex h-dvh w-full flex-col justify-center gap-6 px-6 text-white sm:px-16 md:px-24 lg:px-40"
     >
-      <div style={{
-        "--glitch-bg": BSOD_BLUE,
-        "--glitch-color": "#ffffff",
-      } as CSSProperties} className="text-7xl font-light sm:text-8xl" aria-hidden>
+      <div
+        style={
+          {
+            "--glitch-bg": BSOD_BLUE,
+            "--glitch-color": "#ffffff",
+          } as CSSProperties
+        }
+        className="text-7xl font-light sm:text-8xl"
+        aria-hidden
+      >
         <GlitchText
           speed={1}
           enableShadows
