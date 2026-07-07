@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useReducedMotion } from "motion/react";
 import { useTheme } from "@/hooks/useTheme";
 import { useIcons } from "@/hooks/useIcons";
 import { useSettings } from "@/hooks/useSettings";
@@ -11,6 +12,12 @@ import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 
 type Tab = "appearance" | "wallpaper" | "desktop" | "sound";
+
+// Warm the lazy screen-saver chunk (three.js ~1MB) before the click, so the
+// preview only has to wait on the 3D model load, not the bundle download.
+function preloadScreenSaver() {
+  void import("@/components/screen-saver");
+}
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "appearance", label: "Appearance" },
@@ -53,7 +60,11 @@ export function SystemSettings({ iconId: _ }: { iconId: string }) {
 function AppearancePanel() {
   const { theme, systemThemeEnabled, setTheme, setSystemThemeEnabled } =
     useTheme();
-  const { screenSaverEnabled, setScreenSaverEnabled } = useSettings();
+  const { screenSaverEnabled, setScreenSaverEnabled, setScreenSaverPreview } =
+    useSettings();
+  // a11y: hide the preview button for reduced-motion users — the 3D screen
+  // saver never renders for them, so the button would do nothing.
+  const prefersReducedMotion = useReducedMotion();
 
   const options: { value: "light" | "dark" | "system"; label: string }[] = [
     { value: "light", label: "Light" },
@@ -94,15 +105,28 @@ function AppearancePanel() {
       </div>
 
       <h2 className="text-sm font-semibold">Screen Saver</h2>
-      <label className="inline-flex items-center gap-3">
-        <input
-          type="checkbox"
-          checked={screenSaverEnabled}
-          onChange={(e) => setScreenSaverEnabled(e.target.checked)}
-          className="accent-primary"
-        />
-        <span className="text-sm">Enable screen saver</span>
-      </label>
+      <div className="flex items-center gap-3">
+        <label className="inline-flex items-center gap-3">
+          <input
+            type="checkbox"
+            checked={screenSaverEnabled}
+            onChange={(e) => setScreenSaverEnabled(e.target.checked)}
+            className="accent-primary"
+          />
+          <span className="text-sm">Enable screen saver</span>
+        </label>
+        {!prefersReducedMotion && (
+          <button
+            type="button"
+            onClick={() => setScreenSaverPreview(true)}
+            onMouseEnter={preloadScreenSaver}
+            onFocus={preloadScreenSaver}
+            className="rounded border border-border px-2 py-1 text-xs text-muted-foreground transition-colors hover:bg-muted"
+          >
+            Preview
+          </button>
+        )}
+      </div>
     </div>
   );
 }

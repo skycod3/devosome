@@ -19,6 +19,12 @@ export const useSettings = () => {
   const setScreenSaverEnabled = useSettingsStore(
     (state) => state.setScreenSaverEnabled,
   );
+  const screenSaverPreview = useSettingsStore(
+    (state) => state.screenSaverPreview,
+  );
+  const setScreenSaverPreview = useSettingsStore(
+    (state) => state.setScreenSaverPreview,
+  );
   const viewModes = useSettingsStore((state) => state.viewModes);
   const setViewMode = useSettingsStore((state) => state.setViewMode);
   const soundEnabled = useSettingsStore((state) => state.soundEnabled);
@@ -29,12 +35,14 @@ export const useSettings = () => {
     wallpaper,
     iconVisibility,
     screenSaverEnabled,
+    screenSaverPreview,
     viewModes,
     soundEnabled,
     // actions
     setWallpaper,
     setIconVisibility,
     setScreenSaverEnabled,
+    setScreenSaverPreview,
     setViewMode,
     setSoundEnabled,
   };

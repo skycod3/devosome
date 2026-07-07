@@ -77,9 +77,10 @@ export function ScreenSaver() {
         }
         scene.add(modelRoot);
 
-        // Start fade-in only after model is ready
+        // The black container is already visible (immediate feedback); fade in
+        // just the canvas/model once it's ready.
         gsap.fromTo(
-          container,
+          canvas,
           { opacity: 0 },
           {
             opacity: 1,
@@ -122,12 +123,8 @@ export function ScreenSaver() {
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="fixed inset-0 z-9998 bg-black"
-      style={{ opacity: 0 }}
-    >
-      <canvas ref={canvasRef} className="size-full" />
+    <div ref={containerRef} className="fixed inset-0 z-9998 bg-black">
+      <canvas ref={canvasRef} className="size-full" style={{ opacity: 0 }} />
     </div>
   );
 }

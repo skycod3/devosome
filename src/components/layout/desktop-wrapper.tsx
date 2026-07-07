@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { useTheme } from "@/hooks/useTheme";
 import { useSettings } from "@/hooks/useSettings";
@@ -57,6 +57,8 @@ export function DesktopWrapper() {
   const {
     screenSaverEnabled,
     setScreenSaverEnabled,
+    screenSaverPreview,
+    setScreenSaverPreview,
     soundEnabled,
     setSoundEnabled,
   } = useSettings();
@@ -75,7 +77,32 @@ export function DesktopWrapper() {
   }
 
   const showScreenSaver =
-    !booting && screenSaverEnabled && isIdle && !prefersReducedMotion;
+    !booting &&
+    !prefersReducedMotion &&
+    ((screenSaverEnabled && isIdle) || screenSaverPreview);
+
+  // Dismiss a manual preview on the first deliberate interaction. Passive
+  // events (mousemove/wheel) are excluded so the preview isn't torn down by an
+  // accidental cursor twitch right after the user clicked "Preview".
+  useEffect(() => {
+    if (!screenSaverPreview) return;
+    function dismiss() {
+      setScreenSaverPreview(false);
+    }
+    const events: (keyof WindowEventMap)[] = [
+      "mousedown",
+      "keydown",
+      "touchstart",
+    ];
+    for (const event of events) {
+      window.addEventListener(event, dismiss, { passive: true });
+    }
+    return () => {
+      for (const event of events) {
+        window.removeEventListener(event, dismiss);
+      }
+    };
+  }, [screenSaverPreview, setScreenSaverPreview]);
 
   const settingsApp = APPLICATIONS["system-settings"];
 
