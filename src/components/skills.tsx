@@ -189,7 +189,7 @@ function SkillCard({
         <span className="absolute inset-0 overflow-hidden rounded-lg border border-border bg-card backface-hidden transition-transform hover:-translate-y-1">
           {front}
         </span>
-        <span className="absolute inset-0 overflow-auto rounded-lg border border-border bg-card backface-hidden transform-[rotateY(180deg)]">
+        <span className="absolute inset-0 overflow-auto overscroll-y-contain rounded-lg border border-border bg-card backface-hidden transform-[rotateY(180deg)]">
           {back}
         </span>
       </button>
