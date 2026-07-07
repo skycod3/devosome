@@ -1,0 +1,3 @@
+# Normalize line endings: detect text automatically, store and check out as LF.
+# Keeps diffs and prettier output consistent across OSes (no CRLF/LF churn).
+* text=auto eol=lf
