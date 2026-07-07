@@ -1,0 +1,14 @@
+# Build output / generated
+.next/
+out/
+build/
+dist/
+next-env.d.ts
+*.tsbuildinfo
+
+# Dependencies & lockfiles
+node_modules/
+package-lock.json
+
+# Static assets
+public/
