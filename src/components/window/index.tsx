@@ -40,6 +40,9 @@ import { supportsRelativeColors } from "@/utils/css-supports";
 import { SidebarDetails, SidebarToggle } from "./window-sidebar-details";
 import { ResizeHandles } from "./resize-handles";
 
+/** Easing for the minimize/restore glide toward the taskbar dropdown. */
+const MINIMIZE_EASE = [0.4, 0, 0.2, 1] as const;
+
 interface WindowProps {
   window: WindowType;
   desktopRect: { width: number; height: number; top: number; left: number };
@@ -190,6 +193,63 @@ export function Window({ window, desktopRect }: WindowProps) {
     y.set(window.position.y);
   }, [window.position.x, window.position.y, x, y, isAnimating]);
 
+  // Minimize/restore drive x/y imperatively (like snap/maximize) so the
+  // declarative animate prop never owns x/y — declaring x/y there fights dragging
+  // and edge-snapping. Scale/opacity stay declarative (getWindowAnimations).
+  const wasMinimizedRef = useRef(window.isMinimized);
+  useEffect(() => {
+    const wasMinimized = wasMinimizedRef.current;
+    if (wasMinimized === window.isMinimized) return;
+    wasMinimizedRef.current = window.isMinimized;
+    if (prefersReducedMotion) return;
+
+    const options = {
+      duration: window.isMinimized ? 0.34 : 0.3,
+      ease: MINIMIZE_EASE,
+    };
+
+    let targetX = window.position.x;
+    let targetY = window.position.y;
+    if (window.isMinimized) {
+      // Measure the taskbar "Windows" dropdown on demand — the point the window
+      // flies into. Fall back to the top-left corner if it isn't mounted.
+      const rect = document
+        .querySelector("[data-minimize-anchor]")
+        ?.getBoundingClientRect();
+      targetX = rect
+        ? rect.x + rect.width / 2 - containerLeft
+        : -containerLeft + 80;
+      targetY = rect ? rect.y + rect.height / 2 - containerTop : -containerTop;
+      // Collapse toward the top-left corner so the window shrinks into the
+      // dropdown. Set imperatively (not via style) so opening/dragging keep the
+      // default centered origin. Safe to set here: scale is still 1 this frame.
+      if (windowRef.current) windowRef.current.style.transformOrigin = "top left";
+    }
+
+    const cx = animate(x, targetX, options);
+    const cy = animate(y, targetY, options);
+    // On restore, keep the top-left origin while the window grows back out, then
+    // hand it back to center once scale is 1 again (no jump at scale 1).
+    if (!window.isMinimized) {
+      cy.then(() => {
+        if (windowRef.current) windowRef.current.style.transformOrigin = "";
+      });
+    }
+    return () => {
+      cx.stop();
+      cy.stop();
+    };
+  }, [
+    window.isMinimized,
+    window.position.x,
+    window.position.y,
+    containerLeft,
+    containerTop,
+    prefersReducedMotion,
+    x,
+    y,
+  ]);
+
   // Sync width/height/borderRadius with store (skipped during maximize/restore animation)
   useEffect(() => {
     if (isAnimating) return;
@@ -211,8 +271,7 @@ export function Window({ window, desktopRect }: WindowProps) {
   // before the activate effect below steals focus into the window.
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null;
-    openerRef.current =
-      opener && opener !== document.body ? opener : null;
+    openerRef.current = opener && opener !== document.body ? opener : null;
     return () => {
       const target = openerRef.current;
       if (target && document.contains(target)) {
@@ -366,15 +425,25 @@ export function Window({ window, desktopRect }: WindowProps) {
 
   const getWindowAnimations = () => {
     if (window.isMinimized) {
-      // Reduced motion: fade out in place instead of flying up and shrinking.
-      return prefersReducedMotion
-        ? { opacity: 0 }
-        : { y: -100, opacity: 0, scale: 0.5 };
+      // Reduced motion: fade out in place instead of flying to the taskbar.
+      if (prefersReducedMotion) return { opacity: 0 };
+      // Shrink + fade; x/y fly to the dropdown imperatively (effect above), and
+      // transform-origin (top-left) collapses the window into the anchor. Opacity
+      // finishes early so it vanishes a few px shy of the button.
+      return {
+        opacity: 0,
+        scale: 0.02,
+        transition: {
+          default: { duration: 0.34, ease: MINIMIZE_EASE },
+          opacity: { duration: 0.22, ease: "easeIn" },
+        },
+      };
     }
 
     return {
       opacity: 1,
       scale: 1,
+      transition: { duration: 0.3, ease: MINIMIZE_EASE },
     };
   };
 
@@ -414,13 +483,20 @@ export function Window({ window, desktopRect }: WindowProps) {
       initial={
         prefersReducedMotion
           ? { opacity: 0, x: window.position.x, y: window.position.y }
-          : { opacity: 0, scale: 0.95, x: window.position.x, y: window.position.y }
+          : {
+              opacity: 0,
+              scale: 0.95,
+              x: window.position.x,
+              y: window.position.y,
+            }
       }
       exit={prefersReducedMotion ? { opacity: 0 } : { opacity: 0, scale: 0.95 }}
       animate={getWindowAnimations()}
-      className={`absolute bg-popover text-popover-foreground grid grid-rows-[auto_1fr] overflow-hidden border shadow-lg ${window.isMaximized ? "shadow-2xl" : ""
-        } ${snapSide === "left" ? "rounded-l-none!" : ""} ${snapSide === "right" ? "rounded-r-none!" : ""
-        }`}
+      className={`absolute bg-popover text-popover-foreground grid grid-rows-[auto_1fr] overflow-hidden border shadow-lg ${
+        window.isMaximized ? "shadow-2xl" : ""
+      } ${snapSide === "left" ? "rounded-l-none!" : ""} ${
+        snapSide === "right" ? "rounded-r-none!" : ""
+      }`}
     >
       <WindowHeader
         window={window}

@@ -36,7 +36,7 @@ export function WindowsDropdown() {
   return (
     <DropdownMenu open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1">
+        <button data-minimize-anchor className="flex items-center gap-1">
           Windows{" "}
           {windows.length > 0 && (
             <span className="text-xs">({windows.length})</span>
