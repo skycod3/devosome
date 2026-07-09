@@ -7,7 +7,8 @@ import { AnimatePresence, useReducedMotion } from "motion/react";
 import { DESKTOP_ICONS } from "@/constants/icons";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
 
-import { useIcons } from "@/hooks/useIcons";
+import { useIconActions } from "@/hooks/useIconActions";
+import { useDesktopIconIds } from "@/hooks/useIconSelectors";
 import { useWindowIds } from "@/hooks/useWindowSelectors";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSettings } from "@/hooks/useSettings";
@@ -34,7 +35,8 @@ import { useSounds } from "@/hooks/useSounds";
 import { Spotlight } from "@/components/spotlight";
 
 export function Desktop() {
-  const { icons, setIcons, unhighlightAllIcons } = useIcons();
+  const iconIds = useDesktopIconIds();
+  const { setIcons, unhighlightAllIcons } = useIconActions();
   const windowIds = useWindowIds();
   const isMobile = useIsMobile();
   const { wallpaper, iconVisibility } = useSettings();
@@ -54,7 +56,9 @@ export function Desktop() {
   });
 
   function handleDesktopClick() {
-    if (icons.some((icon) => icon.isHighlighted)) unhighlightAllIcons();
+    // unhighlightAllIcons is a no-op when nothing is highlighted (store guard),
+    // so we don't need to subscribe to `icons` just to check.
+    unhighlightAllIcons();
   }
 
   const handleSpotlightKeyDown = useCallback((e: KeyboardEvent) => {
@@ -181,9 +185,9 @@ export function Desktop() {
 
       <div style={{ gridRow: "desktop" }}>
         <div className="text-white grid-cols-fill-5 grid-rows-fill-5 sm:grid-cols-fill-6 sm:grid-rows-fill-6 grid h-full grid-flow-col place-items-center gap-4 p-4">
-          {icons
-            .filter((icon) => !icon.parentId)
-            .map((icon) => icon.show && <Icon key={icon.id} {...icon} />)}
+          {iconIds.map((id) => (
+            <Icon key={id} id={id} />
+          ))}
         </div>
       </div>
 

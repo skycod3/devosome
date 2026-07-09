@@ -4,7 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import { useReducedMotion } from "motion/react";
 import { useTheme } from "@/hooks/useTheme";
-import { useIcons } from "@/hooks/useIcons";
+import { useIconActions } from "@/hooks/useIconActions";
+import { useIconList } from "@/hooks/useIconSelectors";
 import { useSettings } from "@/hooks/useSettings";
 import { WALLPAPERS } from "@/constants/wallpapers";
 import { DESKTOP_ICONS } from "@/constants/icons";
@@ -169,7 +170,8 @@ function WallpaperPanel() {
 }
 
 function DesktopPanel() {
-  const { icons, showIcon, hideIcon } = useIcons();
+  const icons = useIconList();
+  const { showIcon, hideIcon } = useIconActions();
   const { setIconVisibility } = useSettings();
 
   const desktopIconIds = new Set(DESKTOP_ICONS.map((i) => i.id));

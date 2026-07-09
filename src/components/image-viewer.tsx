@@ -20,7 +20,7 @@ import {
   PiSpinnerLight,
 } from "react-icons/pi";
 
-import { useIcons } from "@/hooks/useIcons";
+import { useIconList } from "@/hooks/useIconSelectors";
 import { useWindowActions } from "@/hooks/useWindowActions";
 
 import { IMAGE_FILES } from "@/constants/image-files";
@@ -55,7 +55,7 @@ function formatZoom(scale: number) {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
-  const { icons } = useIcons();
+  const icons = useIconList();
   const { updateWindowTitle } = useWindowActions();
 
   // Build ordered list of image IDs from the same parent folder

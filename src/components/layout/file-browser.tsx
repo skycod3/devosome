@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import Image from "next/image";
 import { LayoutGrid, List } from "lucide-react";
 
-import { useIcons } from "@/hooks/useIcons";
+import { useIconActions } from "@/hooks/useIconActions";
+import { useIcon, useIconIdsByParent } from "@/hooks/useIconSelectors";
 import { useOpenWindow } from "@/hooks/useOpenWindow";
 import { useSettings } from "@/hooks/useSettings";
 import { Icon } from "@/components/icon";
 import { RevealGroup, RevealItem } from "@/components/ui/reveal";
-import { Icon as IconType } from "@/stores/icons-store";
 import { StaticImageData } from "next/image";
 import { formatDistanceToNow } from "date-fns";
 
@@ -38,7 +38,8 @@ export function FileBrowser({
   toolbarSlot,
   emptyMessage = "No files here.",
 }: FileBrowserProps) {
-  const { icons, addIcon, removeIcon, unhighlightAllIcons } = useIcons();
+  const { addIcon, removeIcon, unhighlightAllIcons } = useIconActions();
+  const iconIds = useIconIdsByParent(iconId);
   const { viewModes, setViewMode } = useSettings();
 
   const viewMode = viewModes[iconId] ?? "grid";
@@ -66,13 +67,8 @@ export function FileBrowser({
   }, [files]);
 
   function handleAreaClick() {
-    if (icons.some((icon) => icon.isHighlighted)) unhighlightAllIcons();
+    unhighlightAllIcons();
   }
-
-  const iconsFromStore = useMemo(
-    () => icons.filter((icon) => icon.parentId === iconId),
-    [icons, iconId],
-  );
 
   return (
     <div
@@ -101,35 +97,35 @@ export function FileBrowser({
       </div>
 
       {/* Empty state */}
-      {iconsFromStore.length === 0 && (
+      {iconIds.length === 0 && (
         <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
           {emptyMessage}
         </div>
       )}
 
       {/* File area — grid */}
-      {iconsFromStore.length > 0 && viewMode === "grid" && (
+      {iconIds.length > 0 && viewMode === "grid" && (
         <RevealGroup
           replayOnView
           className="grid-cols-fill-6 @min-5xl:grid-cols-fill-7 grid-rows-fill-6 grid h-full gap-4 p-4 overflow-auto"
         >
-          {iconsFromStore.map((icon) => (
-            <RevealItem key={icon.id}>
-              <Icon imagePlaceholder="blur" {...icon} />
+          {iconIds.map((id) => (
+            <RevealItem key={id}>
+              <Icon imagePlaceholder="blur" id={id} />
             </RevealItem>
           ))}
         </RevealGroup>
       )}
 
       {/* File area — list */}
-      {iconsFromStore.length > 0 && viewMode === "list" && (
+      {iconIds.length > 0 && viewMode === "list" && (
         <RevealGroup
           as="ul"
           replayOnView
           className="flex flex-col gap-1 overflow-auto p-2"
         >
-          {iconsFromStore.map((icon) => (
-            <ListRow key={icon.id} icon={icon} />
+          {iconIds.map((id) => (
+            <ListRow key={id} id={id} />
           ))}
         </RevealGroup>
       )}
@@ -137,9 +133,16 @@ export function FileBrowser({
   );
 }
 
-function ListRow({ icon }: { icon: IconType }) {
-  const { highlightIcon, unhighlightAllIcons } = useIcons();
+function ListRow({ id }: { id: string }) {
+  const iconData = useIcon(id);
+  const { highlightIcon, unhighlightAllIcons } = useIconActions();
   const openWindowCentered = useOpenWindow();
+
+  // Narrowing from `if (!iconData) return null` doesn't survive into the
+  // nested handleClick/handleDoubleClick closures below, so rebind to a
+  // fixed (non-undefined) const the closures can safely capture.
+  if (!iconData) return null;
+  const icon = iconData;
 
   function handleClick(e: React.MouseEvent) {
     e.stopPropagation();

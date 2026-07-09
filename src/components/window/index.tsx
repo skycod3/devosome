@@ -2,7 +2,7 @@ import { useWindowActions } from "@/hooks/useWindowActions";
 import { useWindow } from "@/hooks/useWindowSelectors";
 import { Window as WindowType } from "@/stores/windows-store";
 import { CSSProperties, useEffect, useRef, useState } from "react";
-import { useIcons } from "@/hooks/useIcons";
+import { useIconActions } from "@/hooks/useIconActions";
 
 import { useViewport } from "@/hooks/useViewport";
 
@@ -51,13 +51,12 @@ interface WindowProps {
 
 function TabbedWindow({ window }: { window: WindowType }) {
   const { setWindowActiveTab } = useWindowActions();
-  const { icons, unhighlightAllIcons } = useIcons();
+  const { unhighlightAllIcons } = useIconActions();
   const { width: viewportWidth } = useViewport();
   const isLargeDesktop = viewportWidth >= BREAKPOINTS.WIDE;
   const [sidebarOpen, setSidebarOpen] = useState(isLargeDesktop);
 
   const activeTab = window.activeTab || window.iconId;
-  const highlightedIcon = icons.find((icon) => icon.isHighlighted);
 
   function handleTabChange(tab: string) {
     setWindowActiveTab(window.id, tab);
@@ -119,12 +118,7 @@ function TabbedWindow({ window }: { window: WindowType }) {
           onToggle={() => setSidebarOpen((s) => !s)}
         />
 
-        {sidebarOpen && (
-          <SidebarDetails
-            highlightedIcon={highlightedIcon}
-            activeTab={activeTab}
-          />
-        )}
+        {sidebarOpen && <SidebarDetails activeTab={activeTab} />}
       </div>
     </Tabs>
   );

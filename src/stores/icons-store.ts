@@ -103,6 +103,8 @@ export const useIconsStore = create<IconsState>()(
       },
 
       unhighlightIcon(id: string) {
+        const icon = get().icons.find((i) => i.id === id);
+        if (!icon?.isHighlighted) return;
         get().updateIcon(id, "isHighlighted", false);
       },
 
@@ -111,7 +113,15 @@ export const useIconsStore = create<IconsState>()(
       },
 
       unhighlightAllIcons() {
-        get().updateAllIcons("isHighlighted", false);
+        const { icons } = get();
+        if (!icons.some((i) => i.isHighlighted)) return;
+        // Only replace the objects that actually change; unchanged icons keep
+        // their reference so their `useIcon(id)` subscribers don't re-render.
+        set({
+          icons: icons.map((i) =>
+            i.isHighlighted ? { ...i, isHighlighted: false } : i,
+          ),
+        });
       },
     }),
     { name: "icons-store" },

@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 
 import { Window } from "@/stores/windows-store";
 
-import { useIcons } from "@/hooks/useIcons";
+import { useIcon } from "@/hooks/useIconSelectors";
 import { useViewport } from "@/hooks/useViewport";
 import { useWindowActions } from "@/hooks/useWindowActions";
 import { Kbd, KbdGroup } from "../ui/kbd";
@@ -62,11 +62,10 @@ export function WindowHeader({
 
   const [, setIsGrabbing] = useState(false);
 
-  const { icons } = useIcons();
   const { width, height } = useViewport();
   const { isDark } = useTheme();
 
-  const parentIcon = icons.find((icon) => icon.id === window.parentId);
+  const parentIcon = useIcon(window.parentId);
 
   function handleMaximize() {
     const wasMaximized = window.isMaximized;

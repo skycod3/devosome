@@ -1,10 +1,9 @@
-import { Icon as IconFromStore } from "@/stores/icons-store";
-
 import Image from "next/image";
 
 import { CSSProperties, memo } from "react";
 
-import { useIcons } from "@/hooks/useIcons";
+import { useIconActions } from "@/hooks/useIconActions";
+import { useIcon } from "@/hooks/useIconSelectors";
 import { useOpenWindow } from "@/hooks/useOpenWindow";
 import { useTheme } from "@/hooks/useTheme";
 
@@ -18,20 +17,23 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu";
 
-type IconProps = IconFromStore & {
+type IconProps = {
+  id: string;
   imagePlaceholder?: "blur" | "empty";
 };
 
-export const Icon = memo(function Icon({
-  id,
-  appId,
-  title,
-  icon,
-  size,
-  isHighlighted,
-  parentId,
-  imagePlaceholder,
-}: IconProps) {
+export const Icon = memo(function Icon({ id, imagePlaceholder }: IconProps) {
+  const iconData = useIcon(id);
+  const { highlightIcon, unhighlightAllIcons } = useIconActions();
+  const openWindowCentered = useOpenWindow();
+  const { theme } = useTheme();
+
+  // Removed by a store update (e.g. hidden) — the id has already left the list,
+  // so there is nothing to draw. No AnimatePresence wraps the icon grids, so no
+  // last-value fallback is needed.
+  if (!iconData) return null;
+  const { appId, title, icon, size, isHighlighted, parentId } = iconData;
+
   // blur placeholder requires a blurDataURL, which is only available on
   // StaticImageData (static imports). String srcs (e.g. recent items serialised
   // to localStorage) don't carry that metadata, so fall back to "empty".
@@ -39,9 +41,6 @@ export const Icon = memo(function Icon({
     imagePlaceholder === "blur" && typeof icon === "string"
       ? "empty"
       : imagePlaceholder;
-  const { highlightIcon, unhighlightAllIcons } = useIcons();
-  const openWindowCentered = useOpenWindow();
-  const { theme } = useTheme();
 
   const isDesktopIcon = !parentId;
 

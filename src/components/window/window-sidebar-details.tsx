@@ -13,6 +13,7 @@ import {
 import { Icon } from "@/stores/icons-store";
 
 import { useRecent } from "@/hooks/useRecent";
+import { useHighlightedIcon } from "@/hooks/useIconSelectors";
 
 import { SidebarContent } from "../ui/sidebar";
 
@@ -141,13 +142,10 @@ export function SidebarToggle({
   );
 }
 
-export function SidebarDetails({
-  highlightedIcon,
-  activeTab,
-}: {
-  highlightedIcon: Icon | undefined;
-  activeTab: string;
-}) {
+export function SidebarDetails({ activeTab }: { activeTab: string }) {
+  // Subscribed here (not at TabbedWindow) so highlighting an icon re-renders
+  // only the sidebar, not the whole Files window content.
+  const highlightedIcon = useHighlightedIcon();
   const { items } = useRecent();
   const sidebarData = getSidebarData(highlightedIcon, items.length);
   const TabIcon = TAB_ICONS[activeTab];
