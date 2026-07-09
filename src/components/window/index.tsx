@@ -1,4 +1,5 @@
-import { useWindows } from "@/hooks/useWindows";
+import { useWindowActions } from "@/hooks/useWindowActions";
+import { useWindow } from "@/hooks/useWindowSelectors";
 import { Window as WindowType } from "@/stores/windows-store";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useIcons } from "@/hooks/useIcons";
@@ -44,12 +45,12 @@ import { ResizeHandles } from "./resize-handles";
 const MINIMIZE_EASE = [0.4, 0, 0.2, 1] as const;
 
 interface WindowProps {
-  window: WindowType;
+  id: string;
   desktopRect: { width: number; height: number; top: number; left: number };
 }
 
 function TabbedWindow({ window }: { window: WindowType }) {
-  const { setWindowActiveTab } = useWindows();
+  const { setWindowActiveTab } = useWindowActions();
   const { icons, unhighlightAllIcons } = useIcons();
   const { width: viewportWidth } = useViewport();
   const isLargeDesktop = viewportWidth >= BREAKPOINTS.WIDE;
@@ -129,18 +130,34 @@ function TabbedWindow({ window }: { window: WindowType }) {
   );
 }
 
-export function Window({ window, desktopRect }: WindowProps) {
+export function Window({ id, desktopRect }: WindowProps) {
   const {
     bringToFront,
-    activeWindowId,
     setWindowPosition,
     setWindowSize,
     snapWindow,
     setSnapPreview,
     maximizeWindow,
-    isMobile,
-  } = useWindows();
+  } = useWindowActions();
   const { width: viewportWidth, height: viewportHeight } = useViewport();
+  const isMobile = viewportWidth > 0 && viewportWidth < BREAKPOINTS.TABLET;
+
+  // Subscribe to this window's own slice. During the exit animation the entry
+  // is gone from the store, so we hold the last value for AnimatePresence to
+  // finish the exit. We use state (not a ref) because reading ref.current
+  // during render trips the react-hooks/refs rule — and a conditional early
+  // return here (before the hooks below) would violate the Rules of Hooks. The
+  // state is adjusted directly in the render body (React's official pattern for
+  // "storing information from previous renders"), not in a useEffect.
+  const liveWindow = useWindow(id);
+  const [lastWindow, setLastWindow] = useState(liveWindow);
+  if (liveWindow && liveWindow !== lastWindow) {
+    setLastWindow(liveWindow);
+  }
+  // Desktop only mounts <Window id> for ids present in the store, so this
+  // window is always defined on first render; `lastWindow` covers the
+  // exit-animation gap after the entry leaves the store.
+  const window: WindowType = (liveWindow ?? lastWindow)!;
   // a11y: collapse window enter/exit/snap motion when the user prefers reduced
   // motion (direct-manipulation drag feedback is left intact).
   const prefersReducedMotion = useReducedMotion();
@@ -290,15 +307,15 @@ export function Window({ window, desktopRect }: WindowProps) {
   // a11y: move focus into the window when it opens or is brought to the front,
   // unless focus is already inside it (don't yank focus from a clicked input).
   useEffect(() => {
-    if (activeWindowId !== window.id || window.isMinimized) return;
+    if (!window.isActive || window.isMinimized) return;
     const el = windowRef.current;
     if (el && !el.contains(document.activeElement)) {
       el.focus({ preventScroll: true });
     }
-  }, [activeWindowId, window.id, window.isMinimized]);
+  }, [window.isActive, window.id, window.isMinimized]);
 
   function handleWindowClick() {
-    if (activeWindowId === window.id) return;
+    if (window.isActive) return;
     bringToFront(window.id);
   }
 

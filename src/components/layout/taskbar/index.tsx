@@ -4,17 +4,17 @@ import { Clock } from "./clock";
 import { SystemTray } from "../system-tray";
 import { WindowsDropdown } from "./windows.dropdown";
 
-import { useWindows } from "@/hooks/useWindows";
+import { useWindowCount } from "@/hooks/useWindowSelectors";
 
 export function Taskbar() {
-  const { windows } = useWindows();
+  const windowCount = useWindowCount();
 
   return (
     <div className="bg-background/50 text-foreground flex gap-4 items-center justify-between px-2">
       <div className="flex flex-wrap gap-x-8">
         <StartDropdown />
 
-        {windows.length > 0 && <WindowsDropdown />}
+        {windowCount > 0 && <WindowsDropdown />}
       </div>
 
       <div className="flex items-center gap-4">

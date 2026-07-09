@@ -21,7 +21,7 @@ import {
 } from "react-icons/pi";
 
 import { useIcons } from "@/hooks/useIcons";
-import { useWindows } from "@/hooks/useWindows";
+import { useWindowActions } from "@/hooks/useWindowActions";
 
 import { IMAGE_FILES } from "@/constants/image-files";
 import {
@@ -56,7 +56,7 @@ function formatZoom(scale: number) {
 
 export function ImageViewer({ iconId, parentId, windowId }: ImageViewerProps) {
   const { icons } = useIcons();
-  const { updateWindowTitle } = useWindows();
+  const { updateWindowTitle } = useWindowActions();
 
   // Build ordered list of image IDs from the same parent folder
   const siblingIds = parentId

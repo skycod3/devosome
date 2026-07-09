@@ -8,7 +8,7 @@ import { DESKTOP_ICONS } from "@/constants/icons";
 import { STORAGE_KEYS } from "@/constants/storage-keys";
 
 import { useIcons } from "@/hooks/useIcons";
-import { useWindows } from "@/hooks/useWindows";
+import { useWindowIds } from "@/hooks/useWindowSelectors";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { useSettings } from "@/hooks/useSettings";
 
@@ -35,7 +35,7 @@ import { Spotlight } from "@/components/spotlight";
 
 export function Desktop() {
   const { icons, setIcons, unhighlightAllIcons } = useIcons();
-  const { windows } = useWindows();
+  const windowIds = useWindowIds();
   const isMobile = useIsMobile();
   const { wallpaper, iconVisibility } = useSettings();
   const { notify } = useNotify();
@@ -194,8 +194,8 @@ export function Desktop() {
       <SnapPreview />
 
       <AnimatePresence>
-        {windows.map((window) => (
-          <Window key={window.id} window={window} desktopRect={desktopRect} />
+        {windowIds.map((id) => (
+          <Window key={id} id={id} desktopRect={desktopRect} />
         ))}
       </AnimatePresence>
 

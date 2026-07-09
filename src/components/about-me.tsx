@@ -9,7 +9,7 @@ import { PiCopy, PiCheck, PiMapPin, PiUser, PiFilePdf } from "react-icons/pi";
 
 import { ABOUT_ME } from "@/constants/about";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
-import { useWindows } from "@/hooks/useWindows";
+import { useOpenWindow } from "@/hooks/useOpenWindow";
 import { RevealGroup, RevealItem } from "./ui/reveal";
 import {
   AppToolbar,
@@ -32,7 +32,7 @@ const ModelViewer = dynamic(() => import("./effects/model-viewer"), {
 
 export function AboutMe() {
   const { copied, copy } = useCopyToClipboard();
-  const { openWindowCentered } = useWindows();
+  const openWindowCentered = useOpenWindow();
   const reducedMotion = useReducedMotion() ?? false;
 
   function handleCopyEmail() {

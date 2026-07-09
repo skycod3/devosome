@@ -1,6 +1,6 @@
 "use client";
 
-import { useWindows } from "@/hooks/useWindows";
+import { useOpenWindow } from "@/hooks/useOpenWindow";
 
 import { APPLICATIONS } from "@/constants/applications";
 
@@ -310,7 +310,7 @@ function DockBase({
 // ─── Exported component ───────────────────────────────────────────────────────
 
 export function Dock() {
-  const { openWindowCentered } = useWindows();
+  const openWindowCentered = useOpenWindow();
 
   function openWindow(id: string) {
     const { windowTitle } = APPLICATIONS[id];

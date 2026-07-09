@@ -10,14 +10,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useWindows } from "@/hooks/useWindows";
+import { useWindowActions } from "@/hooks/useWindowActions";
+import { useWindowList } from "@/hooks/useWindowSelectors";
 
 import { ChevronDown, X } from "lucide-react";
 
 export function WindowsDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  const { windows, closeWindow, closeAllWindows, bringToFront, restoreWindow } =
-    useWindows();
+  // Lists live window state, so it subscribes to the whole list and re-renders
+  // when the list changes — correct here; the big Desktop/icon fan-out is
+  // avoided elsewhere.
+  const windows = useWindowList();
+  const { closeWindow, closeAllWindows, bringToFront, restoreWindow } =
+    useWindowActions();
 
   function handleItemClick(windowId: string) {
     const window = windows.find((w) => w.id === windowId);

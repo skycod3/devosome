@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState, useCallback } from "react";
 import { executeCommand } from "@/constants/terminal";
-import { useWindows } from "@/hooks/useWindows";
+import { useOpenWindow } from "@/hooks/useOpenWindow";
+import { useWindowActions } from "@/hooks/useWindowActions";
+import { useWindowList } from "@/hooks/useWindowSelectors";
 
 const PROMPT = "visitor@devosome:~$";
 
@@ -28,7 +30,9 @@ export function Terminal({ iconId }: { iconId: string }) {
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { openWindowCentered, windows, closeWindow } = useWindows();
+  const openWindowCentered = useOpenWindow();
+  const { closeWindow } = useWindowActions();
+  const windows = useWindowList();
 
   // Auto-scroll to bottom on new history entry
   useEffect(() => {

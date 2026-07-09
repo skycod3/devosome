@@ -8,7 +8,7 @@ import { VIDEO_FILES } from "@/constants/video-files";
 import { AUDIO_FILES } from "@/constants/audio-files";
 import { ImageViewer } from "../image-viewer";
 import { MediaPlayer } from "../media-player";
-import { useWindows } from "@/hooks/useWindows";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import {
   NativePdfViewer,
   PdfErrorBoundary,
@@ -31,7 +31,7 @@ export function WindowContent({
   parentId,
   windowId,
 }: WindowContentProps) {
-  const { isMobile } = useWindows();
+  const isMobile = useIsMobile();
   const application = APPLICATIONS[iconId];
 
   // Tabbed window (e.g. "files"): render all tabs with forceMount so they stay

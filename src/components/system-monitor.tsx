@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useWindows } from "@/hooks/useWindows";
+import { useWindowStats } from "@/hooks/useWindowSelectors";
 import { Progress } from "@/components/ui/progress";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -109,9 +109,7 @@ export function SystemMonitor({ iconId: _ }: { iconId: string }) {
   );
   const [memory, setMemory] = useState<MemoryInfo | null>(() => getMemory());
 
-  const { windows } = useWindows();
-  const openCount = windows.length;
-  const minimizedCount = windows.filter((w) => w.isMinimized).length;
+  const { open: openCount, minimized: minimizedCount } = useWindowStats();
 
   // Uptime — tick every second
   useEffect(() => {

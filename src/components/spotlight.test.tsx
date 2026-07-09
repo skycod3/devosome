@@ -9,8 +9,8 @@ const { openWindowCentered } = vi.hoisted(() => ({
   openWindowCentered: vi.fn(),
 }));
 
-vi.mock("@/hooks/useWindows", () => ({
-  useWindows: () => ({ openWindowCentered }),
+vi.mock("@/hooks/useOpenWindow", () => ({
+  useOpenWindow: () => openWindowCentered,
 }));
 
 // next/image's optimizer isn't available under vitest — render a plain img.

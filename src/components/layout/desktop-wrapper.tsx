@@ -8,7 +8,7 @@ import { useIdleTimer } from "@/hooks/useIdleTimer";
 import { BootScreen } from "@/components/boot-screen";
 
 import { APPLICATIONS } from "@/constants/applications";
-import { useWindows } from "@/hooks/useWindows";
+import { useOpenWindow } from "@/hooks/useOpenWindow";
 
 import {
   ContextMenu,
@@ -63,7 +63,7 @@ export function DesktopWrapper() {
     setSoundEnabled,
   } = useSettings();
   const { isIdle } = useIdleTimer();
-  const { openWindowCentered } = useWindows();
+  const openWindowCentered = useOpenWindow();
   // a11y: don't auto-launch the animated 3D screensaver for users who prefer
   // reduced motion (the toggle still reflects their saved preference).
   const prefersReducedMotion = useReducedMotion();

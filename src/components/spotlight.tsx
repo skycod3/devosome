@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Search } from "lucide-react";
 
 import { ALL_APPS } from "@/lib/apps";
-import { useWindows } from "@/hooks/useWindows";
+import { useOpenWindow } from "@/hooks/useOpenWindow";
 import { Z_SPOTLIGHT } from "@/constants/windows";
 
 interface SpotlightProps {
@@ -17,7 +17,7 @@ export function Spotlight({ onClose }: SpotlightProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
-  const { openWindowCentered } = useWindows();
+  const openWindowCentered = useOpenWindow();
 
   // Stable ids for the combobox/listbox wiring (aria-controls, aria-activedescendant).
   const baseId = useId();

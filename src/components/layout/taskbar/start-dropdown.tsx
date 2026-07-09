@@ -6,7 +6,7 @@ import { useHotkey } from "@tanstack/react-hotkeys";
 
 import { APPLICATIONS } from "@/constants/applications";
 
-import { useWindows } from "@/hooks/useWindows";
+import { useOpenWindow } from "@/hooks/useOpenWindow";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 import { useNotify } from "@/hooks/useNotify";
@@ -35,7 +35,7 @@ import Image from "next/image";
 const { contact } = ABOUT_ME;
 
 export function StartDropdown() {
-  const { openWindowCentered } = useWindows();
+  const openWindowCentered = useOpenWindow();
   const isMobile = useIsMobile();
   const { notify } = useNotify();
   const [query, setQuery] = useState("");

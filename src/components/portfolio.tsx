@@ -12,7 +12,7 @@ import { FaGithub } from "react-icons/fa6";
 import { PiArrowSquareOut } from "react-icons/pi";
 
 import { PROJECTS, type Project } from "@/constants/projects";
-import { useWindows } from "@/hooks/useWindows";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 import { Badge } from "./ui/badge";
 import { RevealGroup, RevealItem } from "./ui/reveal";
@@ -177,7 +177,7 @@ function ProjectCard({ project, tilt }: { project: Project; tilt: boolean }) {
 
 export function Portfolio() {
   const reducedMotion = useReducedMotion() ?? false;
-  const { isMobile } = useWindows();
+  const isMobile = useIsMobile();
   const tilt = !reducedMotion && !isMobile;
 
   const [activeTech, setActiveTech] = useState<string | null>(null);

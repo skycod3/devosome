@@ -6,7 +6,7 @@ import { MotionValue } from "motion/react";
 import { PiDotsNine } from "react-icons/pi";
 
 import { Window as WindowType } from "@/stores/windows-store";
-import { useWindows } from "@/hooks/useWindows";
+import { useWindowActions } from "@/hooks/useWindowActions";
 import { APPLICATIONS } from "@/constants/applications";
 import {
   WINDOW_MIN_WIDTH,
@@ -50,7 +50,7 @@ export function ResizeHandles({
   isMobile,
   enabled,
 }: ResizeHandlesProps) {
-  const { setWindowPosition, setWindowSize } = useWindows();
+  const { setWindowPosition, setWindowSize } = useWindowActions();
 
   // Per-app resize floor, falling back to the global window minimum.
   const appMinSize = APPLICATIONS[win.iconId]?.minSize;

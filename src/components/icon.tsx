@@ -2,10 +2,10 @@ import { Icon as IconFromStore } from "@/stores/icons-store";
 
 import Image from "next/image";
 
-import { CSSProperties } from "react";
+import { CSSProperties, memo } from "react";
 
 import { useIcons } from "@/hooks/useIcons";
-import { useWindows } from "@/hooks/useWindows";
+import { useOpenWindow } from "@/hooks/useOpenWindow";
 import { useTheme } from "@/hooks/useTheme";
 
 import { supportsRelativeColors } from "@/utils/css-supports";
@@ -22,7 +22,7 @@ type IconProps = IconFromStore & {
   imagePlaceholder?: "blur" | "empty";
 };
 
-export function Icon({
+export const Icon = memo(function Icon({
   id,
   appId,
   title,
@@ -40,7 +40,7 @@ export function Icon({
       ? "empty"
       : imagePlaceholder;
   const { highlightIcon, unhighlightAllIcons } = useIcons();
-  const { openWindowCentered } = useWindows();
+  const openWindowCentered = useOpenWindow();
   const { theme } = useTheme();
 
   const isDesktopIcon = !parentId;
@@ -126,4 +126,4 @@ export function Icon({
       </ContextMenuContent>
     </ContextMenu>
   );
-}
+});

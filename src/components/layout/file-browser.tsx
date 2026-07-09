@@ -5,7 +5,7 @@ import Image from "next/image";
 import { LayoutGrid, List } from "lucide-react";
 
 import { useIcons } from "@/hooks/useIcons";
-import { useWindows } from "@/hooks/useWindows";
+import { useOpenWindow } from "@/hooks/useOpenWindow";
 import { useSettings } from "@/hooks/useSettings";
 import { Icon } from "@/components/icon";
 import { RevealGroup, RevealItem } from "@/components/ui/reveal";
@@ -139,7 +139,7 @@ export function FileBrowser({
 
 function ListRow({ icon }: { icon: IconType }) {
   const { highlightIcon, unhighlightAllIcons } = useIcons();
-  const { openWindowCentered } = useWindows();
+  const openWindowCentered = useOpenWindow();
 
   function handleClick(e: React.MouseEvent) {
     e.stopPropagation();

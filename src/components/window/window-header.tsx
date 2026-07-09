@@ -4,7 +4,7 @@ import { Window } from "@/stores/windows-store";
 
 import { useIcons } from "@/hooks/useIcons";
 import { useViewport } from "@/hooks/useViewport";
-import { useWindows } from "@/hooks/useWindows";
+import { useWindowActions } from "@/hooks/useWindowActions";
 import { Kbd, KbdGroup } from "../ui/kbd";
 
 import { animate, DragControls, MotionValue } from "motion/react";
@@ -57,13 +57,8 @@ export function WindowHeader({
   dragControls,
   isMobile = false,
 }: WindowHeaderProps) {
-  const {
-    closeWindow,
-    toggleMaximize,
-    setWindowSize,
-    minimizeWindow,
-    activeWindowId,
-  } = useWindows();
+  const { closeWindow, toggleMaximize, setWindowSize, minimizeWindow } =
+    useWindowActions();
 
   const [, setIsGrabbing] = useState(false);
 
@@ -125,7 +120,7 @@ export function WindowHeader({
     }
   }
 
-  const isActive = activeWindowId === window.id;
+  const isActive = window.isActive;
 
   useHotkey("Control+Q", () => closeWindow(window.id), {
     conflictBehavior: "allow",
