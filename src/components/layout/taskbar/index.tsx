@@ -6,15 +6,20 @@ import { WindowsDropdown } from "./windows.dropdown";
 
 import { useWindowCount } from "@/hooks/useWindowSelectors";
 
-export function Taskbar() {
+// Isolates the window-count subscription so opening/closing a window re-renders
+// only this piece, not the whole Taskbar (Clock/Weather/SystemTray).
+function TaskbarWindows() {
   const windowCount = useWindowCount();
+  return windowCount > 0 ? <WindowsDropdown /> : null;
+}
 
+export function Taskbar() {
   return (
     <div className="bg-background/50 text-foreground flex gap-4 items-center justify-between px-2">
       <div className="flex flex-wrap gap-x-8">
         <StartDropdown />
 
-        {windowCount > 0 && <WindowsDropdown />}
+        <TaskbarWindows />
       </div>
 
       <div className="flex items-center gap-4">
