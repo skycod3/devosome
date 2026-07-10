@@ -1,7 +1,7 @@
 import { useWindowActions } from "@/hooks/useWindowActions";
 import { useWindow } from "@/hooks/useWindowSelectors";
 import { Window as WindowType } from "@/stores/windows-store";
-import { CSSProperties, useEffect, useRef, useState } from "react";
+import { CSSProperties, memo, useEffect, useRef, useState } from "react";
 import { useIconActions } from "@/hooks/useIconActions";
 
 import { useViewport } from "@/hooks/useViewport";
@@ -124,7 +124,7 @@ function TabbedWindow({ window }: { window: WindowType }) {
   );
 }
 
-export function Window({ id, desktopRect }: WindowProps) {
+export const Window = memo(function Window({ id, desktopRect }: WindowProps) {
   const {
     bringToFront,
     setWindowPosition,
@@ -546,4 +546,4 @@ export function Window({ id, desktopRect }: WindowProps) {
       />
     </motion.div>
   );
-}
+});
