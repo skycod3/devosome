@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { memo, useRef } from "react";
 
 import { Taskbar } from "./taskbar";
 import { Dock } from "./dock";
@@ -11,7 +11,10 @@ import { SpotlightLauncher } from "./spotlight-launcher";
 import { SnapPreview } from "../window/snap-preview";
 import { WindowLayer } from "../window/window-layer";
 
-export function Desktop() {
+// Memoized so a re-render of the parent (DesktopWrapper — which subscribes to
+// settings/recent) doesn't cascade through this stateless shell into the Dock,
+// Taskbar, etc. Desktop takes no props, so the default comparison never re-renders it.
+export const Desktop = memo(function Desktop() {
   const desktopRef = useRef<HTMLDivElement>(null);
 
   return (
@@ -46,4 +49,4 @@ export function Desktop() {
       <DesktopEffects />
     </div>
   );
-}
+});
