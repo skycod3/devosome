@@ -19,3 +19,13 @@ export const useRecent = () => {
     clearRecent,
   };
 };
+
+/**
+ * Recent actions only — stable refs, NO subscription to the `items` list. Use
+ * this where a component only needs to record/clear recents (e.g. useOpenWindow)
+ * so it doesn't re-render every time the recent list changes.
+ */
+export const useRecentActions = () => ({
+  addRecentItem: useRecentStore((s) => s.addRecentItem),
+  clearRecent: useRecentStore((s) => s.clearRecent),
+});

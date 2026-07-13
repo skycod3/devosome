@@ -3,7 +3,7 @@
 import { StaticImageData } from "next/image";
 import { useWindowsStore } from "@/stores/windows-store";
 import { useViewport } from "./useViewport";
-import { useRecent } from "./useRecent";
+import { useRecentActions } from "./useRecent";
 import {
   SMALL_DESKTOP_WINDOW_SIZE,
   TABLET_WINDOW_SIZE,
@@ -29,7 +29,7 @@ function getMediaTabs(): Set<string> {
 }
 
 export const useOpenWindow = () => {
-  const addRecentItem = useRecent().addRecentItem;
+  const { addRecentItem } = useRecentActions();
   const { width, height } = useViewport();
 
   const isMobile = width > 0 && width < BREAKPOINTS.TABLET;
