@@ -11,40 +11,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { useWindowActions } from "@/hooks/useWindowActions";
-import { useWindowList } from "@/hooks/useWindowSelectors";
+import { useWindowIds, useWindowSummary } from "@/hooks/useWindowSelectors";
 
 import { ChevronDown, X } from "lucide-react";
 
 export function WindowsDropdown() {
   const [isOpen, setIsOpen] = useState(false);
-  // Lists live window state, so it subscribes to the whole list and re-renders
-  // when the list changes — correct here; the big Desktop/icon fan-out is
-  // avoided elsewhere.
-  const windows = useWindowList();
-  const { closeWindow, closeAllWindows, bringToFront, restoreWindow } =
-    useWindowActions();
-
-  function handleItemClick(windowId: string) {
-    const window = windows.find((w) => w.id === windowId);
-
-    if (!window) return;
-
-    if (window.isMinimized) {
-      // Restore minimized window (automatically activates and brings to front)
-      restoreWindow(window.id);
-    } else if (!window.isActive) {
-      // Bring non-active window to front
-      bringToFront(window.id);
-    }
-  }
+  // Only the id list — the trigger/count re-render when a window opens or
+  // closes, not on every position change. Each row subscribes to its own fields.
+  const windowIds = useWindowIds();
+  const { closeAllWindows } = useWindowActions();
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <DropdownMenuTrigger asChild>
         <button data-minimize-anchor className="flex items-center gap-1">
           Windows{" "}
-          {windows.length > 0 && (
-            <span className="text-xs">({windows.length})</span>
+          {windowIds.length > 0 && (
+            <span className="text-xs">({windowIds.length})</span>
           )}
           <ChevronDown
             className={`size-4 transition-transform ${isOpen ? "rotate-180" : ""}`}
@@ -57,29 +41,8 @@ export function WindowsDropdown() {
         <DropdownMenuSeparator />
 
         <DropdownMenuGroup>
-          {windows.map((window) => (
-            <DropdownMenuItem
-              className="flex items-center gap-2"
-              key={window.id}
-              onClick={() => handleItemClick(window.id)}
-            >
-              <span
-                className={`size-1.5 shrink-0 rounded-full ${window.isActive ? "animate-pulse bg-blue-500" : "bg-neutral-300"} `}
-              ></span>
-
-              <p className="line-clamp-2">{window.title}</p>
-
-              <button
-                aria-label="Close Window"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  closeWindow(window.id);
-                }}
-                className="flex-center ml-auto size-5 sm:size-4 rounded-full border border-red-500"
-              >
-                <X className="size-3 text-red-500" />
-              </button>
-            </DropdownMenuItem>
+          {windowIds.map((id) => (
+            <WindowRow key={id} id={id} />
           ))}
         </DropdownMenuGroup>
 
@@ -88,5 +51,41 @@ export function WindowsDropdown() {
         <DropdownMenuItem onClick={closeAllWindows}>Close All</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  );
+}
+
+function WindowRow({ id }: { id: string }) {
+  const { title, isActive, isMinimized } = useWindowSummary(id);
+  const { closeWindow, bringToFront, restoreWindow } = useWindowActions();
+
+  function handleClick() {
+    if (isMinimized) {
+      // Restore minimized window (automatically activates and brings to front)
+      restoreWindow(id);
+    } else if (!isActive) {
+      // Bring non-active window to front
+      bringToFront(id);
+    }
+  }
+
+  return (
+    <DropdownMenuItem className="flex items-center gap-2" onClick={handleClick}>
+      <span
+        className={`size-1.5 shrink-0 rounded-full ${isActive ? "animate-pulse bg-blue-500" : "bg-neutral-300"} `}
+      ></span>
+
+      <p className="line-clamp-2">{title}</p>
+
+      <button
+        aria-label="Close Window"
+        onClick={(e) => {
+          e.stopPropagation();
+          closeWindow(id);
+        }}
+        className="flex-center ml-auto size-5 sm:size-4 rounded-full border border-red-500"
+      >
+        <X className="size-3 text-red-500" />
+      </button>
+    </DropdownMenuItem>
   );
 }

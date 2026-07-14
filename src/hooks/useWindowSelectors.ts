@@ -32,6 +32,23 @@ export const useWindowStats = () =>
 
 /**
  * The full window list. Re-renders on any window change — use only where a
- * component genuinely needs the whole list (e.g. the taskbar dropdown).
+ * component genuinely needs the whole list (e.g. the terminal's window commands).
  */
 export const useWindowList = () => useWindowsStore((s) => s.windows);
+
+/**
+ * The fields the taskbar dropdown row shows for one window. Projected + shallow
+ * so a row re-renders only when its label/state changes, not on every position
+ * update.
+ */
+export const useWindowSummary = (id: string) =>
+  useWindowsStore(
+    useShallow((s) => {
+      const w = s.windows.find((x) => x.id === id);
+      return {
+        title: w?.title ?? "",
+        isActive: w?.isActive ?? false,
+        isMinimized: w?.isMinimized ?? false,
+      };
+    }),
+  );
