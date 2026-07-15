@@ -2,7 +2,7 @@
 
 import { AnimatePresence, motion } from "motion/react";
 
-import { useWindowsStore } from "@/stores/windows-store";
+import { useSnapPreview, useHighestZIndex } from "@/hooks/useWindowSelectors";
 import { useViewport } from "@/hooks/useViewport";
 import type { SnapTarget } from "@/lib/snap";
 
@@ -23,8 +23,8 @@ function targetToRect(target: SnapTarget, vw: number, vh: number) {
  * will snap. Driven by `snapPreview` in the windows store (set during drag).
  */
 export function SnapPreview() {
-  const preview = useWindowsStore((s) => s.snapPreview);
-  const highestZIndex = useWindowsStore((s) => s.highestZIndex);
+  const preview = useSnapPreview();
+  const highestZIndex = useHighestZIndex();
   const { width, height } = useViewport();
 
   const rect = preview ? targetToRect(preview, width, height) : null;

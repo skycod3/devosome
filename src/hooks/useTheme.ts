@@ -24,3 +24,15 @@ export const useTheme = () => {
     setSystemThemeEnabled,
   };
 };
+
+/**
+ * Theme actions only — stable refs, no subscription to theme state. Use where a
+ * component needs to dispatch (e.g. init on mount) without re-rendering on
+ * every theme change (the ThemeProvider wraps the whole app).
+ */
+export const useThemeActions = () => ({
+  setTheme: useThemeStore((s) => s.setTheme),
+  toggleTheme: useThemeStore((s) => s.toggleTheme),
+  setSystemThemeEnabled: useThemeStore((s) => s.setSystemThemeEnabled),
+  initializeTheme: useThemeStore((s) => s.initializeTheme),
+});

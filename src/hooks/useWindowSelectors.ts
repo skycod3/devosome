@@ -52,3 +52,9 @@ export const useWindowSummary = (id: string) =>
       };
     }),
   );
+
+/** The pending Aero-snap target shown behind the dragged window (null = none). */
+export const useSnapPreview = () => useWindowsStore((s) => s.snapPreview);
+
+/** The current top-of-stack zIndex (monotonic counter). */
+export const useHighestZIndex = () => useWindowsStore((s) => s.highestZIndex);
