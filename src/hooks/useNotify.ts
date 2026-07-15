@@ -25,7 +25,9 @@ function truncateText(text: string, max: number): string {
 }
 
 function useNotify() {
-  const { addNotification } = useNotificationsStore();
+  // Selector, not the whole store — otherwise every useNotify consumer
+  // re-renders on any notification change (add/read/dismiss).
+  const addNotification = useNotificationsStore((s) => s.addNotification);
   const { playToast, playNotification } = useSounds();
 
   function fire(

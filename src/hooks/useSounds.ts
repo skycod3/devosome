@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Howl as HowlType } from "howler";
-import { useSettings } from "@/hooks/useSettings";
+import { useSettingsStore } from "@/stores/settings-store";
 
 // Sprite map: [offsetMs, durationMs] — generated from public/sounds/ui-sounds.json
 const SPRITE_MAP = {
@@ -15,7 +15,6 @@ const SPRITE_MAP = {
 type SoundId = keyof typeof SPRITE_MAP;
 
 export function useSounds() {
-  const { soundEnabled } = useSettings();
   const howlRef = useRef<HowlType | null>(null);
   const unlockedRef = useRef(false);
 
@@ -47,7 +46,13 @@ export function useSounds() {
 
   function makePlayer(id: SoundId) {
     return () => {
-      if (!soundEnabled || !unlockedRef.current) return;
+      // Read soundEnabled imperatively at play time instead of subscribing:
+      // players run only in event callbacks, so nothing here needs to re-render
+      // when the toggle flips. Subscribing would re-render every useNotify
+      // consumer (e.g. Weather) whenever sound effects are toggled.
+      if (!useSettingsStore.getState().soundEnabled || !unlockedRef.current) {
+        return;
+      }
       howlRef.current?.play(id);
     };
   }
