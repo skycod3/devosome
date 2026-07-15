@@ -145,7 +145,7 @@ export const useWindowsStore = create<WindowsState>()(
 
       // Open or focus existing window for an icon
       openWindow(iconId, parentId, title, icon, showTabs, parentTitle) {
-        const { windows } = get();
+        const { windows, highestZIndex } = get();
 
         // Check if this iconId belongs to a tabbed window system
         const tabParentApp = findTabParentApplication(iconId);
@@ -188,7 +188,7 @@ export const useWindowsStore = create<WindowsState>()(
             const windowIcon = icon;
 
             const newWindowId = `window-${parentIconId}-${Date.now()}`;
-            const newZIndex = BASE_Z_INDEX + windows.length + 1;
+            const newZIndex = highestZIndex + 1;
 
             const newWindow: Window = {
               id: newWindowId,
@@ -213,7 +213,9 @@ export const useWindowsStore = create<WindowsState>()(
 
             set((state) => ({
               windows: [
-                ...state.windows.map((w) => ({ ...w, isActive: false })),
+                ...state.windows.map((w) =>
+                  w.isActive ? { ...w, isActive: false } : w,
+                ),
                 newWindow,
               ],
               activeWindowId: newWindowId,
@@ -235,7 +237,7 @@ export const useWindowsStore = create<WindowsState>()(
 
         // Create new window with zIndex based on number of windows
         const newWindowId = `window-${iconId}-${Date.now()}`;
-        const newZIndex = BASE_Z_INDEX + windows.length + 1;
+        const newZIndex = highestZIndex + 1;
 
         const newWindow: Window = {
           id: newWindowId,
@@ -257,7 +259,9 @@ export const useWindowsStore = create<WindowsState>()(
 
         set((state) => ({
           windows: [
-            ...state.windows.map((w) => ({ ...w, isActive: false })),
+            ...state.windows.map((w) =>
+              w.isActive ? { ...w, isActive: false } : w,
+            ),
             newWindow,
           ],
           activeWindowId: newWindowId,
@@ -268,7 +272,7 @@ export const useWindowsStore = create<WindowsState>()(
       },
 
       closeWindow(id) {
-        const { windows, activeWindowId } = get();
+        const { windows, activeWindowId, highestZIndex } = get();
         let newWindows = windows.filter((w) => w.id !== id);
         const windowsNotMinimized = newWindows.filter((w) => !w.isMinimized);
 
@@ -287,10 +291,9 @@ export const useWindowsStore = create<WindowsState>()(
         set({
           windows: newWindows,
           activeWindowId: newActiveId,
-          highestZIndex:
-            newWindows.length > 0
-              ? BASE_Z_INDEX + newWindows.length
-              : BASE_Z_INDEX,
+          // Keep the counter monotonic — lowering it could hand a newly focused
+          // window a zIndex below an existing one. Reset only when empty.
+          highestZIndex: newWindows.length > 0 ? highestZIndex : BASE_Z_INDEX,
         });
       },
 
@@ -303,23 +306,18 @@ export const useWindowsStore = create<WindowsState>()(
       },
 
       setActiveWindow(id) {
-        set((state) => ({
-          windows: state.windows.map((window) => ({
-            ...window,
-            isActive: window.id === id,
-          })),
-          activeWindowId: id,
-        }));
-
-        // Bring to front when activated
+        // Activating always brings the window to front, and bringToFront does
+        // both surgically (only the focused + previously active window change).
         get().bringToFront(id);
       },
 
       deactivateAllWindows() {
-        set({
-          windows: get().windows.map((w) => ({ ...w, isActive: false })),
+        set((state) => ({
+          windows: state.windows.map((w) =>
+            w.isActive ? { ...w, isActive: false } : w,
+          ),
           activeWindowId: null,
-        });
+        }));
       },
 
       minimizeWindow(id) {
@@ -406,7 +404,10 @@ export const useWindowsStore = create<WindowsState>()(
       restoreWindow(id) {
         set((state) => ({
           windows: state.windows.map((window) => {
-            if (window.id !== id) return { ...window, isActive: false };
+            // Untouched windows keep their identity. Activation/z is handled by
+            // bringToFront below, which only touches the focused + previously
+            // active window.
+            if (window.id !== id) return window;
 
             // Restore from minimized state
             if (window.isMinimized) {
@@ -416,7 +417,6 @@ export const useWindowsStore = create<WindowsState>()(
                   ...window,
                   isMinimized: false,
                   isMaximized: true,
-                  isActive: true,
                   lastState: "minimized", // Track that previous state was minimized
                 };
               }
@@ -425,7 +425,6 @@ export const useWindowsStore = create<WindowsState>()(
                 ...window,
                 isMinimized: false,
                 isMaximized: false,
-                isActive: true,
                 lastState: "minimized", // Track that previous state was minimized
               };
             }
@@ -447,7 +446,6 @@ export const useWindowsStore = create<WindowsState>()(
                 // at full work-area height (an unsnapped restore would be clipped
                 // by the 90dvh max-height).
                 isSnapped: reSnap,
-                isActive: true,
                 lastState: "maximized", // Track that previous state was maximized
                 position:
                   reSnap && snap
@@ -469,10 +467,9 @@ export const useWindowsStore = create<WindowsState>()(
             // Already in normal state, nothing to restore
             return window;
           }),
-          activeWindowId: id,
         }));
 
-        // Bring restored window to front
+        // Brings it to front AND sets isActive / activeWindowId (surgically).
         get().bringToFront(id);
       },
 
@@ -547,39 +544,24 @@ export const useWindowsStore = create<WindowsState>()(
       },
 
       bringToFront(id) {
-        const { windows } = get();
+        const { windows, highestZIndex } = get();
+        if (!windows.some((w) => w.id === id)) return;
 
-        // Reorganize zIndex: sort windows by current zIndex, then assign sequential values
-        // The window being brought to front gets the highest zIndex
-        const otherWindows = windows
-          .filter((w) => w.id !== id)
-          .sort((a, b) => a.zIndex - b.zIndex);
-
-        const updatedWindows = windows.map((window) => {
-          if (window.id === id) {
-            // This window gets the highest zIndex
-            return {
-              ...window,
-              zIndex: BASE_Z_INDEX + windows.length,
-              isActive: true,
-            };
-          }
-
-          // Other windows get sequential zIndex based on their current order
-          const indexInOtherWindows = otherWindows.findIndex(
-            (w) => w.id === window.id,
-          );
-          return {
-            ...window,
-            zIndex: BASE_Z_INDEX + indexInOtherWindows + 1,
-            isActive: false,
-          };
-        });
+        // Monotonic zIndex: only the focused window moves. Re-sequencing every
+        // window (the previous behaviour) recreated every window object, so a
+        // single focus re-rendered every open window.
+        const newZ = highestZIndex + 1;
 
         set({
-          windows: updatedWindows,
+          windows: windows.map((w) =>
+            w.id === id
+              ? { ...w, zIndex: newZ, isActive: true }
+              : w.isActive
+                ? { ...w, isActive: false }
+                : w,
+          ),
           activeWindowId: id,
-          highestZIndex: BASE_Z_INDEX + windows.length,
+          highestZIndex: newZ,
         });
       },
 

@@ -15,6 +15,7 @@ vi.mock("@/constants/applications", () => ({
     documents: { id: "documents", windowTitle: "Documents", showTabs: false },
     about: { id: "about", windowTitle: "About" },
     contact: { id: "contact", windowTitle: "Contact" },
+    skills: { id: "skills", windowTitle: "Skills" },
   },
 }));
 
@@ -298,5 +299,144 @@ describe("bringToFront", () => {
     expect(about.zIndex).toBeGreaterThan(contact.zIndex);
     expect(about.isActive).toBe(true);
     expect(contact.isActive).toBe(false);
+  });
+});
+
+describe("bringToFront (surgical)", () => {
+  it("only touches the focused window and the previously active one", () => {
+    const a = open("about");
+    const b = open("contact");
+    const c = open("files"); // c is active
+
+    const bBefore = useWindowsStore.getState().windows.find((w) => w.id === b)!;
+
+    useWindowsStore.getState().bringToFront(a);
+
+    const s = useWindowsStore.getState();
+    expect(s.windows.find((w) => w.id === b)).toBe(bBefore);
+    expect(s.windows.find((w) => w.id === a)!.isActive).toBe(true);
+    expect(s.windows.find((w) => w.id === c)!.isActive).toBe(false);
+    expect(s.activeWindowId).toBe(a);
+  });
+
+  it("gives the focused window the highest zIndex (monotonic)", () => {
+    const a = open("about");
+    const b = open("contact");
+
+    const zBefore = useWindowsStore.getState().highestZIndex;
+    useWindowsStore.getState().bringToFront(a);
+
+    const s = useWindowsStore.getState();
+    expect(s.highestZIndex).toBe(zBefore + 1);
+    const za = s.windows.find((w) => w.id === a)!.zIndex;
+    const zb = s.windows.find((w) => w.id === b)!.zIndex;
+    expect(za).toBe(s.highestZIndex);
+    expect(za).toBeGreaterThan(zb);
+  });
+
+  it("is a no-op for an unknown id", () => {
+    open("about");
+    const before = useWindowsStore.getState().windows;
+    useWindowsStore.getState().bringToFront("nope");
+    expect(useWindowsStore.getState().windows).toBe(before);
+  });
+});
+
+describe("openWindow (surgical)", () => {
+  it("preserves the identity of already-inactive windows", () => {
+    const a = open("about");
+    const b = open("contact"); // b active, a inactive
+
+    const aBefore = useWindowsStore.getState().windows.find((w) => w.id === a)!;
+
+    open("skills"); // a third *regular* (non-tabbed) window — exercises the regular branch
+
+    const s = useWindowsStore.getState();
+    expect(s.windows.find((w) => w.id === a)).toBe(aBefore);
+    expect(s.windows.find((w) => w.id === b)!.isActive).toBe(false);
+  });
+
+  it("gives the new window the highest zIndex (monotonic)", () => {
+    open("about");
+    const zBefore = useWindowsStore.getState().highestZIndex;
+
+    const c = open("contact");
+
+    const s = useWindowsStore.getState();
+    expect(s.highestZIndex).toBe(zBefore + 1);
+    expect(s.windows.find((w) => w.id === c)!.zIndex).toBe(s.highestZIndex);
+    expect(s.windows.find((w) => w.id === c)!.isActive).toBe(true);
+  });
+});
+
+describe("setActiveWindow (surgical)", () => {
+  it("activates + fronts, touching only the two involved windows", () => {
+    const a = open("about");
+    const b = open("contact");
+    const c = open("files"); // c active
+
+    const bBefore = useWindowsStore.getState().windows.find((w) => w.id === b)!;
+
+    useWindowsStore.getState().setActiveWindow(a);
+
+    const s = useWindowsStore.getState();
+    expect(s.windows.find((w) => w.id === b)).toBe(bBefore);
+    expect(s.activeWindowId).toBe(a);
+    expect(s.windows.find((w) => w.id === a)!.zIndex).toBe(s.highestZIndex);
+    expect(s.windows.find((w) => w.id === c)!.isActive).toBe(false);
+  });
+});
+
+describe("deactivateAllWindows (surgical)", () => {
+  it("only touches the active window", () => {
+    const a = open("about");
+    const b = open("contact"); // b active
+
+    const aBefore = useWindowsStore.getState().windows.find((w) => w.id === a)!;
+
+    useWindowsStore.getState().deactivateAllWindows();
+
+    const s = useWindowsStore.getState();
+    expect(s.windows.find((w) => w.id === a)).toBe(aBefore);
+    expect(s.windows.find((w) => w.id === b)!.isActive).toBe(false);
+    expect(s.activeWindowId).toBeNull();
+  });
+});
+
+describe("restoreWindow (surgical)", () => {
+  it("only touches the restored window and the previously active one", () => {
+    const a = open("about");
+    const b = open("contact");
+    const c = open("files"); // c active
+
+    useWindowsStore.getState().minimizeWindow(a);
+
+    const bBefore = useWindowsStore.getState().windows.find((w) => w.id === b)!;
+
+    useWindowsStore.getState().restoreWindow(a);
+
+    const s = useWindowsStore.getState();
+    expect(s.windows.find((w) => w.id === b)).toBe(bBefore);
+    const wa = s.windows.find((w) => w.id === a)!;
+    expect(wa.isMinimized).toBe(false);
+    expect(wa.isActive).toBe(true);
+    expect(wa.zIndex).toBe(s.highestZIndex);
+    expect(s.windows.find((w) => w.id === c)!.isActive).toBe(false);
+    expect(s.activeWindowId).toBe(a);
+  });
+});
+
+describe("closeWindow (monotonic zIndex)", () => {
+  it("does not lower highestZIndex, and resets it only when empty", () => {
+    const a = open("about");
+    const b = open("contact");
+
+    const zBefore = useWindowsStore.getState().highestZIndex;
+
+    useWindowsStore.getState().closeWindow(b);
+    expect(useWindowsStore.getState().highestZIndex).toBe(zBefore);
+
+    useWindowsStore.getState().closeWindow(a);
+    expect(useWindowsStore.getState().highestZIndex).toBe(BASE_Z_INDEX);
   });
 });
