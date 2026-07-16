@@ -93,7 +93,7 @@ export function StartDropdown() {
                 onKeyDown={(e) => e.stopPropagation()}
                 onPointerDown={(e) => e.stopPropagation()}
                 placeholder="Search apps..."
-                className="text-foreground placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none"
+                className="text-foreground placeholder:text-muted-foreground w-full bg-transparent text-base outline-none"
               />
             </div>
             <DropdownMenuSeparator />

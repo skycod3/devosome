@@ -148,7 +148,7 @@ export function Terminal({ iconId }: { iconId: string }) {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="flex-1 bg-transparent outline-none caret-foreground"
+          className="flex-1 bg-transparent text-base outline-none caret-foreground"
           autoComplete="off"
           autoCorrect="off"
           autoCapitalize="off"
