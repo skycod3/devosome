@@ -218,11 +218,19 @@ export function WindowHeader({
             className={`flex basis-full line-clamp-1 items-center gap-x-3 gap-y-1 p-2`}
           >
             {/* Dynamic breadcrumb */}
-            <div className="shrink-0 flex items-center gap-2">
+            <button
+              type="button"
+              aria-label="Minimize window and return to the desktop"
+              title="Back to desktop"
+              className="shrink-0 flex items-center gap-2 -mx-1 rounded px-1 hover:bg-foreground/10"
+              onPointerDown={(e) => e.stopPropagation()}
+              onDoubleClick={(e) => e.stopPropagation()}
+              onClick={() => minimizeWindow(window.id)}
+            >
               <LuHouse className="size-4 shrink-0" />
 
               <span>{WINDOW_BREADCRUMB_HOME}</span>
-            </div>
+            </button>
 
             {(parentIcon || window.parentTitle) && (
               <div className="shrink-0">
