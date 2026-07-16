@@ -106,7 +106,7 @@ function AppearancePanel() {
       </div>
 
       <h2 className="text-sm font-semibold">Screen Saver</h2>
-      <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center gap-3">
         <label className="inline-flex items-center gap-3">
           <input
             type="checkbox"
