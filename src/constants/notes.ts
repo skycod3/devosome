@@ -3,6 +3,8 @@ export type NoteTip = {
   text: string;
   /** Keystroke tokens rendered as <kbd>. "mod" → ⌘ on macOS, Ctrl elsewhere. */
   keys?: string[];
+  /** Platform where this tip is NOT shown. Omit to show everywhere. */
+  hideOn?: "mobile" | "desktop";
 };
 
 export type NoteSection = {
@@ -15,17 +17,25 @@ export const NOTES_SECTIONS: NoteSection[] = [
   {
     category: "Windows",
     tips: [
-      { text: "Drag a window to the top edge to maximize it." },
+      {
+        text: "Drag a window to the top edge to maximize it.",
+        hideOn: "mobile",
+      },
       {
         text: "Drag a window to the left or right edge to snap it to that half of the screen.",
+        hideOn: "mobile",
       },
       {
         text: "Use the title-bar buttons to minimize, maximize/restore, or close.",
       },
       {
         text: "Drag the title bar to move a window; drag its edges or corners to resize.",
+        hideOn: "mobile",
       },
-      { text: "Right-click the title bar for more window actions." },
+      {
+        text: "Right-click the title bar for more window actions.",
+        hideOn: "mobile",
+      },
       {
         text: "Hit the home button in the breadcrumb to jump back to the start.",
       },
@@ -34,9 +44,14 @@ export const NOTES_SECTIONS: NoteSection[] = [
   {
     category: "Navigation",
     tips: [
-      { text: "Open Spotlight search to jump to any app:", keys: ["mod", "K"] },
+      {
+        text: "Open Spotlight search to jump to any app:",
+        keys: ["mod", "K"],
+        hideOn: "mobile",
+      },
       { text: "Launch apps from the Dock at the bottom of the screen." },
-      { text: "Double-click any desktop icon to open it." },
+      { text: "Double-click any desktop icon to open it.", hideOn: "mobile" },
+      { text: "Double-tap any desktop icon to open it.", hideOn: "desktop" },
     ],
   },
   {
