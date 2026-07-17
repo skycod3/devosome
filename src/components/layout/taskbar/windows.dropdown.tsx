@@ -13,7 +13,8 @@ import {
 import { useWindowActions } from "@/hooks/useWindowActions";
 import { useWindowIds, useWindowSummary } from "@/hooks/useWindowSelectors";
 
-import { ChevronDown, X } from "lucide-react";
+import { ChevronDown, X, Folder } from "lucide-react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 
 export function WindowsDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,12 +22,13 @@ export function WindowsDropdown() {
   // closes, not on every position change. Each row subscribes to its own fields.
   const windowIds = useWindowIds();
   const { closeAllWindows } = useWindowActions();
+  const isMobile = useIsMobile();
 
   return (
     <DropdownMenu open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
       <DropdownMenuTrigger asChild>
         <button data-minimize-anchor className="flex items-center gap-1">
-          Windows{" "}
+          {isMobile ? <Folder className="size-4" /> : "Windows"}
           {windowIds.length > 0 && (
             <span className="text-xs">({windowIds.length})</span>
           )}
