@@ -24,7 +24,7 @@ export const Desktop = memo(function Desktop() {
       // closes and its opener is gone, focus returns here instead of <body>.
       tabIndex={-1}
       style={{ gridTemplateRows: "[taskbar] auto [desktop] 1fr [dock] auto" }}
-      className="desktop-area relative grid h-dvh select-none overflow-hidden outline-none"
+      className="desktop-area relative grid h-dvh select-none outline-none"
     >
       <Wallpaper />
 
@@ -32,7 +32,7 @@ export const Desktop = memo(function Desktop() {
         <Taskbar />
       </div>
 
-      <div style={{ gridRow: "desktop" }}>
+      <div style={{ gridRow: "desktop" }} className="overflow-auto">
         <IconGrid />
       </div>
 
