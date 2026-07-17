@@ -38,7 +38,11 @@ export function Clock() {
     <Popover>
       <PopoverTrigger asChild>
         <button className="hover:text-foreground/70 transition-colors">
-          {format(time, "EEE")} {format(time, "HH:mm")}
+          {format(time, "EEE")}
+          {/* Hide the time on mobile: the phone OS already shows it in the
+              status bar, so it would be duplicated. The weekday is not, so
+              it stays. */}
+          <span className="hidden sm:inline"> {format(time, "HH:mm")}</span>
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-fit p-0" align="end">
