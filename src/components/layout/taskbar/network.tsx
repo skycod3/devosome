@@ -29,7 +29,14 @@ export function Network() {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div className="p-1.5 flex items-center">
+        {/* When online, the icon is redundant on mobile — the phone OS already
+            shows connectivity in its status bar — so hide it below `md`
+            (768px, the app's tablet/mobile breakpoint). When offline, always
+            show it: the "no connection" warning is the state that actually
+            earns its place. */}
+        <div
+          className={`p-1.5 items-center ${online ? "hidden md:flex" : "flex"}`}
+        >
           {online ? (
             <Signal className="size-4" />
           ) : (
