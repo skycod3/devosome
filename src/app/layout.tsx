@@ -4,7 +4,7 @@ import "./globals.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { ReactScanInit } from "@/components/dev/react-scan-init";
+// import { ReactScanInit } from "@/components/dev/react-scan-init";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
 
@@ -76,7 +76,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${firaCode.variable} ${caveat.variable} antialiased`}>
-        <ReactScanInit />
+        {/* <ReactScanInit /> */}
         <ThemeProvider>
           <TooltipProvider>{children}</TooltipProvider>
 
