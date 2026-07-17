@@ -16,7 +16,7 @@ function TaskbarWindows() {
 export function Taskbar() {
   return (
     <div className="bg-background/50 text-foreground flex gap-4 items-center justify-between px-2">
-      <div className="flex flex-wrap gap-x-8">
+      <div className="flex gap-x-4 md:gap-x-8">
         <StartDropdown />
 
         <TaskbarWindows />

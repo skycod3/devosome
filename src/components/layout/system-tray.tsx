@@ -22,7 +22,7 @@ export function SystemTray() {
   const { unreadCount } = useNotificationsStore();
 
   return (
-    <div className="flex items-center justify-end gap-1 sm:gap-2 p-2">
+    <div className="flex items-center justify-end gap-2 p-2">
       <Battery />
       <Network />
 
