@@ -12,3 +12,14 @@ export function isSafariMobile(): boolean {
     !/CriOS|FxiOS|OPiOS/.test(ua)
   );
 }
+
+/**
+ * Returns true when the page is served over an insecure origin — i.e. not
+ * HTTPS and not localhost. Browsers block geolocation (and other powerful
+ * APIs) in these contexts, which is the usual cause of a "permission denied"
+ * on mobile Safari when the site is opened over http:// on the local network.
+ */
+export function isInsecureContext(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.isSecureContext === false;
+}

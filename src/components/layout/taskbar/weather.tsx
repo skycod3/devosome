@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { CloudAlert } from "lucide-react";
 import { useNotify } from "@/hooks/useNotify";
+import { isInsecureContext, isSafariMobile } from "@/utils/browser";
 import { SESSION_KEYS } from "@/constants/storage-keys";
 import { WEATHER_REFRESH_INTERVAL_MS } from "@/constants/weather";
 
@@ -86,19 +87,35 @@ export function Weather() {
 
       if (err instanceof GeolocationPositionError) {
         switch (err.code) {
-          case err.PERMISSION_DENIED:
+          case err.PERMISSION_DENIED: {
+            // On mobile Safari, "permission denied" is usually not a real
+            // permission prompt being dismissed but the origin being insecure
+            // (http:// over the local network). HTTPS is required there, so
+            // "check your site settings" would be misleading advice.
+            const insecure = isInsecureContext();
+            const iosInsecure = insecure && isSafariMobile();
+
             if (!sessionStorage.getItem(SESSION_KEYS.WEATHER_ERROR_SHOWN)) {
               sessionStorage.setItem(SESSION_KEYS.WEATHER_ERROR_SHOWN, "true");
-              notify.error("Location access is blocked", {
-                description:
-                  "To enable weather, allow location access in your browser's site settings and reload the page.",
-                duration: 10000,
-                dedupeId: "weather-location-blocked",
-              });
+              notify.error(
+                insecure
+                  ? "Weather needs a secure (HTTPS) connection"
+                  : "Location access is blocked",
+                {
+                  description: iosInsecure
+                    ? "On iPhone/iPad, Safari only shares your location over HTTPS. Open this site with https:// and reload."
+                    : insecure
+                      ? "Your browser only shares location over HTTPS. Open this site with https:// and reload."
+                      : "To enable weather, allow location access in your browser's site settings and reload the page.",
+                  duration: 10000,
+                  dedupeId: "weather-location-blocked",
+                },
+              );
             }
 
-            setError("Permission denied");
+            setError(insecure ? "HTTPS required" : "Permission denied");
             break;
+          }
           case err.POSITION_UNAVAILABLE:
             setError("Position unavailable");
             break;
