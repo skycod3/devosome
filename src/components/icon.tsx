@@ -102,13 +102,13 @@ export const Icon = memo(function Icon({ id, imagePlaceholder }: IconProps) {
               width={size.width}
               height={size.height}
               loading="eager"
-              className="object-contain self-end max-h-full max-w-full"
+              className="object-contain self-end max-h-full max-w-full contain-size"
               placeholder={resolvedPlaceholder}
             />
           </div>
 
           <p
-            className={`leading-4 sm:leading-normal text-sm line-clamp-2 text-center wrap-break-word mt-2 sm:mt-0 ${isDesktopIcon ? "text-shadow-lg" : ""}`}
+            className={`leading-4 sm:leading-normal text-sm line-clamp-2 h-fit text-center wrap-break-word mt-2 sm:mt-0 ${isDesktopIcon ? "text-shadow-md text-shadow-neutral-700" : ""}`}
           >
             {title.length > 17 ? `${title.slice(0, 17)}...` : title}
           </p>
