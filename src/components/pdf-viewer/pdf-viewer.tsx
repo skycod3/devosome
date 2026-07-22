@@ -47,6 +47,9 @@ export function PdfViewer({ iconId: _ }: PdfViewerProps) {
   const [isDocumentLoaded, setIsDocumentLoaded] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
   const [errorDetail, setErrorDetail] = useState<string>("");
+  const [lang, setLang] = useState<"en" | "pt">("en");
+  const fileUrl =
+    lang === "en" ? "/documents/resume.pdf" : "/documents/resume.pt.pdf";
 
   const options = useMemo(
     () => ({
@@ -139,7 +142,7 @@ export function PdfViewer({ iconId: _ }: PdfViewerProps) {
               </p>
             )}
             <p className="text-sm text-muted-foreground">
-              Please check if the file exists at /documents/resume.pdf
+              Please check if the file exists at {fileUrl}
             </p>
           </div>
         ) : (
@@ -147,7 +150,7 @@ export function PdfViewer({ iconId: _ }: PdfViewerProps) {
             <div className="flex justify-center p-4">
               <Document
                 className="[&_canvas]:mx-auto [&_canvas]:shadow-lg"
-                file="/documents/resume.pdf"
+                file={fileUrl}
                 onLoadSuccess={onDocumentLoadSuccess}
                 onLoadError={onDocumentLoadError}
                 options={options}
@@ -217,10 +220,37 @@ export function PdfViewer({ iconId: _ }: PdfViewerProps) {
                     </>
                   )}
 
+                  <div className="flex overflow-hidden rounded border border-foreground/15 shadow-md">
+                    {(["en", "pt"] as const).map((code) => (
+                      <button
+                        key={code}
+                        onClick={() => {
+                          setLang(code);
+                          setPageNumber(1);
+                        }}
+                        aria-pressed={lang === code}
+                        aria-label={
+                          code === "en"
+                            ? "Show English resume"
+                            : "Show Portuguese resume"
+                        }
+                        className={`px-2.5 py-1.5 text-xs font-medium uppercase transition-colors ${
+                          lang === code
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-background text-foreground hover:bg-accent"
+                        }`}
+                      >
+                        {code}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="mx-1 w-px bg-border" />
+
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <a
-                        href="/documents/resume.pdf"
+                        href={fileUrl}
                         download
                         className="flex-center bg-primary size-9 rounded shadow-md transition-colors hover:bg-primary/90"
                       >
