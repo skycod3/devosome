@@ -1,0 +1,126 @@
+/* A4 print sheet, single column, impact-first layout. Colors are explicit
+   (independent of the OS theme — the sheet is always white). */
+@page {
+  size: A4;
+  margin: 0;
+}
+
+.resume-root {
+  color-scheme: light;
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 14mm 15mm 12mm;
+  background: #ffffff;
+  color: #16181d;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 10pt;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+.resume-root * {
+  box-sizing: border-box;
+}
+
+.resume-name {
+  margin: 0;
+  font-size: 22pt;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+.resume-headline {
+  margin: 2pt 0 0;
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 9pt;
+  color: #2f6f4f;
+}
+.resume-meta {
+  margin: 7pt 0 0;
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 7.5pt;
+  color: #5b6069;
+}
+.resume-rule {
+  height: 1px;
+  background: #dde0e4;
+  margin: 11pt 0 10pt;
+}
+.resume-section-title {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 8pt;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2f6f4f;
+  margin: 0 0 6pt;
+  font-weight: 500;
+}
+.resume-block {
+  margin-bottom: 12pt;
+}
+.resume-summary {
+  margin: 0;
+  font-size: 9.5pt;
+  line-height: 1.55;
+  color: #2b2f36;
+}
+.resume-job {
+  margin-bottom: 9pt;
+}
+.resume-role-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10pt;
+}
+.resume-role {
+  font-size: 10.5pt;
+  font-weight: 600;
+  margin: 0;
+}
+.resume-company {
+  font-size: 9pt;
+  color: #5b6069;
+  margin: 0;
+}
+.resume-period {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 7.5pt;
+  color: #6b7078;
+  white-space: nowrap;
+}
+.resume-bullets {
+  margin: 5pt 0 0;
+  padding-left: 13pt;
+}
+.resume-bullets li {
+  font-size: 9pt;
+  line-height: 1.5;
+  margin-bottom: 3pt;
+  color: #2b2f36;
+}
+.resume-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4pt;
+}
+.resume-chip {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 7.5pt;
+  padding: 2pt 6pt;
+  border: 1px solid #d0d3d8;
+  border-radius: 3px;
+  color: #3a3f47;
+}
+.resume-chip.is-emphasis {
+  border-color: #b8dcc8;
+  background: #f0f8f3;
+  color: #2f6f4f;
+}
+.resume-footer-row {
+  font-size: 9pt;
+  color: #2b2f36;
+}
+.resume-footer-row strong {
+  font-weight: 600;
+  color: #16181d;
+}
