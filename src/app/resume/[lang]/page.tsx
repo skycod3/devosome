@@ -24,8 +24,12 @@ export default async function ResumePage({
       <h1 className="resume-name">{c.name}</h1>
       <p className="resume-headline">{c.headline}</p>
       <p className="resume-meta">
-        {c.contact.location} &nbsp;·&nbsp; {c.contact.email} &nbsp;·&nbsp;{" "}
-        {c.contact.linkedin} &nbsp;·&nbsp; {c.contact.github}
+        {[
+          ...c.contact.location.split(" · "),
+          c.contact.email,
+          c.contact.linkedin,
+          c.contact.github,
+        ].join(" · ")}
       </p>
 
       <div className="resume-rule" />

@@ -62,16 +62,16 @@ const CONTACT: ContactInfo = {
 // Skill order is identical across locales; labels are tech names (not translated).
 const SKILLS: SkillChip[] = [
   { label: "JavaScript", emphasis: true },
-  { label: "TypeScript", emphasis: true },
+  { label: "TypeScript", emphasis: false },
   { label: "CSS / Sass", emphasis: true },
   { label: "HTML", emphasis: true },
   { label: "React", emphasis: false },
   { label: "Next.js", emphasis: false },
-  { label: "Accessibility (WCAG AA)", emphasis: true },
+  { label: "Accessibility (WCAG)", emphasis: true },
   { label: "Core Web Vitals", emphasis: true },
   { label: "Technical SEO", emphasis: true },
   { label: "AI Tooling", emphasis: true },
-  { label: "Design Systems", emphasis: false },
+  { label: "Design Systems", emphasis: true },
   { label: "Figma", emphasis: false },
 ];
 
@@ -95,7 +95,7 @@ export const RESUME_EN: ResumeContent = {
       bullets: [
         "Designed and built the design system behind a library of ~35 site templates, now the baseline for every new project at the company.",
         "Cut the client site renewal cycle from ~3 days to ~2 hours (~7 renewals/month) with an AI-driven pipeline: template selection, content ingestion via internal API, and layout adaptation to each client's business.",
-        "Set the template quality bar: WCAG AA, Core Web Vitals, cross-browser compatibility, responsive design, and technical SEO.",
+        "Set the template quality bar: WCAG, Core Web Vitals, cross-browser compatibility, responsive design, and technical SEO.",
         "Introduced Git to a company with no version control; established English as the standard for code, design, and documentation.",
       ],
     },
@@ -142,7 +142,7 @@ export const RESUME_PT: ResumeContent = {
       bullets: [
         "Projetei e construí o design system por trás de uma biblioteca de ~35 templates de site, hoje base de todo novo projeto da empresa.",
         "Reduzi o ciclo de renovação de sites de clientes de ~3 dias para ~2 horas (~7 renovações/mês) com um pipeline dirigido por IA: seleção de template, ingestão de conteúdo via API interna e adaptação de layout ao negócio de cada cliente.",
-        "Defini o padrão de qualidade dos templates: WCAG AA, Core Web Vitals, compatibilidade cross-browser, responsividade e SEO técnico.",
+        "Defini o padrão de qualidade dos templates: WCAG, Core Web Vitals, compatibilidade cross-browser, responsividade e SEO técnico.",
         "Introduzi Git em uma empresa sem controle de versão; estabeleci o inglês como padrão para código, design e documentação.",
       ],
     },
