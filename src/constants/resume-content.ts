@@ -104,7 +104,9 @@ export const RESUME_EN: ResumeContent = {
       company: "AgênciaNet",
       period: "2018 — 2024",
       bullets: [
-        "Delivered production sites and grew into technical decisions on tooling and standards; trained junior developers, with a focus on CSS.",
+        "Delivered institutional websites and landing pages as the team's main output, becoming its primary reference for CSS and JavaScript.",
+        "Grew from developer into a technical leadership role over ~4 years, researching and introducing modern CSS/JavaScript techniques the team had not used before.",
+        "Started the HTML/CSS/JavaScript training for new hires, lifting the front-end team's baseline.",
       ],
     },
   ],
@@ -149,7 +151,9 @@ export const RESUME_PT: ResumeContent = {
       company: "AgênciaNet",
       period: "2018 — 2024",
       bullets: [
-        "Entreguei sites em produção e evoluí para decisões técnicas de tooling e padrões; treinei desenvolvedores júnior, com foco em CSS.",
+        "Entreguei sites institucionais e landing pages como principal entrega do time, tornando-me a principal referência em CSS e JavaScript.",
+        "Evoluí de desenvolvedor a um papel de liderança técnica ao longo de ~4 anos, pesquisando e introduzindo técnicas modernas de CSS/JavaScript que o time ainda não usava.",
+        "Iniciei os treinamentos de HTML/CSS/JavaScript para novos integrantes, elevando o nível de base do time de frontend.",
       ],
     },
   ],
