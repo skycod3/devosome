@@ -45,3 +45,6 @@ certificates
 
 # Claude Code — local, per-machine settings
 .claude/settings.local.json
+
+# Brainstorming visual companion
+.superpowers/

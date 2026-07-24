@@ -15,7 +15,8 @@
     "format:check": "prettier --check .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "prepare": "husky"
+    "prepare": "husky",
+    "resume:pdf": "node scripts/generate-resume.mjs && vitest run resume-pdf"
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx,mjs,cjs,json,css,md}": "prettier --write"
@@ -63,7 +64,9 @@
     "husky": "^9.1.7",
     "jsdom": "^29.1.1",
     "lint-staged": "^17.0.8",
+    "pdfjs-dist": "^5.4.296",
     "prettier": "^3.9.4",
+    "puppeteer": "^25.3.0",
     "react-scan": "^0.5.7",
     "shadcn": "^3.8.5",
     "tailwindcss": "^4",

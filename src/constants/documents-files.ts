@@ -26,8 +26,8 @@ export const DOCUMENTS_FILES: Record<string, DocumentFile> = {
     windowTitle: "Jean's Resume.pdf",
     details: {
       type: "PDF",
-      size: 98553,
-      createdAt: new Date("2025-12-10T07:25:48Z"),
+      size: 180779,
+      createdAt: new Date("2026-07-22T00:00:00Z"),
     },
   },
 };
