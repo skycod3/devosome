@@ -30,9 +30,9 @@ export const SKILLS: SkillCategory[] = [
       },
       {
         name: "TypeScript",
-        proficiency: "Advanced",
-        experience: "5+ years",
-        stack: ["Type safety", "Generics", "Utility types", "Type inference"],
+        proficiency: "Intermediate",
+        experience: "3+ years",
+        stack: ["Type safety", "Generics", "Strict mode", "Type guards"],
         projects: ["Next.js projects", "React applications"],
       },
       {
@@ -51,8 +51,8 @@ export const SKILLS: SkillCategory[] = [
       },
       {
         name: "React",
-        proficiency: "Advanced",
-        experience: "5+ years",
+        proficiency: "Intermediate",
+        experience: "3+ years",
         stack: [
           "Hooks",
           "Context API",
@@ -64,10 +64,43 @@ export const SKILLS: SkillCategory[] = [
       },
       {
         name: "Next.js",
+        proficiency: "Intermediate",
+        experience: "2+ years",
+        stack: ["App Router", "Server Components", "SSG/SSR", "API Routes"],
+        projects: ["Portfolios", "SEO-focused sites", "DevOSome"],
+      },
+      {
+        name: "Accessibility",
         proficiency: "Advanced",
         experience: "4+ years",
-        stack: ["App Router", "Server Components", "SSG/SSR", "API Routes"],
-        projects: ["Portfolios", "E-commerce", "SEO-focused sites", "DevOSome"],
+        stack: [
+          "WCAG",
+          "Semantic HTML",
+          "Keyboard navigation",
+          "ARIA",
+          "Auditing tools",
+        ],
+        projects: [
+          "Template accessibility standard",
+          "Accessibility audits",
+          "DevOSome",
+        ],
+      },
+      {
+        name: "Design Systems",
+        proficiency: "Advanced",
+        experience: "3+ years",
+        stack: [
+          "Design tokens",
+          "Component architecture",
+          "Reusable templates",
+          "Documentation",
+        ],
+        projects: [
+          "Agency-wide design system",
+          "Site template library",
+          "DevOSome",
+        ],
       },
     ],
   },
