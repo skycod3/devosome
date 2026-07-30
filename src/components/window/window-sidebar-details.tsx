@@ -173,10 +173,10 @@ export function SidebarDetails({ activeTab }: { activeTab: string }) {
                 <p className="font-semibold">Details:</p>
 
                 <ul className="space-y-2 text-accent-foreground/70">
-                  <li className="flex justify-between">
+                  <li className="flex flex-wrap justify-between">
                     Type: <span>{sidebarData?.details?.type ?? "—"} File</span>
                   </li>
-                  <li className="flex justify-between">
+                  <li className="flex flex-wrap justify-between">
                     Size:{" "}
                     <span>
                       {sidebarData?.details
@@ -185,7 +185,7 @@ export function SidebarDetails({ activeTab }: { activeTab: string }) {
                     </span>
                   </li>
                   {sidebarData?.details?.createdAt && (
-                    <li className="flex justify-between">
+                    <li className="flex flex-wrap justify-between">
                       Created:{" "}
                       <span>
                         {sidebarData.details.createdAt.toLocaleDateString()}
@@ -193,7 +193,7 @@ export function SidebarDetails({ activeTab }: { activeTab: string }) {
                     </li>
                   )}
                   {sidebarData?.details?.dimensions && (
-                    <li className="flex justify-between">
+                    <li className="flex flex-wrap justify-between">
                       Dimensions:{" "}
                       <span>
                         {sidebarData.details.dimensions.width}x
