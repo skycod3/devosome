@@ -53,6 +53,16 @@ export const useWindowSummary = (id: string) =>
     }),
   );
 
+/**
+ * Just one window's `isMinimized` flag; re-renders only when that flag flips.
+ * Accepts an optional id so consumers rendered outside a window (id undefined)
+ * can call it unconditionally and get a stable `false`.
+ */
+export const useWindowIsMinimized = (id: string | undefined) =>
+  useWindowsStore((s) =>
+    id ? (s.windows.find((w) => w.id === id)?.isMinimized ?? false) : false,
+  );
+
 /** The pending Aero-snap target shown behind the dragged window (null = none). */
 export const useSnapPreview = () => useWindowsStore((s) => s.snapPreview);
 

@@ -16,6 +16,7 @@ import {
 
 import { VIDEO_FILES } from "@/constants/video-files";
 import { AUDIO_FILES } from "@/constants/audio-files";
+import { useWindowIsMinimized } from "@/hooks/useWindowSelectors";
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -35,11 +36,13 @@ function clamp(value: number, min = 0, max = 1): number {
 interface MediaPlayerProps {
   iconId: string;
   mediaType: "video" | "audio";
+  /** Host window id, used to pause playback when the window is minimized. */
+  windowId?: string;
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
+export function MediaPlayer({ iconId, mediaType, windowId }: MediaPlayerProps) {
   const mediaRef = useRef<HTMLVideoElement & HTMLAudioElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -97,6 +100,14 @@ export function MediaPlayer({ iconId, mediaType }: MediaPlayerProps) {
   useEffect(() => {
     containerRef.current?.focus();
   }, []);
+
+  // Pause playback while the host window is minimized (audio/video shouldn't keep
+  // playing behind a minimized window). Restoring the window leaves it paused —
+  // playback only resumes when the user hits play again.
+  const isMinimized = useWindowIsMinimized(windowId);
+  useEffect(() => {
+    if (isMinimized) mediaRef.current?.pause();
+  }, [isMinimized]);
 
   // ─── Controls ──────────────────────────────────────────────────────────────
 

@@ -107,7 +107,7 @@ export function WindowContent({
   if (videoFile) {
     return (
       <section className="flex-2">
-        <MediaPlayer iconId={iconId} mediaType="video" />
+        <MediaPlayer iconId={iconId} mediaType="video" windowId={windowId} />
       </section>
     );
   }
@@ -117,7 +117,7 @@ export function WindowContent({
   if (audioFile) {
     return (
       <section className="flex-2">
-        <MediaPlayer iconId={iconId} mediaType="audio" />
+        <MediaPlayer iconId={iconId} mediaType="audio" windowId={windowId} />
       </section>
     );
   }
