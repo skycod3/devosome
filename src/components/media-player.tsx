@@ -249,18 +249,17 @@ export function MediaPlayer({ iconId, mediaType, windowId }: MediaPlayerProps) {
         )}
 
         {/* Play/Pause overlay */}
-        <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/75 grid place-items-center">
-          <button
-            onClick={handlePlayPause}
-            aria-label={isPlaying ? "Pause" : "Play"}
-          >
-            {isPlaying ? (
-              <PiPauseThin className="size-20 text-white" />
-            ) : (
-              <PiPlayThin className="size-20 text-white" />
-            )}
-          </button>
-        </div>
+        <button
+          onClick={handlePlayPause}
+          aria-label={isPlaying ? "Pause" : "Play"}
+          className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity bg-black/50 grid place-items-center"
+        >
+          {isPlaying ? (
+            <PiPauseThin className="size-20 text-white" />
+          ) : (
+            <PiPlayThin className="size-20 text-white" />
+          )}
+        </button>
       </div>
 
       {/* ── Progress bar ── */}
