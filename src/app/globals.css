@@ -52,7 +52,7 @@
 /* Base Styles */
 
 @layer base {
-  :where(html) {
+  * {
     scrollbar-width: thin;
     scrollbar-color: var(--color-accent-foreground) var(--color-accent);
   }
