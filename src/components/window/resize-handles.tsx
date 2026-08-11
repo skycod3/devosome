@@ -194,7 +194,7 @@ export function ResizeHandles({
       />
       <div
         onPointerDown={(e) => handlePointerDown(e, { south: true, east: true })}
-        className="absolute bottom-0 right-0 pointer-events-auto"
+        className="absolute bottom-0 right-0 pointer-events-auto overflow-hidden"
         style={{
           width: c,
           height: c,
