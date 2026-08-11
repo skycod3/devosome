@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense, type ComponentType, type ReactNode } from "react";
+
 import { APPLICATIONS } from "@/constants/applications";
 import { TabsContent } from "@/components/ui/tabs";
 import { IMAGE_FILES } from "@/constants/image-files";
@@ -16,6 +18,42 @@ import {
 } from "../pdf-viewer";
 
 import { HeroBackdrop } from "../effects/hero-backdrop";
+
+// The lazy apps pass no `loading` to next/dynamic, so they carry no Suspense
+// boundary of their own (see constants/applications.ts). These boundaries have
+// to stay: without one the suspension escapes to the Desktop's own dynamic()
+// and React swaps the whole desktop for its full-screen spinner.
+
+/** Fallback for apps that don't register a `loading` skeleton of their own. */
+function AppLoading() {
+  return (
+    <div className="flex h-full w-full items-center justify-center">
+      <div className="size-6 animate-spin rounded-full border-2 border-muted border-t-foreground motion-reduce:animate-none" />
+    </div>
+  );
+}
+
+/** Scopes a lazy app's suspension to its own window body. */
+function AppBoundary({
+  loading: Loading = AppLoading,
+  children,
+}: {
+  loading?: ComponentType;
+  children: ReactNode;
+}) {
+  const fallback = (
+    <div
+      className="h-full w-full"
+      role="status"
+      aria-busy="true"
+      aria-label="Loading application"
+    >
+      <Loading />
+    </div>
+  );
+
+  return <Suspense fallback={fallback}>{children}</Suspense>;
+}
 
 // ---------------------------------------------------------------------------
 // WindowContent
@@ -53,7 +91,12 @@ export function WindowContent({
               forceMount
               className="h-full data-[state=inactive]:hidden"
             >
-              <AppComponent iconId={tabId} />
+              {/* One boundary per tab, not one around the map: forceMount
+                  mounts all five, so a shared boundary would blank every tab
+                  while any one of them loads. */}
+              <AppBoundary loading={tabApp?.loading}>
+                <AppComponent iconId={tabId} />
+              </AppBoundary>
             </TabsContent>
           );
         })}
@@ -68,7 +111,9 @@ export function WindowContent({
       // `relative` so an app's absolute backdrop (HeroBackdrop) is confined to the
       // body and doesn't bleed up behind the window header.
       <section className="relative flex-2 @container">
-        <AppComponent iconId={iconId} />
+        <AppBoundary loading={application.loading}>
+          <AppComponent iconId={iconId} />
+        </AppBoundary>
       </section>
     );
   }
