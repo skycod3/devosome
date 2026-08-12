@@ -267,11 +267,27 @@ export function SystemSettingsSkeleton() {
 // ---------------------------------------------------------------------------
 export function ClipboardHistorySkeleton() {
   return (
-    <div className="flex h-full flex-col gap-4 p-4">
+    <div className="flex h-full flex-col gap-6.5 p-4">
+      <Bar className="h-3 w-15" />
       {repeat(4).map((i) => (
-        <div key={i} className="grid gap-1">
-          <Bar className="h-3 w-20" />
-          <Bar className="h-10" />
+        <div key={i} className="flex items-center">
+          <div className="flex-1 grid gap-1 pl-3">
+            <Bar className="w-10 h-3" />
+            <Bar className="w-1/2 h-3" />
+          </div>
+
+          <Bar className="size-4 mr-3" />
+        </div>
+      ))}
+      <Bar className="h-3 w-15" />
+      {repeat(2).map((i) => (
+        <div key={i} className="flex items-center">
+          <div className="flex-1 grid gap-1 pl-3">
+            <Bar className="w-10 h-3" />
+            <Bar className="w-1/2 h-3" />
+          </div>
+
+          <Bar className="size-4 mr-3" />
         </div>
       ))}
     </div>
@@ -280,22 +296,18 @@ export function ClipboardHistorySkeleton() {
 
 export function SystemMonitorSkeleton() {
   return (
-    <div className="flex h-full flex-col gap-4 p-4">
-      <Bar className="h-8 rounded-md" />
-      {repeat(3).map((box) => (
-        <div
-          key={box}
-          className="space-y-2 rounded-md border border-border px-3 py-2"
-        >
-          {repeat(3).map((row) => (
-            <div
-              key={row}
-              className="flex items-baseline justify-between gap-4"
-            >
-              <Bar className="h-3 w-20" />
-              <Bar className="h-3 w-12" />
-            </div>
-          ))}
+    <div className="flex h-full flex-col gap-5.5 p-4">
+      {repeat(4).map((i) => (
+        <div key={i} className="space-y-2">
+          <Bar className="h-3 w-16 rounded-md" />
+          <div className="space-y-4 rounded-md border border-border p-3">
+            {repeat(3).map((row) => (
+              <div key={row} className="flex items-baseline justify-between">
+                <Bar className="h-3 w-18" />
+                <Bar className="h-3 w-12" />
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>
