@@ -166,7 +166,7 @@ export function ContactSkeleton() {
         <Bar className="h-3 w-1/3" />
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 mt-8">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             <Bar className="h-3 w-16" />
