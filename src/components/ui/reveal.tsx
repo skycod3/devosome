@@ -14,19 +14,8 @@ import {
 const DURATION = 0.2;
 const Y_OFFSET = 8;
 
-// Single element: fade + slide-up, slightly delayed so it starts after the
-// window's own scale-in instead of competing with it.
-const revealVariants: Variants = {
-  hidden: { opacity: 0, y: Y_OFFSET },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: DURATION, ease: "easeOut", delay: 0.08 },
-  },
-};
-
 // Stagger container: children animate in sequence. The lead-in before the first
-// child matches the standalone delay above.
+// child lets the window's own scale-in land first instead of competing with it.
 const groupVariants: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.04, delayChildren: 0.08 } },
@@ -74,21 +63,6 @@ function renderTag(as: RevealTag, props: HTMLMotionProps<"div">) {
     default:
       return <motion.div {...props} />;
   }
-}
-
-/**
- * Fades and slides a single block of content in once on mount. Use for
- * non-list window content (About Me, Contact, Terminal, …).
- */
-export function Reveal({ as = "div", ...props }: RevealProps) {
-  const prefersReducedMotion = useReducedMotion();
-  if (prefersReducedMotion) return renderTag(as, props);
-  return renderTag(as, {
-    variants: revealVariants,
-    initial: "hidden",
-    animate: "show",
-    ...props,
-  });
 }
 
 /**

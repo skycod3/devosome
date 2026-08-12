@@ -5,7 +5,6 @@ import { motion, useReducedMotion } from "motion/react";
 
 import { SKILLS, Proficiency, type Skill } from "@/constants/skills";
 
-import { RevealGroup, RevealItem } from "@/components/ui/reveal";
 import {
   AppToolbar,
   ToolbarButton,
@@ -257,9 +256,7 @@ export function Skills() {
 
       <HeroBackdrop />
 
-      {/* key on the group so switching categories replays the staggered entrance
-          instead of leaving newly shown cards stuck hidden. */}
-      <RevealGroup key={activeCategory ?? "all"} className="p-4 md:p-6">
+      <div className="p-4 md:p-6">
         {visible.map(({ category, skills }) => (
           <div key={category} className="mt-6 first:mt-0">
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
@@ -267,19 +264,18 @@ export function Skills() {
             </h2>
             <div className="grid grid-cols-fill-14 gap-4 items-start">
               {skills.map((skill) => (
-                <RevealItem key={skill.name}>
-                  <SkillCard
-                    skill={skill}
-                    flipped={flipped.has(skill.name)}
-                    onToggle={() => toggle(skill.name)}
-                    reducedMotion={reducedMotion}
-                  />
-                </RevealItem>
+                <SkillCard
+                  key={skill.name}
+                  skill={skill}
+                  flipped={flipped.has(skill.name)}
+                  onToggle={() => toggle(skill.name)}
+                  reducedMotion={reducedMotion}
+                />
               ))}
             </div>
           </div>
         ))}
-      </RevealGroup>
+      </div>
     </div>
   );
 }

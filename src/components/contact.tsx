@@ -22,7 +22,6 @@ import {
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
-import { RevealGroup, RevealItem } from "./ui/reveal";
 import {
   AppToolbar,
   ToolbarButton,
@@ -133,17 +132,17 @@ export function Contact() {
 
       <HeroBackdrop />
 
-      <RevealGroup className="space-y-6 p-4 md:p-6">
+      <div className="space-y-6 p-4 md:p-6">
         {/* Header */}
-        <RevealItem>
+        <div>
           <h2 className="text-lg font-semibold">Get in Touch</h2>
           <p className="text-sm text-muted-foreground mt-1">
             Send me a message and I&apos;ll get back to you as soon as possible.
           </p>
-        </RevealItem>
+        </div>
 
         {/* Form / success */}
-        <RevealItem>
+        <div>
           <AnimatePresence mode="wait" initial={false}>
             {sent ? (
               <motion.div
@@ -312,8 +311,8 @@ export function Contact() {
               </motion.form>
             )}
           </AnimatePresence>
-        </RevealItem>
-      </RevealGroup>
+        </div>
+      </div>
     </div>
   );
 }

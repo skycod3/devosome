@@ -10,7 +10,6 @@ import { PiCopy, PiCheck, PiMapPin, PiUser, PiFilePdf } from "react-icons/pi";
 import { ABOUT_ME } from "@/constants/about";
 import { useCopyToClipboard } from "@/hooks/useCopyToClipboard";
 import { useOpenWindow } from "@/hooks/useOpenWindow";
-import { RevealGroup, RevealItem } from "./ui/reveal";
 import {
   AppToolbar,
   ToolbarButton,
@@ -81,9 +80,9 @@ export function AboutMe() {
 
       <HeroBackdrop />
 
-      <RevealGroup className="space-y-6 p-4 md:p-6">
+      <div className="space-y-6 p-4 md:p-6">
         {/* Hero */}
-        <RevealItem className="grid justify-items-center gap-4">
+        <div className="grid justify-items-center gap-4">
           {reducedMotion ? (
             <div className="relative size-24 overflow-hidden rounded-full border-2 border-border bg-accent">
               {ABOUT_ME.photo ? (
@@ -125,10 +124,10 @@ export function AboutMe() {
               )}
             </div>
           </div>
-        </RevealItem>
+        </div>
 
         {/* Bio */}
-        <RevealItem
+        <div
           style={{ "--flow-space": "0.25em" } as React.CSSProperties}
           className="flow"
         >
@@ -138,10 +137,10 @@ export function AboutMe() {
           <p className="text-sm leading-relaxed text-foreground">
             {ABOUT_ME.description}
           </p>
-        </RevealItem>
+        </div>
 
         {/* Timeline */}
-        <RevealItem
+        <div
           style={{ "--flow-space": "0.25em" } as React.CSSProperties}
           className="flow"
         >
@@ -174,10 +173,10 @@ export function AboutMe() {
               );
             })}
           </ol>
-        </RevealItem>
+        </div>
 
         {/* Highlights */}
-        <RevealItem
+        <div
           style={{ "--flow-space": "0.25em" } as React.CSSProperties}
           className="flow"
         >
@@ -197,8 +196,8 @@ export function AboutMe() {
               </div>
             ))}
           </div>
-        </RevealItem>
-      </RevealGroup>
+        </div>
+      </div>
     </div>
   );
 }

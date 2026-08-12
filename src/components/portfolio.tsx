@@ -15,7 +15,6 @@ import { PROJECTS, type Project } from "@/constants/projects";
 import { useIsMobile } from "@/hooks/useIsMobile";
 
 import { Badge } from "./ui/badge";
-import { RevealGroup, RevealItem } from "./ui/reveal";
 import {
   AppToolbar,
   ToolbarButton,
@@ -92,9 +91,7 @@ function ProjectLinks({ github, live }: { github?: string; live?: string }) {
 }
 
 /**
- * Pointer-driven 3D tilt. The entrance animation lives on the surrounding
- * RevealItem; this inner element only handles the hover tilt so the two
- * transforms don't fight. Disabled for reduced-motion and touch.
+ * Pointer-driven 3D tilt on hover. Disabled for reduced-motion and touch.
  */
 function Tilt({
   children,
@@ -139,7 +136,7 @@ function Tilt({
 
 function ProjectCard({ project, tilt }: { project: Project; tilt: boolean }) {
   return (
-    <RevealItem className="perspective-[1000px]">
+    <div className="perspective-[1000px]">
       <Tilt
         enabled={tilt}
         className="h-full overflow-hidden rounded-lg border bg-card transition-shadow shadow-foreground/10 hover:shadow-lg"
@@ -171,7 +168,7 @@ function ProjectCard({ project, tilt }: { project: Project; tilt: boolean }) {
           ) : null}
         </div>
       </Tilt>
-    </RevealItem>
+    </div>
   );
 }
 
@@ -239,21 +236,16 @@ export function Portfolio() {
 
       <HeroBackdrop />
 
-      {/* key on the group so a filter/sort change replays the staggered entrance
-          instead of leaving newly shown cards stuck hidden. */}
-      <RevealGroup
-        key={`${activeTech ?? "all"}-${sort}`}
-        className="space-y-6 p-4 md:p-6"
-      >
+      <div className="space-y-6 p-4 md:p-6">
         {/* Header */}
-        <RevealItem>
+        <div>
           <h2 className="text-lg font-semibold">Portfolio</h2>
           <p className="text-sm text-muted-foreground mt-1">
             A selection of projects I&apos;ve built over the years.
           </p>
-        </RevealItem>
+        </div>
 
-        {/* Uniform grid — cards inherit the stagger from the surrounding RevealGroup */}
+        {/* Uniform grid */}
         {filtered.length > 0 ? (
           <div className="grid grid-cols-fill-15 gap-4">
             {filtered.map((project) => (
@@ -261,11 +253,11 @@ export function Portfolio() {
             ))}
           </div>
         ) : (
-          <RevealItem className="py-12 text-center text-sm text-muted-foreground">
+          <div className="py-12 text-center text-sm text-muted-foreground">
             No projects match this filter.
-          </RevealItem>
+          </div>
         )}
-      </RevealGroup>
+      </div>
     </div>
   );
 }
